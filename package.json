@@ -9,14 +9,15 @@
     "rollup": "rollup -c --bundleConfigAsCjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Zephinax",
   "license": "ISC",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^26.0.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
-    "@types/react": "^18.3.3",
+    "@types/react": "^18.3.24",
+    "@types/react-dom": "^18.3.7",
     "react": "^18.3.1",
     "rollup": "^4.18.1",
     "rollup-plugin-dts": "^6.1.1",
@@ -27,20 +28,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Zephinax/react-toast-popup.git"
+    "url": "https://github.com/Zephinax/ProfileSelector.git"
   },
   "keywords": [
     "react",
-    "react-toast",
-    "notification",
-    "toast",
-    "react-component",
-    "push",
-    "alert"
+    "react-profile",
+    "profile-selector",
+    "react-component"
   ],
   "dependencies": {
-    "@types/uuid": "^10.0.0",
-    "react-icons": "^5.2.1",
-    "uuid": "^10.0.0"
+    "@rollup/plugin-json": "^6.1.0",
+    "axios": "^1.7.7",
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.4.0"
   }
 }
