@@ -1,6 +1,6 @@
 {
   "name": "react-picture-selector",
-  "version": "1.1.5",
+  "version": "1.2.3",
   "description": "picture selector input",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -40,6 +40,7 @@
     "@rollup/plugin-json": "^6.1.0",
     "axios": "^1.7.7",
     "react-dom": "^18.3.1",
+    "react": "^18.3.1",
     "react-icons": "^5.4.0"
   }
 }
