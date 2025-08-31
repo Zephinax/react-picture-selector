@@ -1,2 +1,2 @@
-import ProfileSelector from "./components/ProfileSelectorInput";
-export default ProfileSelector;
+import PictureSelector from "./components/PictureSelector";
+export default PictureSelector;

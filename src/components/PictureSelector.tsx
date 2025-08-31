@@ -3,13 +3,13 @@ import { HiOutlinePencilSquare } from "react-icons/hi2";
 import { MdDeleteOutline } from "react-icons/md";
 import axios from "axios";
 import { ProfileSelectorPropsTypes } from "./types";
-import useImagePreview from "./../hooks/useImagePreview";
+import useImagePreview from "../hooks/useImagePreview";
 
 interface UploadResponse {
   data?: string;
 }
 
-const ProfileSelector = ({
+const PictureSelector = ({
   deleteUrl = "POST_DELETE_AVATAR",
   uploadUrl = "POST_UPLOAD_AVATAR",
   profileImageUrl,
@@ -334,4 +334,4 @@ const ProfileSelector = ({
   );
 };
 
-export default ProfileSelector;
+export default PictureSelector;
