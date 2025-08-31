@@ -10,6 +10,6 @@ interface ProfileSelectorPropsTypes {
     title?: string;
 }
 
-declare const ProfileSelector: ({ deleteUrl, uploadUrl, profileImageUrl, type, onChangeImage, viewOnly, title, }: ProfileSelectorPropsTypes) => react_jsx_runtime.JSX.Element;
+declare const PictureSelector: ({ deleteUrl, uploadUrl, profileImageUrl, type, onChangeImage, viewOnly, title, }: ProfileSelectorPropsTypes) => react_jsx_runtime.JSX.Element;
 
-export { ProfileSelector as default };
+export { PictureSelector as default };
