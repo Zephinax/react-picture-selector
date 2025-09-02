@@ -38,6 +38,8 @@ const PictureSelector = ({
   borderRadius = 16.875, // میزان انحنای گوشه برای type غیر profile
   showProgressRing = true, // نمایش حلقه پیشرفت
   enableAbortController = true, // فعال/غیرفعال کردن abort controller
+  testMode = false, // حالت تست
+  testUploadDelay = 2000, // تاخیر شبیه‌سازی آپلود در حالت تست (میلی‌ثانیه)
 }: ProfileSelectorPropsTypes & {
   size?: number;
   colors?: ColorPalette;
@@ -46,12 +48,15 @@ const PictureSelector = ({
   borderRadius?: number;
   showProgressRing?: boolean;
   enableAbortController?: boolean;
+  testMode?: boolean;
+  testUploadDelay?: number;
 }) => {
   const { modalImagePreview, openImage } = useImagePreview();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const testProgressRef = useRef<NodeJS.Timeout | null>(null);
   const [imgError, setImgError] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -61,9 +66,42 @@ const PictureSelector = ({
     if (!enableAbortController) return new AbortController();
 
     abortControllerRef.current?.abort();
+
+    // پاک کردن تایمر تست در صورت لغو
+    if (testMode && testProgressRef.current) {
+      clearInterval(testProgressRef.current);
+      testProgressRef.current = null;
+    }
+
     const abortController = new AbortController();
     abortControllerRef.current = abortController;
     return abortController;
+  };
+
+  // شبیه‌سازی آپلود برای حالت تست
+  const simulateUpload = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        let progress = 0;
+        const interval = testUploadDelay / 100; // تقسیم تاخیر به 100 قسمت
+
+        testProgressRef.current = setInterval(() => {
+          progress += 1;
+          setUploadProgress(progress);
+
+          if (progress >= 100) {
+            if (testProgressRef.current) {
+              clearInterval(testProgressRef.current);
+              testProgressRef.current = null;
+            }
+            resolve(reader.result as string);
+          }
+        }, interval);
+      };
+      reader.onerror = () => reject(new Error("خطا در خواندن فایل"));
+      reader.readAsDataURL(file);
+    });
   };
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,53 +116,95 @@ const PictureSelector = ({
 
     const abortController = handleAbort();
     setLoading(true);
+    setUploadProgress(0);
 
     try {
-      // حذف تصویر قبلی اگر وجود دارد
-      if (imageUrl) {
-        await axios.post(`${apiBaseUrl}${deleteUrl}${imageUrl}`, null, {
-          signal: abortController.signal,
-        });
-      }
+      if (testMode) {
+        // حالت تست - شبیه‌سازی آپلود
+        console.log("🧪 Test Mode: Simulating upload...");
 
-      const formData = new FormData();
-      formData.append("File", file);
-
-      const response = await axios.post<UploadResponse>(
-        `${apiBaseUrl}${uploadUrl}`,
-        formData,
-        {
-          signal: abortController.signal,
-          onUploadProgress: (progressEvent) => {
-            if (progressEvent.total) {
-              const progressPercentage = Math.round(
-                (progressEvent.loaded / progressEvent.total) * 100
-              );
-              setUploadProgress(progressPercentage);
-            }
-          },
+        // شبیه‌سازی حذف تصویر قبلی
+        if (imageUrl) {
+          console.log("🧪 Test Mode: Simulating delete previous image");
+          await new Promise((resolve) => setTimeout(resolve, 300));
         }
-      );
 
-      setLoading(false);
-      if (response?.data?.data) {
-        setImageUrl(response.data.data);
-        onChangeImage(response.data.data);
+        const base64Image = await simulateUpload(file);
+
+        // بررسی اگر درخواست لغو شده باشد
+        if (abortController.signal.aborted) {
+          throw new Error("Upload canceled");
+        }
+
+        setLoading(false);
+        setImageUrl(base64Image);
+        onChangeImage(base64Image);
         setImgError(false);
         setUploadProgress(0);
+
+        console.log("🧪 Test Mode: Upload simulation completed successfully");
       } else {
-        throw new Error("Failed to upload the image");
+        // حالت واقعی - درخواست API
+        // حذف تصویر قبلی اگر وجود دارد
+        if (imageUrl) {
+          await axios.post(`${apiBaseUrl}${deleteUrl}${imageUrl}`, null, {
+            signal: abortController.signal,
+          });
+        }
+
+        const formData = new FormData();
+        formData.append("File", file);
+
+        const response = await axios.post<UploadResponse>(
+          `${apiBaseUrl}${uploadUrl}`,
+          formData,
+          {
+            signal: abortController.signal,
+            onUploadProgress: (progressEvent) => {
+              if (progressEvent.total) {
+                const progressPercentage = Math.round(
+                  (progressEvent.loaded / progressEvent.total) * 100
+                );
+                setUploadProgress(progressPercentage);
+              }
+            },
+          }
+        );
+
+        setLoading(false);
+        if (response?.data?.data) {
+          setImageUrl(response.data.data);
+          onChangeImage(response.data.data);
+          setImgError(false);
+          setUploadProgress(0);
+        } else {
+          throw new Error("Failed to upload the image");
+        }
       }
     } catch (error: any) {
-      if (error.name === "CanceledError") {
-        console.log("Upload canceled");
+      if (
+        error.name === "CanceledError" ||
+        error.message === "Upload canceled"
+      ) {
+        console.log(
+          testMode ? "🧪 Test Mode: Upload canceled" : "Upload canceled"
+        );
       } else {
         console.error(
-          "Error uploading the image:",
+          testMode
+            ? "🧪 Test Mode: Error simulating upload:"
+            : "Error uploading the image:",
           error instanceof Error ? error.message : error
         );
       }
       setLoading(false);
+      setUploadProgress(0);
+
+      // پاک کردن تایمر در صورت خطا
+      if (testMode && testProgressRef.current) {
+        clearInterval(testProgressRef.current);
+        testProgressRef.current = null;
+      }
     }
   };
 
@@ -132,25 +212,56 @@ const PictureSelector = ({
     if (!imageUrl) return;
 
     const abortController = handleAbort();
+
     try {
-      await axios.post(`${apiBaseUrl}${deleteUrl}${imageUrl}`, null, {
-        signal: abortController.signal,
-      });
-      setImageUrl("");
-      onChangeImage("");
+      if (testMode) {
+        // حالت تست - شبیه‌سازی حذف
+        console.log("🧪 Test Mode: Simulating delete image");
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        if (abortController.signal.aborted) {
+          throw new Error("Delete canceled");
+        }
+
+        setImageUrl("");
+        onChangeImage("");
+        console.log("🧪 Test Mode: Delete simulation completed");
+      } else {
+        // حالت واقعی - درخواست API
+        await axios.post(`${apiBaseUrl}${deleteUrl}${imageUrl}`, null, {
+          signal: abortController.signal,
+        });
+        setImageUrl("");
+        onChangeImage("");
+      }
     } catch (error) {
-      console.error(
-        "Error deleting the image:",
-        error instanceof Error ? error.message : error
-      );
+      if (error instanceof Error && error.message === "Delete canceled") {
+        console.log(
+          testMode ? "🧪 Test Mode: Delete canceled" : "Delete canceled"
+        );
+      } else {
+        console.error(
+          testMode
+            ? "🧪 Test Mode: Error simulating delete:"
+            : "Error deleting the image:",
+          error instanceof Error ? error.message : error
+        );
+      }
     }
   };
 
   useEffect(() => {
     if (profileImageUrl) setImageUrl(profileImageUrl);
+
     return () => {
       if (enableAbortController) {
         abortControllerRef.current?.abort();
+      }
+
+      // پاک کردن تایمر تست در cleanup
+      if (testProgressRef.current) {
+        clearInterval(testProgressRef.current);
+        testProgressRef.current = null;
       }
     };
   }, [profileImageUrl]);
@@ -174,7 +285,14 @@ const PictureSelector = ({
 
   return (
     <div className="max-w-sm flex flex-col mx-auto p-4 pt-0 bg-white rounded-lg">
-      <div className="mb-4 text-right">{title}</div>
+      <div className="mb-4 text-right">
+        {title}
+        {testMode && (
+          <span className="mr-2 px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">
+            🧪 حالت تست
+          </span>
+        )}
+      </div>
       <div className="mb-4 flex flex-col items-center justify-center relative">
         {modalImagePreview()}
         <div className="relative" style={imageContainerStyle}>
@@ -247,27 +365,30 @@ const PictureSelector = ({
           )}
 
           {/* Progress ring */}
-          {showProgressRing && uploadProgress > 0 && isCircle && (
-            <svg
-              className="absolute top-0 left-0 pointer-events-none"
-              width={size}
-              height={size}
-              viewBox={`0 0 ${size} ${size}`}
-            >
-              <circle
-                cx={radius}
-                cy={radius}
-                r={radius - 6.5 / 2}
-                fill="none"
-                stroke={colors.progress}
-                strokeWidth={6.5}
-                strokeDasharray={circumference}
-                strokeDashoffset={strokeDashoffset}
-                transform={`rotate(-90 ${radius} ${radius})`}
-                style={{ transition: "stroke-dashoffset 0.3s ease" }}
-              />
-            </svg>
-          )}
+          {showProgressRing &&
+            uploadProgress > 0 &&
+            uploadProgress < 100 &&
+            isCircle && (
+              <svg
+                className="absolute top-0 left-0 pointer-events-none"
+                width={size}
+                height={size}
+                viewBox={`0 0 ${size} ${size}`}
+              >
+                <circle
+                  cx={radius}
+                  cy={radius}
+                  r={radius - 6.5 / 2}
+                  fill="none"
+                  stroke={colors.progress}
+                  strokeWidth={6.5}
+                  strokeDasharray={circumference}
+                  strokeDashoffset={strokeDashoffset}
+                  transform={`rotate(-90 ${radius} ${radius})`}
+                  style={{ transition: "stroke-dashoffset 0.3s ease" }}
+                />
+              </svg>
+            )}
 
           {!viewOnly && (
             <>
@@ -313,12 +434,36 @@ const PictureSelector = ({
           disabled={loading}
         />
 
-        {loading && (
-          <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center rounded-full">
-            <div className="text-white">{uploadProgress}%</div>
+        {/* نمایش درصد روی تصویر فقط وقتی progress ring نداریم */}
+        {loading && (!showProgressRing || !isCircle) && (
+          <div
+            className="absolute top-0 left-0 bg-black bg-opacity-50 flex items-center justify-center"
+            style={{
+              width: `${size}px`,
+              height: `${size}px`,
+              borderRadius: isCircle ? "50%" : `${borderRadius}px`,
+            }}
+          >
+            <div className="text-white text-sm font-semibold">
+              {uploadProgress}%
+            </div>
           </div>
         )}
       </div>
+
+      {/* نمایش اطلاعات تست در حالت تست */}
+      {testMode && (
+        <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded-md">
+          <div className="text-xs text-yellow-800">
+            <div>
+              🧪 <strong>حالت تست فعال است</strong>
+            </div>
+            <div>• هیچ درخواست API ارسال نمی‌شود</div>
+            <div>• تاخیر شبیه‌سازی: {testUploadDelay}ms</div>
+            <div>• تصاویر در حافظه محلی ذخیره می‌شوند</div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

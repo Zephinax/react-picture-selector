@@ -34,6 +34,7 @@ const App: React.FC = () => {
             profileImageUrl=""
             onChangeImage={handleImageChange}
             title="عکس پروفایل"
+            testMode
           />
         </div>
 
@@ -45,6 +46,7 @@ const App: React.FC = () => {
             onChangeImage={handleImageChange}
             size={120}
             title="عکس کوچک"
+            testMode
           />
         </div>
 
@@ -56,6 +58,7 @@ const App: React.FC = () => {
             onChangeImage={handleImageChange}
             colors={customColors}
             title="پالت سفارشی"
+            testMode
           />
         </div>
 
@@ -66,6 +69,7 @@ const App: React.FC = () => {
             profileImageUrl=""
             onChangeImage={handleImageChange}
             title="عکس محصول"
+            testMode
           />
         </div>
 
@@ -77,6 +81,7 @@ const App: React.FC = () => {
             onChangeImage={handleImageChange}
             borderRadius={30}
             title="گوشه گرد"
+            testMode
           />
         </div>
 
@@ -88,6 +93,7 @@ const App: React.FC = () => {
             onChangeImage={handleImageChange}
             viewOnly={true}
             title="فقط نمایش"
+            testMode
           />
         </div>
 
@@ -101,6 +107,7 @@ const App: React.FC = () => {
             deleteUrl="api/delete-image"
             apiBaseUrl="https://my-api.com/"
             title="API سفارشی"
+            testMode
           />
         </div>
 
@@ -112,6 +119,7 @@ const App: React.FC = () => {
             onChangeImage={handleImageChange}
             showProgressRing={false}
             title="بدون Progress"
+            testMode
           />
         </div>
 
@@ -124,53 +132,9 @@ const App: React.FC = () => {
             shape="rounded"
             borderRadius={10}
             title="عکس مستطیل"
+            testMode
           />
         </div>
-      </div>
-
-      {/* نمونه عملی در یک فرم */}
-      <div className="mt-8 p-6 bg-white rounded-lg shadow-md max-w-2xl mx-auto">
-        <h2 className="text-xl font-semibold mb-4">فرم ویرایش پروفایل</h2>
-        <form className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              عکس پروفایل
-            </label>
-            <PictureSelector
-              profileImageUrl=""
-              onChangeImage={handleImageChange}
-              title=""
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">نام</label>
-              <input
-                type="text"
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="نام خود را وارد کنید"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                نام خانوادگی
-              </label>
-              <input
-                type="text"
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="نام خانوادگی خود را وارد کنید"
-              />
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
-          >
-            ذخیره تغییرات
-          </button>
-        </form>
       </div>
     </div>
   );
