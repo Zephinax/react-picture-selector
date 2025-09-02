@@ -280,8 +280,8 @@ const PictureSelector = ({
   };
 
   // Calculate button positions based on size
-  const buttonPosition = size * 0.1; // 10% of size
-  const buttonSize = size * 0.18; // 15% of size
+  const buttonPosition = size * 0.07; // 10% of size
+  const buttonSize = size * 0.2; // 15% of size
 
   return (
     <div className="max-w-sm flex flex-col mx-auto p-4 pt-0 bg-white rounded-lg">
@@ -400,7 +400,7 @@ const PictureSelector = ({
                   bottom: `${buttonPosition}px`,
                   right: `${buttonPosition}px`,
                 }}
-                className="absolute p-1 rounded-full shadow-lg flex items-center justify-center"
+                className="absolute p-1 cursor-pointer rounded-full shadow-lg flex items-center justify-center"
                 onClick={triggerFileInput}
                 disabled={loading}
               >
@@ -415,7 +415,7 @@ const PictureSelector = ({
                     bottom: `${buttonPosition}px`,
                     left: `${buttonPosition}px`,
                   }}
-                  className="absolute p-1 rounded-full shadow-lg flex items-center justify-center"
+                  className="absolute p-1 cursor-pointer rounded-full shadow-lg flex items-center justify-center"
                   onClick={handleDeleteImage}
                   disabled={loading}
                 >
