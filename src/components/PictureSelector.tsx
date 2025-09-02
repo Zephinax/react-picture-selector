@@ -26,6 +26,13 @@ const PictureSelector = ({
   const [imgError, setImgError] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // رنگ‌ها به صورت HEX
+  const colors = {
+    primary: "#3B82F6", // blue-500
+    error: "#EF4444", // red-500
+    progress: "#FACC15", // yellow-400
+  };
+
   const handleAbort = () => {
     abortControllerRef.current?.abort();
     const abortController = new AbortController();
@@ -42,13 +49,9 @@ const PictureSelector = ({
     try {
       if (imageUrl) {
         await axios.post(
-          "BASE_URL_SERVICES" +
-            `${deleteUrl ? deleteUrl : "POST_DELETE_AVATAR"}` +
-            imageUrl,
+          "BASE_URL_SERVICES" + (deleteUrl || "POST_DELETE_AVATAR") + imageUrl,
           null,
-          {
-            signal: abortController.signal,
-          }
+          { signal: abortController.signal }
         );
       }
 
@@ -56,7 +59,7 @@ const PictureSelector = ({
       formData.append("File", file);
 
       const response = await axios.post<UploadResponse>(
-        "BASE_URL_SERVICES" + `${uploadUrl ? uploadUrl : "POST_UPLOAD_AVATAR"}`,
+        "BASE_URL_SERVICES" + (uploadUrl || "POST_UPLOAD_AVATAR"),
         formData,
         {
           signal: abortController.signal,
@@ -70,6 +73,7 @@ const PictureSelector = ({
           },
         }
       );
+
       setLoading(false);
       if (response?.data?.data) {
         setImageUrl(response.data.data);
@@ -80,11 +84,11 @@ const PictureSelector = ({
         throw new Error("Failed to upload the image");
       }
     } catch (error) {
-      if (error instanceof Error) {
-        console.error("Error uploading the image:", error.message);
-      } else {
-        console.error("An unknown error occurred while uploading.");
-      }
+      console.error(
+        "Error uploading the image:",
+        error instanceof Error ? error.message : error
+      );
+      setLoading(false);
     }
   };
 
@@ -92,78 +96,41 @@ const PictureSelector = ({
     const abortController = handleAbort();
     try {
       await axios.post(
-        "BASE_URL_SERVICES" +
-          `${deleteUrl ? deleteUrl : "POST_DELETE_AVATAR"}` +
-          imageUrl,
+        "BASE_URL_SERVICES" + (deleteUrl || "POST_DELETE_AVATAR") + imageUrl,
         null,
-        {
-          signal: abortController.signal,
-        }
+        { signal: abortController.signal }
       );
-
       setImageUrl("");
       onChangeImage("");
     } catch (error) {
-      if (error instanceof Error) {
-        console.error("Error deleting the image:", error.message);
-      } else {
-        console.error("An unknown error occurred while deleting.");
-      }
+      console.error(
+        "Error deleting the image:",
+        error instanceof Error ? error.message : error
+      );
     }
   };
 
   useEffect(() => {
-    if (profileImageUrl) {
-      setImageUrl(profileImageUrl);
-    }
-    return () => {
-      abortControllerRef.current?.abort();
-    };
+    if (profileImageUrl) setImageUrl(profileImageUrl);
+    return () => abortControllerRef.current?.abort();
   }, [profileImageUrl]);
 
-  const triggerFileInput = () => {
-    fileInputRef.current?.click();
-  };
+  const triggerFileInput = () => fileInputRef.current?.click();
 
-  const radius = 90; // Radius of the circular ring
-  const circumference = 2 * Math.PI * radius; // Total circumference of the ring
-
+  const radius = 90;
+  const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = (1 - uploadProgress / 100) * circumference;
+
   return (
     <div className="max-w-sm flex flex-col mx-auto p-4 pt-0 bg-white rounded-lg">
       <div className="mb-4 text-right">{title}</div>
       <div className="mb-4 flex flex-col items-center justify-center relative">
         {modalImagePreview()}
-        <div className={`relative w-[180px] h-[180px]`}>
-          {imageUrl ? (
-            <>
-              {!imgError ? (
-                <img
-                  src={imageUrl}
-                  alt="Uploaded"
-                  className={`relative w-[180px] h-[180px] object-cover border mb-4  ${
-                    loading ? "blur" : ""
-                  } ${
-                    type === "profile" ? " rounded-full" : "rounded-[16.875px]"
-                  }`}
-                  onError={() => setImgError(true)} // Set error state on image error
-                  onClick={() => openImage(imageUrl)}
-                />
-              ) : (
-                <img
-                  src={"/favicon.ico"}
-                  alt="Uploaded"
-                  className={`relative w-[180px] h-[180px] object-cover border mb-4 ${
-                    type === "profile" ? " rounded-full" : "rounded-[16.875px]"
-                  }`}
-                  onClick={() => openImage("/favicon.ico")}
-                />
-              )}
-            </>
-          ) : (
+        <div className="relative w-[180px] h-[180px]">
+          {!imageUrl && (
             <div
-              className={`w-[180px] h-[180px] mb-4 flex items-center justify-center text-gray-700 ${
-                type === "profile" ? " rounded-full" : "rounded-[16.875px]"
+              className={`w-[180px] h-[180px] mb-4 flex items-center justify-center ${
+                type === "profile" ? "rounded-full" : "rounded-[16.875px]"
               }`}
             >
               {type === "profile" ? (
@@ -233,90 +200,49 @@ const PictureSelector = ({
             </div>
           )}
 
+          {/* Progress ring */}
           {type === "profile" ? (
             <svg
-              className="absolute pointer-events-none top-0 left-0"
-              width="180"
-              height="180"
-              viewBox="0 0 106 106"
-              style={{ maxWidth: "180px", maxHeight: "180px" }}
+              className="absolute top-0 left-0 pointer-events-none"
+              width={radius * 2}
+              height={radius * 2}
+              viewBox={`0 0 ${radius * 2} ${radius * 2}`}
             >
               <circle
-                className="circle-bg"
-                cx="53"
-                cy="53"
-                r="49.5"
+                cx={radius}
+                cy={radius}
+                r={radius - 6.5 / 2}
                 fill="none"
-                stroke="none"
-                strokeWidth="6.5"
-              />
-              <circle
-                className="circle-progress"
-                cx="53"
-                cy="53"
-                r="49.5"
-                fill="none"
-                stroke="#ffd61f"
-                strokeWidth="6.5"
+                stroke={colors.progress}
+                strokeWidth={6.5}
                 strokeDasharray={circumference}
                 strokeDashoffset={strokeDashoffset}
-                transform="rotate(-90 53 53)"
+                transform={`rotate(-90 ${radius} ${radius})`}
                 style={{ transition: "stroke-dashoffset 0.3s ease" }}
               />
             </svg>
-          ) : (
-            <div className="">
-              <svg
-                className="absolute top-0 left-0"
-                width="180px"
-                height="180px"
-                viewBox="0 0 32 32"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect
-                  className="rounded-lg overflow-hidden"
-                  x="1"
-                  y="1"
-                  rx={3}
-                  width="30"
-                  height="30"
-                  fill="none"
-                  stroke="#ffd61f"
-                  strokeWidth={"2"}
-                  strokeDasharray={circumference}
-                  strokeDashoffset={strokeDashoffset}
-                  style={{ transition: "stroke-dashoffset 0.3s ease" }}
-                />
-              </svg>
-            </div>
-          )}
+          ) : null}
 
           {!viewOnly && (
             <>
               <button
-                className={`absolute bg-primary p-[5px] rounded-full shadow-lg  ${
-                  type === "profile"
-                    ? "bottom-2 right-4"
-                    : imageUrl
-                    ? "bottom-2 right-2"
-                    : "bottom-4 right-4"
+                style={{ backgroundColor: colors.primary }}
+                className={`absolute p-[5px] rounded-full shadow-lg ${
+                  type === "profile" ? "bottom-2 right-4" : "bottom-2 right-2"
                 }`}
                 onClick={triggerFileInput}
               >
-                <HiOutlinePencilSquare color="white" size={28} />
+                <HiOutlinePencilSquare color="#fff" size={28} />
               </button>
               {imageUrl && (
                 <button
-                  className={`absolute p-[5px] bg-error shadow-lg rounded-full ${
-                    type === "profile"
-                      ? "bottom-2 left-4"
-                      : imageUrl
-                      ? "bottom-2 left-2"
-                      : "bottom-4 left-4"
+                  style={{ backgroundColor: colors.error }}
+                  className={`absolute p-[5px] rounded-full shadow-lg ${
+                    type === "profile" ? "bottom-2 left-4" : "bottom-2 left-2"
                   }`}
                   onClick={handleDeleteImage}
                 >
-                  <MdDeleteOutline color="white" size={28} />
+                  <MdDeleteOutline color="#fff" size={28} />
                 </button>
               )}
             </>
