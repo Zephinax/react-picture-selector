@@ -9,7 +9,7 @@ interface UploadResponse {
   data?: string;
 }
 
-// پالت رنگی قابل تنظیم
+// Configurable color palette
 interface ColorPalette {
   primary: string;
   error: string;
@@ -24,22 +24,22 @@ const PictureSelector = ({
   type = "profile",
   onChangeImage,
   viewOnly = false,
-  title = "تصویر پروفایل",
-  size = 180, // سایز قابل تنظیم
+  title = "Profile Picture",
+  size = 180, // Configurable size
   colors = {
-    // پالت رنگی پیشفرض ولی قابل بازنویسی
+    // Default color palette but can be overridden
     primary: "#3B82F6",
     error: "#EF4444",
     progress: "#FACC15",
     placeholder: "#BCBEC0",
   },
-  apiBaseUrl = "BASE_URL_SERVICES", // آدرس پایه قابل تنظیم
-  shape = "circle", // شکل دایره یا مستطیل با گوشه گرد
-  borderRadius = 16.875, // میزان انحنای گوشه برای type غیر profile
-  showProgressRing = true, // نمایش حلقه پیشرفت
-  enableAbortController = true, // فعال/غیرفعال کردن abort controller
-  testMode = false, // حالت تست
-  testUploadDelay = 2000, // تاخیر شبیه‌سازی آپلود در حالت تست (میلی‌ثانیه)
+  apiBaseUrl = "BASE_URL_SERVICES", // Configurable base URL
+  shape = "circle", // Circle or rounded rectangle shape
+  borderRadius = 16.875, // Corner radius for non-profile type
+  showProgressRing = true, // Show progress ring
+  enableAbortController = true, // Enable/disable abort controller
+  testMode = false, // Test mode
+  testUploadDelay = 2000, // Upload simulation delay in test mode (milliseconds)
 }: ProfileSelectorPropsTypes & {
   size?: number;
   colors?: ColorPalette;
@@ -67,7 +67,7 @@ const PictureSelector = ({
 
     abortControllerRef.current?.abort();
 
-    // پاک کردن تایمر تست در صورت لغو
+    // Clear test timer if canceled
     if (testMode && testProgressRef.current) {
       clearInterval(testProgressRef.current);
       testProgressRef.current = null;
@@ -78,13 +78,13 @@ const PictureSelector = ({
     return abortController;
   };
 
-  // شبیه‌سازی آپلود برای حالت تست
+  // Upload simulation for test mode
   const simulateUpload = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => {
         let progress = 0;
-        const interval = testUploadDelay / 100; // تقسیم تاخیر به 100 قسمت
+        const interval = testUploadDelay / 100; // Divide delay into 100 parts
 
         testProgressRef.current = setInterval(() => {
           progress += 1;
@@ -99,7 +99,7 @@ const PictureSelector = ({
           }
         }, interval);
       };
-      reader.onerror = () => reject(new Error("خطا در خواندن فایل"));
+      reader.onerror = () => reject(new Error("Error reading file"));
       reader.readAsDataURL(file);
     });
   };
@@ -108,9 +108,9 @@ const PictureSelector = ({
     const file = e.target?.files?.[0];
     if (!file) return;
 
-    // بررسی نوع فایل
+    // Check file type
     if (!file.type.startsWith("image/")) {
-      alert("لطفا یک فایل تصویر انتخاب کنید");
+      alert("Please select an image file");
       return;
     }
 
@@ -120,10 +120,10 @@ const PictureSelector = ({
 
     try {
       if (testMode) {
-        // حالت تست - شبیه‌سازی آپلود
+        // Test mode - simulate upload
         console.log("🧪 Test Mode: Simulating upload...");
 
-        // شبیه‌سازی حذف تصویر قبلی
+        // Simulate deleting previous image
         if (imageUrl) {
           console.log("🧪 Test Mode: Simulating delete previous image");
           await new Promise((resolve) => setTimeout(resolve, 300));
@@ -131,7 +131,7 @@ const PictureSelector = ({
 
         const base64Image = await simulateUpload(file);
 
-        // بررسی اگر درخواست لغو شده باشد
+        // Check if request was canceled
         if (abortController.signal.aborted) {
           throw new Error("Upload canceled");
         }
@@ -144,8 +144,8 @@ const PictureSelector = ({
 
         console.log("🧪 Test Mode: Upload simulation completed successfully");
       } else {
-        // حالت واقعی - درخواست API
-        // حذف تصویر قبلی اگر وجود دارد
+        // Real mode - API request
+        // Delete previous image if exists
         if (imageUrl) {
           await axios.post(`${apiBaseUrl}${deleteUrl}${imageUrl}`, null, {
             signal: abortController.signal,
@@ -200,7 +200,7 @@ const PictureSelector = ({
       setLoading(false);
       setUploadProgress(0);
 
-      // پاک کردن تایمر در صورت خطا
+      // Clear timer on error
       if (testMode && testProgressRef.current) {
         clearInterval(testProgressRef.current);
         testProgressRef.current = null;
@@ -215,7 +215,7 @@ const PictureSelector = ({
 
     try {
       if (testMode) {
-        // حالت تست - شبیه‌سازی حذف
+        // Test mode - simulate delete
         console.log("🧪 Test Mode: Simulating delete image");
         await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -227,7 +227,7 @@ const PictureSelector = ({
         onChangeImage("");
         console.log("🧪 Test Mode: Delete simulation completed");
       } else {
-        // حالت واقعی - درخواست API
+        // Real mode - API request
         await axios.post(`${apiBaseUrl}${deleteUrl}${imageUrl}`, null, {
           signal: abortController.signal,
         });
@@ -258,7 +258,7 @@ const PictureSelector = ({
         abortControllerRef.current?.abort();
       }
 
-      // پاک کردن تایمر تست در cleanup
+      // Clear test timer on cleanup
       if (testProgressRef.current) {
         clearInterval(testProgressRef.current);
         testProgressRef.current = null;
@@ -272,16 +272,16 @@ const PictureSelector = ({
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = (1 - uploadProgress / 100) * circumference;
 
-  // استایل داینامیک برای تصویر
+  // Dynamic style for image
   const imageContainerStyle = {
     width: `${size}px`,
     height: `${size}px`,
     borderRadius: isCircle ? "50%" : `${borderRadius}px`,
   };
 
-  // محاسبه موقعیت دکمه‌ها بر اساس سایز
-  const buttonPosition = size * 0.1; // 10% از سایز
-  const buttonSize = size * 0.18; // 15% از سایز
+  // Calculate button positions based on size
+  const buttonPosition = size * 0.1; // 10% of size
+  const buttonSize = size * 0.18; // 15% of size
 
   return (
     <div className="max-w-sm flex flex-col mx-auto p-4 pt-0 bg-white rounded-lg">
@@ -289,7 +289,7 @@ const PictureSelector = ({
         {title}
         {testMode && (
           <span className="mr-2 px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">
-            🧪 حالت تست
+            🧪 Test Mode
           </span>
         )}
       </div>
@@ -434,7 +434,7 @@ const PictureSelector = ({
           disabled={loading}
         />
 
-        {/* نمایش درصد روی تصویر فقط وقتی progress ring نداریم */}
+        {/* Show percentage on image only when no progress ring */}
         {loading && (!showProgressRing || !isCircle) && (
           <div
             className="absolute inset-0 bg-white bg-opacity-80 backdrop-blur-sm flex items-center justify-center"
@@ -449,16 +449,16 @@ const PictureSelector = ({
         )}
       </div>
 
-      {/* نمایش اطلاعات تست در حالت تست */}
+      {/* Show test info in test mode */}
       {testMode && (
         <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded-md">
           <div className="text-xs text-yellow-800">
             <div>
-              🧪 <strong>حالت تست فعال است</strong>
+              🧪 <strong>Test Mode Active</strong>
             </div>
-            <div>• هیچ درخواست API ارسال نمی‌شود</div>
-            <div>• تاخیر شبیه‌سازی: {testUploadDelay}ms</div>
-            <div>• تصاویر در حافظه محلی ذخیره می‌شوند</div>
+            <div>• No API requests are sent</div>
+            <div>• Simulation delay: {testUploadDelay}ms</div>
+            <div>• Images are stored in local memory</div>
           </div>
         </div>
       )}
