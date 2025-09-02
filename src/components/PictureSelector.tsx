@@ -56,7 +56,7 @@ const PictureSelector = ({
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
-  const testProgressRef = useRef<NodeJS.Timeout | null>(null);
+  const testProgressRef = useRef<any | null>(null);
   const [imgError, setImgError] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -437,14 +437,12 @@ const PictureSelector = ({
         {/* نمایش درصد روی تصویر فقط وقتی progress ring نداریم */}
         {loading && (!showProgressRing || !isCircle) && (
           <div
-            className="absolute top-0 left-0 bg-black bg-opacity-50 flex items-center justify-center"
+            className="absolute inset-0 bg-white bg-opacity-80 backdrop-blur-sm flex items-center justify-center"
             style={{
-              width: `${size}px`,
-              height: `${size}px`,
               borderRadius: isCircle ? "50%" : `${borderRadius}px`,
             }}
           >
-            <div className="text-white text-sm font-semibold">
+            <div className="text-gray-800 text-sm font-semibold">
               {uploadProgress}%
             </div>
           </div>
