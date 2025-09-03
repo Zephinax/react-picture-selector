@@ -26,15 +26,27 @@ interface additionalClassNames {
   image?: string;
 }
 
+interface apiConfig {
+  deleteUrl: string;
+  uploadUrl: string;
+  baseUrl?: string;
+  formDataName?: string;
+  additionalHeaders?: any;
+}
+
 const PictureSelector = ({
-  deleteUrl = "POST_DELETE_AVATAR",
-  uploadUrl = "POST_UPLOAD_AVATAR",
+  apiConfig = {
+    deleteUrl: "POST_DELETE_AVATAR",
+    uploadUrl: "POST_UPLOAD_AVATAR",
+    baseUrl: "BASE_URL_SERVICES",
+    formDataName: "File",
+  },
   profileImageUrl,
-  type = "profile", // "profile" for circle, "image" for rounded rectangle
+  type = "profile",
   onChangeImage,
   viewOnly = false,
   title = "Profile Picture",
-  size = 180, // Configurable size
+  size = 180,
   colors = {
     primary: "#2a84fa",
     error: "#EF4444",
@@ -50,7 +62,6 @@ const PictureSelector = ({
     edit: "",
     image: "",
   },
-  apiBaseUrl = "BASE_URL_SERVICES", // Configurable base URL
   showProgressRing = true, // Show progress ring
   blurOnProgress = true,
   enableAbortController = true, // Enable/disable abort controller
@@ -59,6 +70,7 @@ const PictureSelector = ({
 }: ProfileSelectorPropsTypes & {
   size?: number;
   colors?: ColorPalette;
+  apiConfig: apiConfig;
   additionalClassNames?: additionalClassNames;
   apiBaseUrl?: string;
   showProgressRing?: boolean;
@@ -73,7 +85,7 @@ const PictureSelector = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const testProgressRef = useRef<any | null>(null);
-  const [imgError, setImgError] = useState(false);
+  const [_imgError, setImgError] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // Only use type prop to determine if it's circle or not
@@ -157,16 +169,20 @@ const PictureSelector = ({
         // Real mode - API request
         // Delete previous image if exists
         if (imageUrl) {
-          await axios.post(`${apiBaseUrl}${deleteUrl}${imageUrl}`, null, {
-            signal: abortController.signal,
-          });
+          await axios.post(
+            `${apiConfig.baseUrl}${apiConfig.deleteUrl}${imageUrl}`,
+            null,
+            {
+              signal: abortController.signal,
+            }
+          );
         }
 
         const formData = new FormData();
-        formData.append("File", file);
+        formData.append(apiConfig.formDataName || "", file);
 
         const response = await axios.post<UploadResponse>(
-          `${apiBaseUrl}${uploadUrl}`,
+          `${apiConfig.baseUrl}${apiConfig.uploadUrl}`,
           formData,
           {
             signal: abortController.signal,
@@ -237,9 +253,13 @@ const PictureSelector = ({
         console.log("🧪 Test Mode: Delete simulation completed");
       } else {
         // Real mode - API request
-        await axios.post(`${apiBaseUrl}${deleteUrl}${imageUrl}`, null, {
-          signal: abortController.signal,
-        });
+        await axios.post(
+          `${apiConfig.baseUrl}${apiConfig.deleteUrl}${imageUrl}`,
+          null,
+          {
+            signal: abortController.signal,
+          }
+        );
         setImageUrl("");
         onChangeImage("");
       }
