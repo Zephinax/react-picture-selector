@@ -15,12 +15,31 @@ interface ColorPalette {
     error: string;
     progress: string;
     placeholder: string;
+    text: string;
+    textDisabled: string;
 }
-declare const PictureSelector: ({ deleteUrl, uploadUrl, profileImageUrl, type, onChangeImage, viewOnly, title, size, colors, apiBaseUrl, showProgressRing, enableAbortController, testMode, testUploadDelay, }: ProfileSelectorPropsTypes & {
+interface additionalClassNames {
+    title?: string;
+    titleContainer?: string;
+    delete?: string;
+    edit?: string;
+    image?: string;
+}
+interface apiConfig {
+    deleteUrl: string;
+    uploadUrl: string;
+    baseUrl?: string;
+    formDataName?: string;
+    additionalHeaders?: any;
+}
+declare const PictureSelector: ({ apiConfig, profileImageUrl, type, onChangeImage, viewOnly, title, size, colors, additionalClassNames, showProgressRing, blurOnProgress, enableAbortController, testMode, testUploadDelay, }: ProfileSelectorPropsTypes & {
     size?: number;
     colors?: ColorPalette;
+    apiConfig?: apiConfig;
+    additionalClassNames?: additionalClassNames;
     apiBaseUrl?: string;
     showProgressRing?: boolean;
+    blurOnProgress?: boolean;
     enableAbortController?: boolean;
     testMode?: boolean;
     testUploadDelay?: number;
