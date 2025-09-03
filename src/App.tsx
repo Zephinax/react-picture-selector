@@ -95,12 +95,13 @@ const App: React.FC = () => {
             />
           </Card>
 
-          {/* Regular image example (non-profile) */}
+          {/* Rectangle shape example */}
           <Card>
             <PictureSelector
               profileImageUrl=""
               onChangeImage={handleImageChange}
               title="Rectangle shape example"
+              colors={customColors}
               type="image"
               testMode
             />
