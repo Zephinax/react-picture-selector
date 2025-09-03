@@ -1,4 +1,5 @@
 # PictureSelector Component README
+![React](https://img.shields.io/badge/React-18.x-%231DAFBF) ![TypeScript](https://img.shields.io/badge/TypeScript-Included-%23178C6) ![Axios](https://img.shields.io/badge/Axios-1.x-%235A29E4)
 
 The `PictureSelector` component is a customizable React component designed for handling profile picture or image uploads, deletions, and previews. It supports both real API-based operations and a test mode for simulating uploads and deletions. The component is highly configurable, with options for styling, API configuration, progress indicators, and more.
 
