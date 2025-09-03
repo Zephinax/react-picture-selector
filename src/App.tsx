@@ -41,20 +41,20 @@ const App: React.FC = () => {
           disableRotation={false}
         />
       </div>
-      <div className="min-h-screen p-6">
+      <div className="py-4 px-2">
         <div
           dir="ltr"
-          className="flex items-center justify-between w-full mb-8"
+          className="flex flex-wrap gap-3 items-center justify-between w-full mb-8"
         >
           <h1 className="text-2xl font-bold text-center">
             Picture Selector Examples
           </h1>
-          <div
+          <h3
             dir="ltr"
             className="p-2 border text-yellow-200 max-w-xs rounded-md"
           >
             🧪 <strong>Test Mode Active</strong>
-          </div>
+          </h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-[1300px] mx-auto">
@@ -109,10 +109,10 @@ const App: React.FC = () => {
           {/* View-only example (non-editable) */}
           <Card>
             <PictureSelector
-              profileImageUrl="https://archive.smashing.media/assets/344dbf88-fdf9-42bb-adb4-46f01eedd629/68dd54ca-60cf-4ef7-898b-26d7cbe48ec7/10-dithering-opt.jpg"
+              profileImageUrl="https://avatars.githubusercontent.com/u/156062098?v=4"
               onChangeImage={handleImageChange}
               viewOnly={true}
-              title="View-only example (non-editable)"
+              title="View only example (non editable)"
               testMode
             />
           </Card>
