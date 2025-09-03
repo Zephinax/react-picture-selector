@@ -18,6 +18,14 @@ interface ColorPalette {
   textDisabled: string;
 }
 
+interface additionalClassNames {
+  title?: string;
+  titleContainer?: string;
+  delete?: string;
+  edit?: string;
+  image?: string;
+}
+
 const PictureSelector = ({
   deleteUrl = "POST_DELETE_AVATAR",
   uploadUrl = "POST_UPLOAD_AVATAR",
@@ -28,7 +36,6 @@ const PictureSelector = ({
   title = "Profile Picture",
   size = 180, // Configurable size
   colors = {
-    // Default color palette but can be overridden
     primary: "#2a84fa",
     error: "#EF4444",
     progress: "#d24670",
@@ -36,15 +43,23 @@ const PictureSelector = ({
     text: "#fafafa",
     textDisabled: "#e6e6e6",
   },
+  additionalClassNames = {
+    title: "",
+    titleContainer: "",
+    delete: "",
+    edit: "",
+    image: "",
+  },
   apiBaseUrl = "BASE_URL_SERVICES", // Configurable base URL
   showProgressRing = true, // Show progress ring
   blurOnProgress = true,
   enableAbortController = true, // Enable/disable abort controller
   testMode = false, // Test mode
-  testUploadDelay = 2000, // Upload simulation delay in test mode (milliseconds)
+  testUploadDelay = 1000, // Upload simulation delay in test mode (milliseconds)
 }: ProfileSelectorPropsTypes & {
   size?: number;
   colors?: ColorPalette;
+  additionalClassNames?: additionalClassNames;
   apiBaseUrl?: string;
   showProgressRing?: boolean;
   blurOnProgress?: boolean;
@@ -276,14 +291,13 @@ const PictureSelector = ({
   };
 
   return (
-    <div className="max-w-sm flex flex-col mx-auto p-4 pt-0 bg-white rounded-lg">
-      <div className="mb-4 text-right">
-        {title}
-        {testMode && (
-          <span className="mr-2 px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">
-            🧪 Test Mode
-          </span>
-        )}
+    <div className="max-w-xs w-full flex flex-col mx-auto p-4 pt-0 rounded-lg">
+      <div
+        className={`mb-4 flex items-center justify-center ${
+          additionalClassNames.titleContainer || ""
+        }`}
+      >
+        <h3 className={additionalClassNames.title || ""}>{title}</h3>
       </div>
       <div className="mb-4 flex flex-col items-center justify-center relative">
         {modalImagePreview()}
@@ -292,7 +306,9 @@ const PictureSelector = ({
             <img
               src={imageUrl}
               alt={isCircle ? "Profile" : "Image"}
-              className={`w-full h-full object-cover `}
+              className={`w-full h-full object-cover ${
+                additionalClassNames.image || ""
+              }`}
               onError={() => setImgError(true)}
               onClick={() => openImage(imageUrl)}
               style={{
@@ -469,8 +485,8 @@ const PictureSelector = ({
                   borderRadius: isCircle ? "50%" : "28%",
                 }}
                 className={`absolute p-1 cursor-pointer  shadow-lg flex items-center justify-center z-10 ${
-                  isCircle ? "rounded-full" : "rounded-[12px]"
-                }`}
+                  additionalClassNames.edit || ""
+                } ${isCircle ? "rounded-full" : "rounded-[12px]"}`}
                 onClick={triggerFileInput}
                 disabled={loading}
               >
@@ -489,7 +505,9 @@ const PictureSelector = ({
                     left: `${buttonPosition}px`,
                     borderRadius: isCircle ? "50%" : "28%",
                   }}
-                  className={`absolute p-1 cursor-pointer shadow-lg flex items-center justify-center z-10 `}
+                  className={`absolute p-1 cursor-pointer shadow-lg flex items-center justify-center z-10 ${
+                    additionalClassNames.delete || ""
+                  }`}
                   onClick={handleDeleteImage}
                   disabled={loading}
                 >
@@ -511,19 +529,6 @@ const PictureSelector = ({
           disabled={loading}
         />
       </div>
-      {/* Show test info in test mode */}
-      {testMode && (
-        <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded-md">
-          <div className="text-xs text-yellow-800">
-            <div>
-              🧪 <strong>Test Mode Active</strong>
-            </div>
-            <div>• No API requests are sent</div>
-            <div>• Simulation delay: {testUploadDelay}ms</div>
-            <div>• Images are stored in local memory</div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React from "react";
 import PictureSelector from "./components/PictureSelector";
 import Particles from "./components/Particles";
+import Card from "./components/Card";
 
 const App: React.FC = () => {
   const handleImageChange = (newImageUrl: string) => {
@@ -31,130 +32,101 @@ const App: React.FC = () => {
       >
         <Particles
           particleColors={["#ffffff", "#ffffff"]}
-          particleCount={300}
+          particleCount={200}
           particleSpread={10}
           speed={0.1}
           particleBaseSize={100}
-          moveParticlesOnHover={true}
+          moveParticlesOnHover={false}
           alphaParticles={false}
           disableRotation={false}
         />
       </div>
       <div className="min-h-screen p-6">
-        <h1 className="text-2xl font-bold text-center mb-8">
-          Picture Selector Examples
-        </h1>
+        <div
+          dir="ltr"
+          className="flex items-center justify-between w-full mb-8"
+        >
+          <h1 className="text-2xl font-bold text-center">
+            Picture Selector Examples
+          </h1>
+          <div
+            dir="ltr"
+            className="p-2 border text-yellow-200 max-w-xs rounded-md"
+          >
+            🧪 <strong>Test Mode Active</strong>
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-[1300px] mx-auto">
           {/* Default example (Profile) */}
-          <div className="p-4 bg-white rounded-lg shadow-md">
-            <h2 className="text-lg font-semibold mb-3">Default Profile</h2>
+          <Card>
+            <PictureSelector
+              additionalClassNames={{
+                edit: "cursor-target",
+                delete: "cursor-target",
+                image: "cursor-target",
+              }}
+              profileImageUrl=""
+              onChangeImage={handleImageChange}
+              title="Default example (Profile)"
+              testMode
+            />
+          </Card>
+
+          {/* Small size example */}
+          <Card>
             <PictureSelector
               profileImageUrl=""
               onChangeImage={handleImageChange}
-              title=""
+              size={120}
+              title="Small size example"
               testMode
             />
-          </div>
-
-          {/* Small size example */}
-          <div className="p-4 bg-white rounded-lg shadow-md">
-            <h2 className="text-lg font-semibold mb-16">Small Profile</h2>
-
-            <div className="mt-10">
-              <PictureSelector
-                profileImageUrl=""
-                onChangeImage={handleImageChange}
-                size={120}
-                title=""
-                testMode
-              />
-            </div>
-          </div>
+          </Card>
 
           {/* Custom colors example */}
-          <div className="p-4 bg-white rounded-lg shadow-md">
-            <h2 className="text-lg font-semibold mb-3">Custom Color Palette</h2>
+          <Card>
             <PictureSelector
               profileImageUrl=""
               onChangeImage={handleImageChange}
               colors={customColors}
-              title=""
+              title="Custom colors example"
               testMode
             />
-          </div>
+          </Card>
 
           {/* Regular image example (non-profile) */}
-          <div className="p-4 bg-white rounded-lg shadow-md">
-            <h2 className="text-lg font-semibold mb-3">Regular Image</h2>
+          <Card>
             <PictureSelector
               profileImageUrl=""
               onChangeImage={handleImageChange}
-              title=""
+              title="Rectangle shape example"
+              type="image"
               testMode
             />
-          </div>
-
-          {/* High border radius example */}
-          <div className="p-4 bg-white rounded-lg shadow-md">
-            <h2 className="text-lg font-semibold mb-3">High Border Radius</h2>
-            <PictureSelector
-              profileImageUrl=""
-              onChangeImage={handleImageChange}
-              title=""
-              testMode
-            />
-          </div>
+          </Card>
 
           {/* View-only example (non-editable) */}
-          <div className="p-4 bg-white rounded-lg shadow-md">
-            <h2 className="text-lg font-semibold mb-3">View Only Mode</h2>
+          <Card>
             <PictureSelector
               profileImageUrl="https://archive.smashing.media/assets/344dbf88-fdf9-42bb-adb4-46f01eedd629/68dd54ca-60cf-4ef7-898b-26d7cbe48ec7/10-dithering-opt.jpg"
               onChangeImage={handleImageChange}
               viewOnly={true}
-              title=""
+              title="View-only example (non-editable)"
               testMode
             />
-          </div>
-
-          {/* Custom API URL example */}
-          <div className="p-4 bg-white rounded-lg shadow-md">
-            <h2 className="text-lg font-semibold mb-3">Custom API</h2>
-            <PictureSelector
-              profileImageUrl=""
-              onChangeImage={handleImageChange}
-              uploadUrl="api/upload-image"
-              deleteUrl="api/delete-image"
-              apiBaseUrl="https://my-api.com/"
-              title=""
-              testMode
-            />
-          </div>
+          </Card>
 
           {/* No progress ring example */}
-          <div className="p-4 bg-white rounded-lg shadow-md">
-            <h2 className="text-lg font-semibold mb-3">No Progress Ring</h2>
+          <Card>
             <PictureSelector
               profileImageUrl=""
               onChangeImage={handleImageChange}
               showProgressRing={false}
-              title=""
+              title="No progress ring example"
               testMode
             />
-          </div>
-
-          {/* Rectangle shape example */}
-          <div className="p-4 bg-white rounded-lg shadow-md">
-            <h2 className="text-lg font-semibold mb-3">Rectangle</h2>
-            <PictureSelector
-              profileImageUrl=""
-              onChangeImage={handleImageChange}
-              title=""
-              type="image"
-              testMode
-            />
-          </div>
+          </Card>
         </div>
         <h2 className="text-2xl text-[#d24670] font-bold text-center mt-8">
           Design with{" "}
