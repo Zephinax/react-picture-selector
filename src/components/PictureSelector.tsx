@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { HiOutlinePencilSquare } from "react-icons/hi2";
 import { MdDeleteOutline, MdOutlineEdit } from "react-icons/md";
 import axios from "axios";
 import { ProfileSelectorPropsTypes } from "./types";
@@ -30,9 +29,9 @@ const PictureSelector = ({
   size = 180, // Configurable size
   colors = {
     // Default color palette but can be overridden
-    primary: "#3B82F6",
+    primary: "#2a84fa",
     error: "#EF4444",
-    progress: "#FACC15",
+    progress: "#d24670",
     placeholder: "#BCBEC0",
     text: "#fafafa",
     textDisabled: "#e6e6e6",
@@ -67,15 +66,12 @@ const PictureSelector = ({
 
   const handleAbort = () => {
     if (!enableAbortController) return new AbortController();
-
     abortControllerRef.current?.abort();
-
     // Clear test timer if canceled
     if (testMode && testProgressRef.current) {
       clearInterval(testProgressRef.current);
       testProgressRef.current = null;
     }
-
     const abortController = new AbortController();
     abortControllerRef.current = abortController;
     return abortController;
@@ -125,20 +121,16 @@ const PictureSelector = ({
       if (testMode) {
         // Test mode - simulate upload
         console.log("🧪 Test Mode: Simulating upload...");
-
         // Simulate deleting previous image
         if (imageUrl) {
           console.log("🧪 Test Mode: Simulating delete previous image");
           await new Promise((resolve) => setTimeout(resolve, 300));
         }
-
         const base64Image = await simulateUpload(file);
-
         // Check if request was canceled
         if (abortController.signal.aborted) {
           throw new Error("Upload canceled");
         }
-
         setLoading(false);
         setImageUrl(base64Image);
         onChangeImage(base64Image);
@@ -202,7 +194,6 @@ const PictureSelector = ({
       }
       setLoading(false);
       setUploadProgress(0);
-
       // Clear timer on error
       if (testMode && testProgressRef.current) {
         clearInterval(testProgressRef.current);
@@ -274,11 +265,9 @@ const PictureSelector = ({
   const radius = size / 2;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = (1 - uploadProgress / 100) * circumference;
-
   // Calculate button positions based on size
   const buttonPosition = size * 0.06; // 7% of size
   const buttonSize = size * 0.2; // 20% of size
-
   // Dynamic style for image
   const imageContainerStyle = {
     width: `${size}px`,
@@ -385,21 +374,23 @@ const PictureSelector = ({
             </div>
           )}
           {/* Show percentage when no progress ring or not circle */}
-          {loading && blurOnProgress && imageUrl && (
-            <div
-              className={`absolute mx-auto inset-0 bg-black/20 bg-opacity-80 backdrop-blur-xs flex items-center z-[5] justify-center !w-[${size}px] !h-[${size}px]`}
-              style={{
-                borderRadius: isCircle ? "50%" : "12%",
-              }}
-            >
+          {loading &&
+            ((blurOnProgress && imageUrl) ||
+              (!showProgressRing && !imageUrl)) && (
               <div
-                className="text-sm font-semibold text-white"
-                style={{ fontSize: buttonSize * 0.5 }}
+                className={`absolute mx-auto inset-0 bg-black/20 bg-opacity-80 backdrop-blur-xs flex items-center z-[5] justify-center !w-[${size}px] !h-[${size}px]`}
+                style={{
+                  borderRadius: isCircle ? "50%" : "12%",
+                }}
               >
-                {uploadProgress}%
+                <div
+                  className="text-sm font-semibold text-white"
+                  style={{ fontSize: buttonSize * 0.5 }}
+                >
+                  {uploadProgress}%
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
           {/* Progress ring - only show for circle (profile) type */}
           {showProgressRing &&
@@ -520,7 +511,6 @@ const PictureSelector = ({
           disabled={loading}
         />
       </div>
-
       {/* Show test info in test mode */}
       {testMode && (
         <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded-md">
