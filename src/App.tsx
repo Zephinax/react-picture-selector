@@ -132,9 +132,8 @@ const App: React.FC = () => {
           <PictureSelector
             profileImageUrl=""
             onChangeImage={handleImageChange}
-            shape="rounded"
-            borderRadius={10}
             title=""
+            type="image"
             testMode
           />
         </div>

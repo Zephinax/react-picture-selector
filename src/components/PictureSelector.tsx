@@ -21,7 +21,7 @@ const PictureSelector = ({
   deleteUrl = "POST_DELETE_AVATAR",
   uploadUrl = "POST_UPLOAD_AVATAR",
   profileImageUrl,
-  type = "profile",
+  type = "profile", // "profile" for circle, "image" for rounded rectangle
   onChangeImage,
   viewOnly = false,
   title = "Profile Picture",
@@ -34,8 +34,7 @@ const PictureSelector = ({
     placeholder: "#BCBEC0",
   },
   apiBaseUrl = "BASE_URL_SERVICES", // Configurable base URL
-  shape = "circle", // Circle or rounded rectangle shape
-  borderRadius = 16.875, // Corner radius for non-profile type
+  borderRadius = 16.875, // Corner radius for image type
   showProgressRing = true, // Show progress ring
   enableAbortController = true, // Enable/disable abort controller
   testMode = false, // Test mode
@@ -44,7 +43,6 @@ const PictureSelector = ({
   size?: number;
   colors?: ColorPalette;
   apiBaseUrl?: string;
-  shape?: "circle" | "rounded";
   borderRadius?: number;
   showProgressRing?: boolean;
   enableAbortController?: boolean;
@@ -60,7 +58,8 @@ const PictureSelector = ({
   const [imgError, setImgError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const isCircle = type === "profile" || shape === "circle";
+  // Only use type prop to determine if it's circle or not
+  const isCircle = type === "profile";
 
   const handleAbort = () => {
     if (!enableAbortController) return new AbortController();
@@ -280,8 +279,8 @@ const PictureSelector = ({
   };
 
   // Calculate button positions based on size
-  const buttonPosition = size * 0.07; // 10% of size
-  const buttonSize = size * 0.2; // 15% of size
+  const buttonPosition = size * 0.07; // 7% of size
+  const buttonSize = size * 0.2; // 20% of size
 
   return (
     <div className="max-w-sm flex flex-col mx-auto p-4 pt-0 bg-white rounded-lg">
@@ -299,7 +298,7 @@ const PictureSelector = ({
           {imageUrl ? (
             <img
               src={imageUrl}
-              alt="Profile"
+              alt={isCircle ? "Profile" : "Image"}
               className={`w-full h-full object-cover ${
                 isCircle ? "rounded-full" : `rounded-[${borderRadius}px]`
               }`}
@@ -314,6 +313,7 @@ const PictureSelector = ({
               }`}
             >
               {isCircle ? (
+                // Profile placeholder SVG
                 <svg
                   width={size}
                   height={size}
@@ -348,9 +348,10 @@ const PictureSelector = ({
                   />
                 </svg>
               ) : (
+                // Image placeholder SVG
                 <svg
-                  width={size}
-                  height={size}
+                  width={size * 0.4}
+                  height={size * 0.4}
                   viewBox="0 0 32 32"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -364,7 +365,7 @@ const PictureSelector = ({
             </div>
           )}
 
-          {/* Progress ring */}
+          {/* Progress ring - only show for circle (profile) type */}
           {showProgressRing &&
             uploadProgress > 0 &&
             uploadProgress < 100 &&
@@ -434,7 +435,7 @@ const PictureSelector = ({
           disabled={loading}
         />
 
-        {/* Show percentage on image only when no progress ring */}
+        {/* Show percentage when no progress ring or not circle */}
         {loading && (!showProgressRing || !isCircle) && (
           <div
             className="absolute inset-0 bg-white bg-opacity-80 backdrop-blur-sm flex items-center justify-center"
