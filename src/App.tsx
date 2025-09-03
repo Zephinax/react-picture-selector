@@ -51,9 +51,9 @@ const App: React.FC = () => {
           </h1>
           <h3
             dir="ltr"
-            className="p-2 border text-yellow-200 max-w-xs rounded-md"
+            className="py-2 border text-yellow-200 max-w-xs rounded-2xl px-4"
           >
-            🧪 <strong>Test Mode Active</strong>
+            <strong>Test Mode Activated</strong> 🧪
           </h3>
         </div>
 

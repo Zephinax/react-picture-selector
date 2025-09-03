@@ -3,7 +3,8 @@ import { MdDeleteOutline, MdOutlineEdit } from "react-icons/md";
 import axios from "axios";
 import { ProfileSelectorPropsTypes } from "./types";
 import useImagePreview from "../hooks/useImagePreview";
-
+import { handleError } from "./errorHandler";
+import { LuRefreshCcw } from "react-icons/lu";
 interface UploadResponse {
   data?: string;
 }
@@ -40,6 +41,9 @@ const PictureSelector = ({
     uploadUrl: "POST_UPLOAD_AVATAR",
     baseUrl: "BASE_URL_SERVICES",
     formDataName: "File",
+    additionalHeaders: {
+      "Content-Type": "multipart/form-data",
+    },
   },
   profileImageUrl,
   type = "profile",
@@ -70,7 +74,7 @@ const PictureSelector = ({
 }: ProfileSelectorPropsTypes & {
   size?: number;
   colors?: ColorPalette;
-  apiConfig: apiConfig;
+  apiConfig?: apiConfig;
   additionalClassNames?: additionalClassNames;
   apiBaseUrl?: string;
   showProgressRing?: boolean;
@@ -86,8 +90,9 @@ const PictureSelector = ({
   const abortControllerRef = useRef<AbortController | null>(null);
   const testProgressRef = useRef<any | null>(null);
   const [_imgError, setImgError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
+  const [deleting, setDeleting] = useState(false);
   // Only use type prop to determine if it's circle or not
   const isCircle = type === "profile";
 
@@ -194,6 +199,7 @@ const PictureSelector = ({
                 setUploadProgress(progressPercentage);
               }
             },
+            headers: apiConfig.additionalHeaders,
           }
         );
 
@@ -237,7 +243,8 @@ const PictureSelector = ({
     if (!imageUrl) return;
 
     const abortController = handleAbort();
-
+    setDeleting(true);
+    setError(null);
     try {
       if (testMode) {
         // Test mode - simulate delete
@@ -264,18 +271,18 @@ const PictureSelector = ({
         onChangeImage("");
       }
     } catch (error) {
-      if (error instanceof Error && error.message === "Delete canceled") {
-        console.log(
-          testMode ? "🧪 Test Mode: Delete canceled" : "Delete canceled"
-        );
-      } else {
-        console.error(
-          testMode
-            ? "🧪 Test Mode: Error simulating delete:"
-            : "Error deleting the image:",
-          error instanceof Error ? error.message : error
-        );
-      }
+      handleError(error, {
+        setError: setError,
+        context: "deleting image",
+        isTestMode: testMode,
+        onCancel: () => {
+          console.log(
+            testMode ? "🧪 Test Mode: Delete canceled" : "Delete canceled"
+          );
+        },
+      });
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -311,15 +318,18 @@ const PictureSelector = ({
   };
 
   return (
-    <div className="max-w-xs w-full flex flex-col mx-auto p-4 pt-0 rounded-lg">
+    <div
+      dir="ltr"
+      className="max-w-xs w-full flex flex-col mx-auto p-4 gap-3 pt-0 rounded-lg"
+    >
       <div
-        className={`mb-4 flex items-center justify-center ${
+        className={`flex items-center justify-center ${
           additionalClassNames.titleContainer || ""
         }`}
       >
         <h3 className={additionalClassNames.title || ""}>{title}</h3>
       </div>
-      <div className="mb-4 flex flex-col items-center justify-center relative">
+      <div className="flex flex-col items-center justify-center relative">
         {modalImagePreview()}
         <div className="relative" style={imageContainerStyle}>
           {imageUrl ? (
@@ -531,10 +541,18 @@ const PictureSelector = ({
                   onClick={handleDeleteImage}
                   disabled={loading}
                 >
-                  <MdDeleteOutline
-                    color={loading ? colors.text : colors.textDisabled}
-                    size={buttonSize * 0.6}
-                  />
+                  {deleting ? (
+                    <LuRefreshCcw
+                      color={loading ? colors.text : colors.textDisabled}
+                      size={buttonSize * 0.5}
+                      className="animate-spin"
+                    />
+                  ) : (
+                    <MdDeleteOutline
+                      color={loading ? colors.text : colors.textDisabled}
+                      size={buttonSize * 0.6}
+                    />
+                  )}
                 </button>
               )}
             </>
@@ -549,6 +567,11 @@ const PictureSelector = ({
           disabled={loading}
         />
       </div>
+      {error && (
+        <div className="flex items-center justify-center">
+          <span className="text-red-600 text-center text-sm">{error}</span>
+        </div>
+      )}
     </div>
   );
 };
