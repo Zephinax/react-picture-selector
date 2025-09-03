@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { HiOutlinePencilSquare } from "react-icons/hi2";
-import { MdDeleteOutline } from "react-icons/md";
+import { MdDeleteOutline, MdOutlineEdit } from "react-icons/md";
 import axios from "axios";
 import { ProfileSelectorPropsTypes } from "./types";
 import useImagePreview from "../hooks/useImagePreview";
@@ -27,7 +27,7 @@ const PictureSelector = ({
   onChangeImage,
   viewOnly = false,
   title = "Profile Picture",
-  size = 180, // Configurable size
+  size = 120, // Configurable size
   colors = {
     // Default color palette but can be overridden
     primary: "#3B82F6",
@@ -39,7 +39,7 @@ const PictureSelector = ({
   },
   apiBaseUrl = "BASE_URL_SERVICES", // Configurable base URL
   showProgressRing = true, // Show progress ring
-  blurOnProgress = false,
+  blurOnProgress = true,
   enableAbortController = true, // Enable/disable abort controller
   testMode = false, // Test mode
   testUploadDelay = 2000, // Upload simulation delay in test mode (milliseconds)
@@ -48,7 +48,7 @@ const PictureSelector = ({
   colors?: ColorPalette;
   apiBaseUrl?: string;
   showProgressRing?: boolean;
-  blurOnProgress: boolean;
+  blurOnProgress?: boolean;
   enableAbortController?: boolean;
   testMode?: boolean;
   testUploadDelay?: number;
@@ -276,14 +276,14 @@ const PictureSelector = ({
   const strokeDashoffset = (1 - uploadProgress / 100) * circumference;
 
   // Calculate button positions based on size
-  const buttonPosition = size * 0.07; // 7% of size
+  const buttonPosition = size * 0.06; // 7% of size
   const buttonSize = size * 0.2; // 20% of size
 
   // Dynamic style for image
   const imageContainerStyle = {
     width: `${size}px`,
     height: `${size}px`,
-    borderRadius: isCircle ? "50%" : "16px",
+    borderRadius: isCircle ? "50%" : "12%",
   };
 
   return (
@@ -303,18 +303,20 @@ const PictureSelector = ({
             <img
               src={imageUrl}
               alt={isCircle ? "Profile" : "Image"}
-              className={`w-full h-full object-cover ${
-                isCircle ? "rounded-full" : "rounded-3xl"
-              }`}
+              className={`w-full h-full object-cover `}
               onError={() => setImgError(true)}
               onClick={() => openImage(imageUrl)}
-              style={{ cursor: "pointer" }}
+              style={{
+                cursor: "pointer",
+                borderRadius: isCircle ? "50%" : "12%",
+              }}
             />
           ) : (
             <div
-              className={`w-full h-full flex items-center justify-center bg-gray-100 ${
-                isCircle ? "rounded-full" : "rounded-3xl"
-              }`}
+              className={`w-full h-full flex items-center justify-center bg-gray-100`}
+              style={{
+                borderRadius: isCircle ? "50%" : "12%",
+              }}
             >
               {isCircle ? (
                 // Profile placeholder SVG
@@ -382,6 +384,19 @@ const PictureSelector = ({
               )}
             </div>
           )}
+          {/* Show percentage when no progress ring or not circle */}
+          {loading && blurOnProgress && imageUrl && (
+            <div
+              className={`absolute mx-auto inset-0 bg-black/20 bg-opacity-80 backdrop-blur-xs flex items-center z-[5] justify-center !w-[${size}px] !h-[${size}px]`}
+              style={{
+                borderRadius: isCircle ? "50%" : "12%",
+              }}
+            >
+              <div className="text-sm font-semibold text-white">
+                {uploadProgress}%
+              </div>
+            </div>
+          )}
 
           {/* Progress ring - only show for circle (profile) type */}
           {showProgressRing &&
@@ -392,7 +407,7 @@ const PictureSelector = ({
               className="absolute z-[6] top-0.5 left-0 pointer-events-none"
               width={size - 3}
               height={size - 3}
-              viewBox={`-2 -2 ${size + 4} ${size + 4}`}
+              viewBox={`-4.5 -2 ${size + 6} ${size + 5}`}
             >
               <circle
                 cx={radius}
@@ -400,10 +415,10 @@ const PictureSelector = ({
                 r={radius - 6.5 / 2}
                 fill="none"
                 stroke={colors.progress}
-                strokeWidth={10}
+                strokeWidth={size * (10 / 180)}
                 strokeDasharray={circumference}
                 strokeDashoffset={strokeDashoffset}
-                transform={`rotate(-90 ${radius} ${radius})`}
+                transform={`rotate(-90 ${size / 2} ${size / 2})`}
                 style={{ transition: "stroke-dashoffset 0.3s ease" }}
               />
             </svg>
@@ -412,28 +427,38 @@ const PictureSelector = ({
             uploadProgress > 0 &&
             uploadProgress < 100 && (
               <div className="">
-                <svg
-                  className="absolute top-0 z-[6] left-0"
-                  width="180px"
-                  height="180px"
-                  viewBox="0 0 32 32"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <rect
-                    className="rounded-lg overflow-hidden"
-                    x="1"
-                    y="1"
-                    rx={3}
-                    width="30"
-                    height="30"
-                    fill="none"
-                    stroke="#ffd61f"
-                    strokeWidth={"2"}
-                    strokeDasharray={circumference}
-                    strokeDashoffset={strokeDashoffset}
-                    style={{ transition: "stroke-dashoffset 0.3s ease" }}
-                  />
-                </svg>
+                {(() => {
+                  const rectWidth = size * 0.94;
+                  const rectHeight = size * 0.94;
+                  const rectPerimeter = 2 * (rectWidth + rectHeight);
+                  const rectProgressOffset =
+                    rectPerimeter * (1 - uploadProgress / 100);
+
+                  return (
+                    <svg
+                      className="absolute top-0 z-[6] left-0"
+                      width={size}
+                      height={size}
+                      viewBox={`0 0 ${size} ${size}`}
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <rect
+                        className="rounded-lg overflow-hidden"
+                        x={size * 0.03}
+                        y={size * 0.03}
+                        rx={size * 0.09}
+                        width={rectWidth}
+                        height={rectHeight}
+                        fill="none"
+                        stroke="#ffd61f"
+                        strokeWidth={size * (10 / 180)}
+                        strokeDasharray={rectPerimeter}
+                        strokeDashoffset={rectProgressOffset}
+                        style={{ transition: "stroke-dashoffset 0.3s ease" }}
+                      />
+                    </svg>
+                  );
+                })()}
               </div>
             )
           )}
@@ -447,14 +472,17 @@ const PictureSelector = ({
                   height: `${buttonSize}px`,
                   bottom: `${buttonPosition}px`,
                   right: `${buttonPosition}px`,
+                  borderRadius: isCircle ? "50%" : "28%",
                 }}
-                className="absolute p-1 cursor-pointer rounded-full shadow-lg flex items-center justify-center z-10"
+                className={`absolute p-1 cursor-pointer  shadow-lg flex items-center justify-center z-10 ${
+                  isCircle ? "rounded-full" : "rounded-[12px]"
+                }`}
                 onClick={triggerFileInput}
                 disabled={loading}
               >
-                <HiOutlinePencilSquare
-                  color={colors.text}
-                  size={buttonSize * 0.7}
+                <MdOutlineEdit
+                  color={loading ? colors.text : colors.textDisabled}
+                  size={buttonSize * 0.6}
                 />
               </button>
               {imageUrl && (
@@ -465,14 +493,15 @@ const PictureSelector = ({
                     height: `${buttonSize}px`,
                     bottom: `${buttonPosition}px`,
                     left: `${buttonPosition}px`,
+                    borderRadius: isCircle ? "50%" : "28%",
                   }}
-                  className="absolute p-1 cursor-pointer rounded-full shadow-lg flex items-center justify-center z-10"
+                  className={`absolute p-1 cursor-pointer shadow-lg flex items-center justify-center z-10 `}
                   onClick={handleDeleteImage}
                   disabled={loading}
                 >
                   <MdDeleteOutline
-                    color={colors.text}
-                    size={buttonSize * 0.7}
+                    color={loading ? colors.text : colors.textDisabled}
+                    size={buttonSize * 0.6}
                   />
                 </button>
               )}
@@ -487,18 +516,6 @@ const PictureSelector = ({
           className="hidden"
           disabled={loading}
         />
-        {/* Show percentage when no progress ring or not circle */}
-        {loading && blurOnProgress && (
-          <div
-            className={`absolute mx-auto inset-0  bg-black/20 bg-opacity-80 backdrop-blur-sm flex items-center z-[5] justify-center ${
-              isCircle ? "rounded-full" : "rounded-3xl"
-            } w-[${size}px] h-[${size}px]`}
-          >
-            <div className="text-sm font-semibold text-white">
-              {uploadProgress}%
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Show test info in test mode */}

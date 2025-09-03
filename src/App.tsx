@@ -18,6 +18,8 @@ const App: React.FC = () => {
     error: "#F43F5E", // Pink
     progress: "#06B6D4", // Cyan
     placeholder: "#94A3B8", // Slate-400
+    text: "#fafafa",
+    textDisabled: "#e6e6e6",
   };
 
   return (
@@ -82,7 +84,6 @@ const App: React.FC = () => {
           <PictureSelector
             profileImageUrl=""
             onChangeImage={handleImageChange}
-            borderRadius={30}
             title=""
             testMode
           />
