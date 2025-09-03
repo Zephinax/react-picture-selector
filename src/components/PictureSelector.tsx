@@ -21,7 +21,7 @@ const PictureSelector = ({
   deleteUrl = "POST_DELETE_AVATAR",
   uploadUrl = "POST_UPLOAD_AVATAR",
   profileImageUrl,
-  type = "profile",
+  type = "profile", // "profile" for circle, "image" for rounded rectangle
   onChangeImage,
   viewOnly = false,
   title = "Profile Picture",
@@ -34,8 +34,6 @@ const PictureSelector = ({
     placeholder: "#BCBEC0",
   },
   apiBaseUrl = "BASE_URL_SERVICES", // Configurable base URL
-  shape = "circle", // Circle or rounded rectangle shape
-  borderRadius = 16.875, // Corner radius for non-profile type
   showProgressRing = true, // Show progress ring
   enableAbortController = true, // Enable/disable abort controller
   testMode = false, // Test mode
@@ -44,8 +42,6 @@ const PictureSelector = ({
   size?: number;
   colors?: ColorPalette;
   apiBaseUrl?: string;
-  shape?: "circle" | "rounded";
-  borderRadius?: number;
   showProgressRing?: boolean;
   enableAbortController?: boolean;
   testMode?: boolean;
@@ -60,7 +56,8 @@ const PictureSelector = ({
   const [imgError, setImgError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const isCircle = type === "profile" || shape === "circle";
+  // Only use type prop to determine if it's circle or not
+  const isCircle = type === "profile";
 
   const handleAbort = () => {
     if (!enableAbortController) return new AbortController();
@@ -272,16 +269,16 @@ const PictureSelector = ({
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = (1 - uploadProgress / 100) * circumference;
 
+  // Calculate button positions based on size
+  const buttonPosition = size * 0.07; // 7% of size
+  const buttonSize = size * 0.2; // 20% of size
+
   // Dynamic style for image
   const imageContainerStyle = {
     width: `${size}px`,
     height: `${size}px`,
-    borderRadius: isCircle ? "50%" : `${borderRadius}px`,
+    borderRadius: isCircle ? "50%" : "16px",
   };
-
-  // Calculate button positions based on size
-  const buttonPosition = size * 0.07; // 10% of size
-  const buttonSize = size * 0.2; // 15% of size
 
   return (
     <div className="max-w-sm flex flex-col mx-auto p-4 pt-0 bg-white rounded-lg">
@@ -299,9 +296,9 @@ const PictureSelector = ({
           {imageUrl ? (
             <img
               src={imageUrl}
-              alt="Profile"
+              alt={isCircle ? "Profile" : "Image"}
               className={`w-full h-full object-cover ${
-                isCircle ? "rounded-full" : `rounded-[${borderRadius}px]`
+                isCircle ? "rounded-full" : "rounded-2xl"
               }`}
               onError={() => setImgError(true)}
               onClick={() => openImage(imageUrl)}
@@ -310,10 +307,11 @@ const PictureSelector = ({
           ) : (
             <div
               className={`w-full h-full flex items-center justify-center bg-gray-100 ${
-                isCircle ? "rounded-full" : `rounded-[${borderRadius}px]`
+                isCircle ? "rounded-full" : "rounded-2xl"
               }`}
             >
               {isCircle ? (
+                // Profile placeholder SVG
                 <svg
                   width={size}
                   height={size}
@@ -326,31 +324,32 @@ const PictureSelector = ({
                     cy="52.5"
                     r="52.5"
                     stroke={colors.placeholder}
-                    strokeWidth="2"
+                    strokeWidth="0.5"
                   />
                   <path
                     d="M53 106C38.8432 106 25.5338 100.487 15.5234 90.4766C5.51283 80.4662 0 67.1568 0 53C0 38.8432 5.51283 25.5338 15.5234 15.5234C25.5338 5.51283 38.8432 0 53 0C67.1568 0 80.4662 5.51283 90.4766 15.5234C100.487 25.5338 106 38.8432 106 53C106 67.1568 100.487 80.4662 90.4766 90.4766C80.4662 100.487 67.1568 106 53 106ZM53 4.14062C26.0588 4.14062 4.14062 26.0588 4.14062 53C4.14062 79.9412 26.0588 101.859 53 101.859C79.9412 101.859 101.859 79.9412 101.859 53C101.859 26.0588 79.9412 4.14062 53 4.14062Z"
                     fill={colors.placeholder}
                     stroke={colors.placeholder}
-                    strokeWidth="2"
+                    strokeWidth="0.5"
                   />
                   <path
                     d="M53 62.0538C41.6963 62.0538 32.5 52.8577 32.5 41.554C32.5 30.2503 41.6961 21.054 53 21.054C64.3039 21.054 73.5001 30.2501 73.5001 41.554C73.5001 52.8577 64.3037 62.0538 53 62.0538ZM53 25.1946C43.9795 25.1946 36.6406 32.5334 36.6406 41.554C36.6406 50.5745 43.9795 57.9132 53 57.9132C62.0206 57.9132 69.3594 50.5745 69.3594 41.554C69.3594 32.5334 62.0206 25.1946 53 25.1946Z"
                     fill={colors.placeholder}
                     stroke={colors.placeholder}
-                    strokeWidth="2"
+                    strokeWidth="0.5"
                   />
                   <path
                     d="M88.4081 91.6778C87.4235 91.6778 86.5507 90.9731 86.3724 89.9698C83.4945 73.7943 69.4594 62.0537 53 62.0537C36.5406 62.0537 22.5057 73.794 19.6276 89.9698C19.4274 91.0956 18.3527 91.8459 17.2267 91.6455C16.1008 91.4453 15.3505 90.3702 15.5509 89.2446C17.0956 80.5627 21.6741 72.6276 28.443 66.9005C35.293 61.1049 44.014 57.9131 53 57.9131C61.986 57.9131 70.707 61.1049 77.557 66.9005C84.3259 72.6276 88.9044 80.5627 90.4491 89.2446C90.6495 90.3702 89.8992 91.4451 88.7733 91.6455C88.6508 91.6673 88.5284 91.6778 88.4081 91.6778Z"
                     fill={colors.placeholder}
                     stroke={colors.placeholder}
-                    strokeWidth="2"
+                    strokeWidth="0.5"
                   />
                 </svg>
               ) : (
+                // Image placeholder SVG
                 <svg
-                  width={size}
-                  height={size}
+                  width={size * 0.4}
+                  height={size * 0.4}
                   viewBox="0 0 32 32"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -364,7 +363,7 @@ const PictureSelector = ({
             </div>
           )}
 
-          {/* Progress ring */}
+          {/* Progress ring - only show for circle (profile) type */}
           {showProgressRing &&
             uploadProgress > 0 &&
             uploadProgress < 100 &&
@@ -434,14 +433,9 @@ const PictureSelector = ({
           disabled={loading}
         />
 
-        {/* Show percentage on image only when no progress ring */}
+        {/* Show percentage when no progress ring or not circle */}
         {loading && (!showProgressRing || !isCircle) && (
-          <div
-            className="absolute inset-0 bg-white bg-opacity-80 backdrop-blur-sm flex items-center justify-center"
-            style={{
-              borderRadius: isCircle ? "50%" : `${borderRadius}px`,
-            }}
-          >
+          <div className="absolute inset-0 bg-white bg-opacity-80 backdrop-blur-sm flex items-center justify-center rounded-2xl">
             <div className="text-gray-800 text-sm font-semibold">
               {uploadProgress}%
             </div>
