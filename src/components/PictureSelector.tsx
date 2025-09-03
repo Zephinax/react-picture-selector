@@ -348,7 +348,7 @@ const PictureSelector = ({
             />
           ) : (
             <div
-              className={`w-full h-full flex items-center justify-center bg-gray-100`}
+              className={`w-full h-full flex items-center justify-center `}
               style={{
                 borderRadius: isCircle ? "50%" : "12%",
               }}
