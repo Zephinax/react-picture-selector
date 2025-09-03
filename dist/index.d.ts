@@ -16,12 +16,10 @@ interface ColorPalette {
     progress: string;
     placeholder: string;
 }
-declare const PictureSelector: ({ deleteUrl, uploadUrl, profileImageUrl, type, onChangeImage, viewOnly, title, size, colors, apiBaseUrl, shape, borderRadius, showProgressRing, enableAbortController, testMode, testUploadDelay, }: ProfileSelectorPropsTypes & {
+declare const PictureSelector: ({ deleteUrl, uploadUrl, profileImageUrl, type, onChangeImage, viewOnly, title, size, colors, apiBaseUrl, showProgressRing, enableAbortController, testMode, testUploadDelay, }: ProfileSelectorPropsTypes & {
     size?: number;
     colors?: ColorPalette;
     apiBaseUrl?: string;
-    shape?: "circle" | "rounded";
-    borderRadius?: number;
     showProgressRing?: boolean;
     enableAbortController?: boolean;
     testMode?: boolean;
