@@ -34,7 +34,6 @@ const PictureSelector = ({
     placeholder: "#BCBEC0",
   },
   apiBaseUrl = "BASE_URL_SERVICES", // Configurable base URL
-  borderRadius = 16.875, // Corner radius for image type
   showProgressRing = true, // Show progress ring
   enableAbortController = true, // Enable/disable abort controller
   testMode = false, // Test mode
@@ -43,7 +42,6 @@ const PictureSelector = ({
   size?: number;
   colors?: ColorPalette;
   apiBaseUrl?: string;
-  borderRadius?: number;
   showProgressRing?: boolean;
   enableAbortController?: boolean;
   testMode?: boolean;
@@ -271,16 +269,16 @@ const PictureSelector = ({
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = (1 - uploadProgress / 100) * circumference;
 
+  // Calculate button positions based on size
+  const buttonPosition = size * 0.07; // 7% of size
+  const buttonSize = size * 0.2; // 20% of size
+
   // Dynamic style for image
   const imageContainerStyle = {
     width: `${size}px`,
     height: `${size}px`,
-    borderRadius: isCircle ? "50%" : `${borderRadius}px`,
+    borderRadius: isCircle ? "50%" : "16px",
   };
-
-  // Calculate button positions based on size
-  const buttonPosition = size * 0.07; // 7% of size
-  const buttonSize = size * 0.2; // 20% of size
 
   return (
     <div className="max-w-sm flex flex-col mx-auto p-4 pt-0 bg-white rounded-lg">
@@ -300,7 +298,7 @@ const PictureSelector = ({
               src={imageUrl}
               alt={isCircle ? "Profile" : "Image"}
               className={`w-full h-full object-cover ${
-                isCircle ? "rounded-full" : `rounded-[${borderRadius}px]`
+                isCircle ? "rounded-full" : "rounded-2xl"
               }`}
               onError={() => setImgError(true)}
               onClick={() => openImage(imageUrl)}
@@ -309,7 +307,7 @@ const PictureSelector = ({
           ) : (
             <div
               className={`w-full h-full flex items-center justify-center bg-gray-100 ${
-                isCircle ? "rounded-full" : `rounded-[${borderRadius}px]`
+                isCircle ? "rounded-full" : "rounded-2xl"
               }`}
             >
               {isCircle ? (
@@ -437,12 +435,7 @@ const PictureSelector = ({
 
         {/* Show percentage when no progress ring or not circle */}
         {loading && (!showProgressRing || !isCircle) && (
-          <div
-            className="absolute inset-0 bg-white bg-opacity-80 backdrop-blur-sm flex items-center justify-center"
-            style={{
-              borderRadius: isCircle ? "50%" : `${borderRadius}px`,
-            }}
-          >
+          <div className="absolute inset-0 bg-white bg-opacity-80 backdrop-blur-sm flex items-center justify-center rounded-2xl">
             <div className="text-gray-800 text-sm font-semibold">
               {uploadProgress}%
             </div>
