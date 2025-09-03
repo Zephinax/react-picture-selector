@@ -27,7 +27,7 @@ const PictureSelector = ({
   onChangeImage,
   viewOnly = false,
   title = "Profile Picture",
-  size = 120, // Configurable size
+  size = 180, // Configurable size
   colors = {
     // Default color palette but can be overridden
     primary: "#3B82F6",
@@ -392,7 +392,10 @@ const PictureSelector = ({
                 borderRadius: isCircle ? "50%" : "12%",
               }}
             >
-              <div className="text-sm font-semibold text-white">
+              <div
+                className="text-sm font-semibold text-white"
+                style={{ fontSize: buttonSize * 0.5 }}
+              >
                 {uploadProgress}%
               </div>
             </div>
@@ -404,18 +407,18 @@ const PictureSelector = ({
           uploadProgress < 100 &&
           isCircle ? (
             <svg
-              className="absolute z-[6] top-0.5 left-0 pointer-events-none"
-              width={size - 3}
-              height={size - 3}
-              viewBox={`-4.5 -2 ${size + 6} ${size + 5}`}
+              className="absolute z-[6] top-0 left-0 pointer-events-none"
+              width={size}
+              height={size}
+              viewBox={`0 0 ${size} ${size}`} // viewBox مقیاس‌پذیر
             >
               <circle
-                cx={radius}
-                cy={radius}
-                r={radius - 6.5 / 2}
+                cx={size / 2}
+                cy={size / 2}
+                r={size / 2 - size * 0.035} // شعاع نسبی با جبران حاشیه
                 fill="none"
                 stroke={colors.progress}
-                strokeWidth={size * (10 / 180)}
+                strokeWidth={size * (10 / 180)} // ضخامت خط نسبی
                 strokeDasharray={circumference}
                 strokeDashoffset={strokeDashoffset}
                 transform={`rotate(-90 ${size / 2} ${size / 2})`}
