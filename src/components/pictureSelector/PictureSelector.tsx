@@ -5,6 +5,7 @@ import { ProfileSelectorPropsTypes } from "./types";
 import useImagePreview from "./useImagePreview";
 import { handleError } from "./errorHandler";
 import { LuRefreshCcw } from "react-icons/lu";
+import "style.css";
 interface UploadResponse {
   data?: string;
 }
@@ -405,9 +406,12 @@ const PictureSelector = ({
             ((blurOnProgress && imageUrl) ||
               (!showProgressRing && !imageUrl)) && (
               <div
-                className={`absolute mx-auto inset-0 bg-black/20 bg-opacity-80 backdrop-blur-xs flex items-center z-[5] justify-center !w-[${size}px] !h-[${size}px]`}
+                className={`absolute mx-auto inset-0 bg-opacity-80 flex items-center z-[5] justify-center !w-[${size}px] !h-[${size}px]`}
                 style={{
                   borderRadius: isCircle ? "50%" : "12%",
+                  backdropFilter: "blur(4px)",
+                  WebkitBackdropFilter: "blur(4px)",
+                  backgroundColor: "rgba(0, 0, 0, 0.2)", // معادل bg-black/20
                 }}
               >
                 <div
@@ -526,7 +530,10 @@ const PictureSelector = ({
                     <LuRefreshCcw
                       color={loading ? colors.text : colors.textDisabled}
                       size={buttonSize * 0.5}
-                      className="animate-spin"
+                      style={{
+                        animation: "spin 1s linear infinite",
+                        transformOrigin: "center",
+                      }}
                     />
                   ) : (
                     <MdDeleteOutline
