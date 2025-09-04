@@ -3,12 +3,16 @@
   "version": "1.2.3",
   "description": "picture selector input",
   "main": "dist/index.js",
+  "homepage": "https://zephinax.github.io/ReactPictureSelector",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
     "rollup": "rollup -c --bundleConfigAsCjs",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "vite"
+    "dev": "vite",
+    "build": "vite build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "author": "Zephinax",
   "license": "ISC",
@@ -21,6 +25,7 @@
     "@types/react": "^18.3.24",
     "@types/react-dom": "^18.3.7",
     "autoprefixer": "^10.4.21",
+    "gh-pages": "^6.3.0",
     "postcss": "^8.5.6",
     "react": "^18.3.1",
     "rollup": "^4.18.1",
