@@ -15,6 +15,7 @@ const PictureSelector = ({
     deleteUrl: "POST_DELETE_AVATAR",
     uploadUrl: "POST_UPLOAD_AVATAR",
     baseUrl: "BASE_URL_SERVICES",
+    responsePath: "data.data",
     formDataName: "File",
     additionalHeaders: {
       "Content-Type": "multipart/form-data",

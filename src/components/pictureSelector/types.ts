@@ -50,7 +50,8 @@ export interface additionalClassNames {
 export interface apiConfig {
   deleteUrl: string;
   uploadUrl: string;
-  baseUrl?: string;
+  baseUrl: string;
+  responsePath: string;
   formDataName?: string;
   additionalHeaders?: any;
 }

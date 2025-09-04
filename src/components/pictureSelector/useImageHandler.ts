@@ -12,6 +12,16 @@ interface UseImageHandlerProps {
   enableAbortController: boolean;
 }
 
+const getNestedValue = (obj: any, path: string | string[]): any => {
+  if (!obj) return null;
+  const pathArray = Array.isArray(path) ? path : path.split(".");
+  return pathArray.reduce(
+    (current, key) =>
+      current && current[key] !== undefined ? current[key] : null,
+    obj
+  );
+};
+
 export const useImageHandler = ({
   apiConfig,
   testMode,
@@ -115,7 +125,6 @@ export const useImageHandler = ({
                 const fallbackInterval = setInterval(() => {
                   setUploadProgress((prev) => Math.min(99, prev + 5));
                 }, 200);
-
                 testProgressRef.current = fallbackInterval;
               }
             },
@@ -124,12 +133,16 @@ export const useImageHandler = ({
         );
 
         setLoading(false);
-        if (response?.data?.data) {
-          setImageUrl(response.data.data);
-          onChangeImage(response.data.data);
+        const newImageUrl = getNestedValue(
+          response,
+          apiConfig.responsePath || "data.data"
+        );
+        if (newImageUrl) {
+          setImageUrl(newImageUrl);
+          onChangeImage(newImageUrl);
           setUploadProgress(0);
         } else {
-          throw new Error("Failed to upload the image");
+          throw new Error("Failed to extract image URL from response");
         }
       }
     } catch (error: any) {
@@ -145,6 +158,7 @@ export const useImageHandler = ({
             : "Error uploading the image:",
           error instanceof Error ? error.message : error
         );
+        setError("Failed to upload image");
       }
       setLoading(false);
       setUploadProgress(0);
