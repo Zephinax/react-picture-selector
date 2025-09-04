@@ -30,8 +30,14 @@ export default [
       commonjs(),
       json(),
       typescript({ tsconfig: "./tsconfig.json" }),
+      postcss({
+        extract: true,
+        minimize: true,
+        config: {
+          path: "./postcss.config.js",
+        },
+      }),
       terser(),
-      postcss(),
     ],
     external: ["react", "react-dom", "react-icons", "axios"],
   },
