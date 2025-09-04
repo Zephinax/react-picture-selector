@@ -31,6 +31,7 @@ export default [
       json(),
       typescript({ tsconfig: "./tsconfig.json" }),
       postcss({
+        inject: true,
         extract: false,
         minimize: true,
         config: {
