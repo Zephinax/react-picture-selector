@@ -5,7 +5,7 @@ import { ProfileSelectorPropsTypes } from "./types";
 import useImagePreview from "./useImagePreview";
 import { handleError } from "./errorHandler";
 import { LuRefreshCcw } from "react-icons/lu";
-import "style.css";
+import "./style.css";
 interface UploadResponse {
   data?: string;
 }
