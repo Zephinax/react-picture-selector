@@ -129,6 +129,16 @@ const App: React.FC = () => {
             />
           </Card>
         </div>
+        <p className="text-center my-4 text-gray-300">
+          Install with: <code>npm install react-picture-selector</code> |
+          <a
+            href="https://github.com/Zephinax/PictureSelector"
+            className="underline"
+          >
+            {" "}
+            GitHub Repo
+          </a>
+        </p>
         <h2 className="text-2xl text-[#d24670] font-bold text-center mt-8">
           Design with{" "}
           <svg
