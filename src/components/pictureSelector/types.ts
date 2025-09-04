@@ -3,8 +3,6 @@ import { ReactNode } from "react";
 export interface ProfileSelectorPropsTypes {
   profileImageUrl: string | null;
   onChangeImage: (img: string) => void;
-  deleteUrl?: string;
-  uploadUrl?: string;
   type?: "profile" | "image";
   viewOnly?: boolean;
   title?: string;
