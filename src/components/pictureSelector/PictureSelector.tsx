@@ -9,8 +9,6 @@ import "./style.css";
 interface UploadResponse {
   data?: string;
 }
-
-// Configurable color palette
 interface ColorPalette {
   primary: string;
   error: string;
