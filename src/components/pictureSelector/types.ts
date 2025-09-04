@@ -24,3 +24,33 @@ export interface ModalProps {
     | "overflow-y-clip";
   size?: "sm" | "md" | "lg" | "xl" | "full" | "fit";
 }
+
+export interface UploadResponse {
+  data?: string;
+}
+
+// Configurable color palette
+export interface ColorPalette {
+  primary: string;
+  error: string;
+  progress: string;
+  placeholder: string;
+  text: string;
+  textDisabled: string;
+}
+
+export interface additionalClassNames {
+  title?: string;
+  titleContainer?: string;
+  delete?: string;
+  edit?: string;
+  image?: string;
+}
+
+export interface apiConfig {
+  deleteUrl: string;
+  uploadUrl: string;
+  baseUrl?: string;
+  formDataName?: string;
+  additionalHeaders?: any;
+}

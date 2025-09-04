@@ -1,40 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { MdDeleteOutline, MdOutlineEdit } from "react-icons/md";
-import axios from "axios";
-import { ProfileSelectorPropsTypes } from "./types";
+import {
+  additionalClassNames,
+  apiConfig,
+  ColorPalette,
+  ProfileSelectorPropsTypes,
+} from "./types";
 import useImagePreview from "./useImagePreview";
-import { handleError } from "./errorHandler";
 import { LuRefreshCcw } from "react-icons/lu";
-import "./style.css";
-interface UploadResponse {
-  data?: string;
-}
-
-// Configurable color palette
-interface ColorPalette {
-  primary: string;
-  error: string;
-  progress: string;
-  placeholder: string;
-  text: string;
-  textDisabled: string;
-}
-
-interface additionalClassNames {
-  title?: string;
-  titleContainer?: string;
-  delete?: string;
-  edit?: string;
-  image?: string;
-}
-
-interface apiConfig {
-  deleteUrl: string;
-  uploadUrl: string;
-  baseUrl?: string;
-  formDataName?: string;
-  additionalHeaders?: any;
-}
+import { useImageHandler } from "./useImageHandler";
 
 const PictureSelector = ({
   apiConfig = {
@@ -46,12 +20,13 @@ const PictureSelector = ({
       "Content-Type": "multipart/form-data",
     },
   },
-  profileImageUrl,
-  type = "profile",
-  onChangeImage,
-  viewOnly = false,
-  title = "Profile Picture",
-  size = 180,
+  additionalClassNames = {
+    title: "",
+    titleContainer: "",
+    delete: "",
+    edit: "",
+    image: "",
+  },
   colors = {
     primary: "#2a84fa",
     error: "#EF4444",
@@ -60,13 +35,12 @@ const PictureSelector = ({
     text: "#fafafa",
     textDisabled: "#e6e6e6",
   },
-  additionalClassNames = {
-    title: "",
-    titleContainer: "",
-    delete: "",
-    edit: "",
-    image: "",
-  },
+  profileImageUrl,
+  type = "profile",
+  onChangeImage,
+  viewOnly = false,
+  title = "Profile Picture",
+  size = 180,
   showProgressRing = true, // Show progress ring
   blurOnProgress = true,
   enableAbortController = true, // Enable/disable abort controller
@@ -84,215 +58,34 @@ const PictureSelector = ({
   testUploadDelay?: number;
 }) => {
   const { modalImagePreview, openImage } = useImagePreview();
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [uploadProgress, setUploadProgress] = useState<number>(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const abortControllerRef = useRef<AbortController | null>(null);
-  const testProgressRef = useRef<any | null>(null);
   const [_imgError, setImgError] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-  // Only use type prop to determine if it's circle or not
   const isCircle = type === "profile";
 
-  const handleAbort = () => {
-    if (!enableAbortController) return new AbortController();
-    abortControllerRef.current?.abort();
-    // Clear test timer if canceled
-    if (testMode && testProgressRef.current) {
-      clearInterval(testProgressRef.current);
-      testProgressRef.current = null;
-    }
-    const abortController = new AbortController();
-    abortControllerRef.current = abortController;
-    return abortController;
-  };
-
-  // Upload simulation for test mode
-  const simulateUpload = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        let progress = 0;
-        const interval = testUploadDelay / 100; // Divide delay into 100 parts
-
-        testProgressRef.current = setInterval(() => {
-          progress += 1;
-          setUploadProgress(progress);
-
-          if (progress >= 100) {
-            if (testProgressRef.current) {
-              clearInterval(testProgressRef.current);
-              testProgressRef.current = null;
-            }
-            resolve(reader.result as string);
-          }
-        }, interval);
-      };
-      reader.onerror = () => reject(new Error("Error reading file"));
-      reader.readAsDataURL(file);
-    });
-  };
-
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target?.files?.[0];
-    if (!file) return;
-
-    // Check file type
-    if (!file.type.startsWith("image/")) {
-      alert("Please select an image file");
-      return;
-    }
-
-    const abortController = handleAbort();
-    setLoading(true);
-    setUploadProgress(0);
-
-    try {
-      if (testMode) {
-        if (imageUrl) {
-          await new Promise((resolve) => setTimeout(resolve, 300));
-        }
-        const base64Image = await simulateUpload(file);
-
-        if (abortController.signal.aborted) {
-          throw new Error("Upload canceled");
-        }
-        setLoading(false);
-        setImageUrl(base64Image);
-        onChangeImage(base64Image);
-        setImgError(false);
-        setUploadProgress(0);
-      } else {
-        // Delete previous image if exists
-        if (imageUrl) {
-          await axios.post(
-            `${apiConfig.baseUrl}${apiConfig.deleteUrl}${imageUrl}`,
-            null,
-            {
-              signal: abortController.signal,
-            }
-          );
-        }
-
-        const formData = new FormData();
-        formData.append(apiConfig.formDataName || "", file);
-
-        const response = await axios.post<UploadResponse>(
-          `${apiConfig.baseUrl}${apiConfig.uploadUrl}`,
-          formData,
-          {
-            signal: abortController.signal,
-            onUploadProgress: (progressEvent) => {
-              if (progressEvent.total) {
-                const progressPercentage = Math.round(
-                  (progressEvent.loaded / progressEvent.total) * 100
-                );
-                setUploadProgress(progressPercentage);
-              }
-            },
-            headers: apiConfig.additionalHeaders,
-          }
-        );
-
-        setLoading(false);
-        if (response?.data?.data) {
-          setImageUrl(response.data.data);
-          onChangeImage(response.data.data);
-          setImgError(false);
-          setUploadProgress(0);
-        } else {
-          throw new Error("Failed to upload the image");
-        }
-      }
-    } catch (error: any) {
-      if (
-        error.name === "CanceledError" ||
-        error.message === "Upload canceled"
-      ) {
-      } else {
-        console.error(
-          testMode
-            ? "🧪 Test Mode: Error simulating upload:"
-            : "Error uploading the image:",
-          error instanceof Error ? error.message : error
-        );
-      }
-      setLoading(false);
-      setUploadProgress(0);
-      // Clear timer on error
-      if (testMode && testProgressRef.current) {
-        clearInterval(testProgressRef.current);
-        testProgressRef.current = null;
-      }
-    }
-  };
-
-  const handleDeleteImage = async () => {
-    if (!imageUrl) return;
-
-    const abortController = handleAbort();
-    setDeleting(true);
-    setError(null);
-    try {
-      if (testMode) {
-        await new Promise((resolve) => setTimeout(resolve, 500));
-
-        if (abortController.signal.aborted) {
-          throw new Error("Delete canceled");
-        }
-
-        setImageUrl("");
-        onChangeImage("");
-      } else {
-        // Real mode - API request
-        await axios.post(
-          `${apiConfig.baseUrl}${apiConfig.deleteUrl}${imageUrl}`,
-          null,
-          {
-            signal: abortController.signal,
-          }
-        );
-        setImageUrl("");
-        onChangeImage("");
-      }
-    } catch (error) {
-      handleError(error, {
-        setError: setError,
-        context: "deleting image",
-        isTestMode: testMode,
-      });
-    } finally {
-      setDeleting(false);
-    }
-  };
-
-  useEffect(() => {
-    if (profileImageUrl) setImageUrl(profileImageUrl);
-
-    return () => {
-      if (enableAbortController) {
-        abortControllerRef.current?.abort();
-      }
-
-      // Clear test timer on cleanup
-      if (testProgressRef.current) {
-        clearInterval(testProgressRef.current);
-        testProgressRef.current = null;
-      }
-    };
-  }, [profileImageUrl]);
+  const {
+    imageUrl,
+    uploadProgress,
+    error,
+    loading,
+    deleting,
+    handleImageChange,
+    handleDeleteImage,
+  } = useImageHandler({
+    apiConfig,
+    testMode,
+    testUploadDelay,
+    initialImageUrl: profileImageUrl,
+    onChangeImage,
+    enableAbortController,
+  });
 
   const triggerFileInput = () => fileInputRef.current?.click();
 
   const radius = size / 2;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = (1 - uploadProgress / 100) * circumference;
-  // Calculate button positions based on size
-  const buttonPosition = size * 0.06; // 7% of size
-  const buttonSize = size * 0.2; // 20% of size
-  // Dynamic style for image
+  const buttonPosition = size * 0.06;
+  const buttonSize = size * 0.2;
   const imageContainerStyle = {
     width: `${size}px`,
     height: `${size}px`,
@@ -527,14 +320,24 @@ const PictureSelector = ({
                   disabled={loading}
                 >
                   {deleting ? (
-                    <LuRefreshCcw
-                      color={loading ? colors.text : colors.textDisabled}
-                      size={buttonSize * 0.5}
-                      style={{
-                        animation: "spin 1s linear infinite",
-                        transformOrigin: "center",
-                      }}
-                    />
+                    <>
+                      <LuRefreshCcw
+                        color={loading ? colors.text : colors.textDisabled}
+                        size={buttonSize * 0.5}
+                        style={{
+                          animation: "spin 1s linear infinite",
+                          transformOrigin: "center",
+                        }}
+                      />
+                      <style>
+                        {`
+          @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+        `}
+                      </style>
+                    </>
                   ) : (
                     <MdDeleteOutline
                       color={loading ? colors.text : colors.textDisabled}
