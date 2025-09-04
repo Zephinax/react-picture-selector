@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import Modal from "../components/Modal";
+import Modal from "./Modal";
 import { ImZoomIn, ImZoomOut } from "react-icons/im";
 import {
   MdOutlineRotate90DegreesCcw,
@@ -230,7 +230,7 @@ function useImagePreview() {
                   boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
                 }}
               />
-              <div className="absolute top-2 left-2 flex gap-2 z-10 flex-wrap">
+              <div className="absolute top-4 left-4 flex gap-2 z-10 flex-wrap">
                 <button
                   onClick={() => {
                     setZoomValue((prev) => {
@@ -283,14 +283,14 @@ function useImagePreview() {
                   {isFullscreen ? <MdFullscreenExit /> : <MdFullscreen />}
                 </button>
               </div>
-              <div className="absolute bottom-2 left-2 bg-black/30 rounded-md px-2 py-1 backdrop-blur-3xl text-xs">
+              <div className="absolute bottom-4 left-4 bg-black/30 rounded-md px-2 py-1 backdrop-blur-3xl text-xs">
                 {Math.round(zoomValue * 100)}% • {width}×{height}
               </div>
             </div>
           </div>
         ) : (
           <div className="min-h-[300px] flex items-center justify-center">
-            <p>در حال بارگذاری...</p>
+            <p>Loading...</p>
           </div>
         )}
       </Modal>

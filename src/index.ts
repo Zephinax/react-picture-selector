@@ -1,2 +1,2 @@
-import PictureSelector from "./components/PictureSelector";
+import PictureSelector from "./components/pictureSelector/PictureSelector";
 export default PictureSelector;
