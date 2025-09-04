@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { MdDeleteOutline, MdOutlineEdit } from "react-icons/md";
 import {
   additionalClassNames,
@@ -15,8 +15,8 @@ const PictureSelector = ({
     deleteUrl: "POST_DELETE_AVATAR",
     uploadUrl: "POST_UPLOAD_AVATAR",
     baseUrl: "BASE_URL_SERVICES",
-    responsePath: "data.data",
     formDataName: "File",
+    responsePath: "data.data",
     additionalHeaders: {
       "Content-Type": "multipart/form-data",
     },
@@ -42,11 +42,11 @@ const PictureSelector = ({
   viewOnly = false,
   title = "Profile Picture",
   size = 180,
-  showProgressRing = true, // Show progress ring
+  showProgressRing = true,
   blurOnProgress = true,
-  enableAbortController = true, // Enable/disable abort controller
-  testMode = false, // Test mode
-  testUploadDelay = 1000, // Upload simulation delay in test mode (milliseconds)
+  enableAbortController = true,
+  testMode = false,
+  testUploadDelay = 1000,
 }: ProfileSelectorPropsTypes & {
   size?: number;
   colors?: ColorPalette;
