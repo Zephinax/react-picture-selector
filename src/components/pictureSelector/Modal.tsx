@@ -1,10 +1,8 @@
 import React from "react";
 import { ModalProps } from "./types";
-import { ImXing } from "react-icons/im";
 import ReactDOM from "react-dom";
 
 const Modal: React.FC<ModalProps> = ({
-  title,
   isOpen,
   onClose,
   children,
