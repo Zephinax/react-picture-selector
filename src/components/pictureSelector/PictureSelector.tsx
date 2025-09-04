@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { MdDeleteOutline, MdOutlineEdit } from "react-icons/md";
 import axios from "axios";
 import { ProfileSelectorPropsTypes } from "./types";
-import useImagePreview from "../hooks/useImagePreview";
+import useImagePreview from "./useImagePreview";
 import { handleError } from "./errorHandler";
 import { LuRefreshCcw } from "react-icons/lu";
 interface UploadResponse {

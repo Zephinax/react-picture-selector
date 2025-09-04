@@ -1,5 +1,5 @@
 import React from "react";
-import PictureSelector from "./components/PictureSelector";
+import PictureSelector from "./components/pictureSelector/PictureSelector";
 import Particles from "./components/Particles";
 import Card from "./components/Card";
 

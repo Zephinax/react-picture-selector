@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import Modal from "../components/Modal";
+import Modal from "./Modal";
 import { ImZoomIn, ImZoomOut } from "react-icons/im";
 import {
   MdOutlineRotate90DegreesCcw,
