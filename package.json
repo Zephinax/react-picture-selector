@@ -36,14 +36,12 @@
   },
   "license": "MIT",
   "peerDependencies": {
-    "axios": "^1.0.0",
-    "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
-    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
+    "react": ">=16.8",
+    "react-dom": ">=16.8"
   },
-  "peerDependenciesMeta": {
-    "axios": {
-      "optional": true
-    }
+  "dependencies": {
+    "axios": ">=0.22.0 <2",
+    "react-icons": ">=4.7.0 <6"
   },
   "devDependencies": {
     "rollup": "^4.18.1",
@@ -63,10 +61,6 @@
     "tailwindcss": "^3.4.17",
     "tslib": "^2.6.3",
     "typescript": "^5.5.3"
-  },
-  "dependencies": {
-    "axios": "^1.7.7",
-    "react-icons": "^5.4.0"
   },
   "keywords": [
     "react",
