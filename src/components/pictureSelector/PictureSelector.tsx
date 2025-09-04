@@ -150,15 +150,11 @@ const PictureSelector = ({
 
     try {
       if (testMode) {
-        // Test mode - simulate upload
-        console.log("🧪 Test Mode: Simulating upload...");
-        // Simulate deleting previous image
         if (imageUrl) {
-          console.log("🧪 Test Mode: Simulating delete previous image");
           await new Promise((resolve) => setTimeout(resolve, 300));
         }
         const base64Image = await simulateUpload(file);
-        // Check if request was canceled
+
         if (abortController.signal.aborted) {
           throw new Error("Upload canceled");
         }
@@ -167,10 +163,7 @@ const PictureSelector = ({
         onChangeImage(base64Image);
         setImgError(false);
         setUploadProgress(0);
-
-        console.log("🧪 Test Mode: Upload simulation completed successfully");
       } else {
-        // Real mode - API request
         // Delete previous image if exists
         if (imageUrl) {
           await axios.post(
@@ -217,9 +210,6 @@ const PictureSelector = ({
         error.name === "CanceledError" ||
         error.message === "Upload canceled"
       ) {
-        console.log(
-          testMode ? "🧪 Test Mode: Upload canceled" : "Upload canceled"
-        );
       } else {
         console.error(
           testMode
@@ -246,8 +236,6 @@ const PictureSelector = ({
     setError(null);
     try {
       if (testMode) {
-        // Test mode - simulate delete
-        console.log("🧪 Test Mode: Simulating delete image");
         await new Promise((resolve) => setTimeout(resolve, 500));
 
         if (abortController.signal.aborted) {
@@ -256,7 +244,6 @@ const PictureSelector = ({
 
         setImageUrl("");
         onChangeImage("");
-        console.log("🧪 Test Mode: Delete simulation completed");
       } else {
         // Real mode - API request
         await axios.post(
@@ -274,11 +261,6 @@ const PictureSelector = ({
         setError: setError,
         context: "deleting image",
         isTestMode: testMode,
-        onCancel: () => {
-          console.log(
-            testMode ? "🧪 Test Mode: Delete canceled" : "Delete canceled"
-          );
-        },
       });
     } finally {
       setDeleting(false);
