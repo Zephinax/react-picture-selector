@@ -76,7 +76,6 @@ const PictureSelector = ({
   colors?: ColorPalette;
   apiConfig?: apiConfig;
   additionalClassNames?: additionalClassNames;
-  apiBaseUrl?: string;
   showProgressRing?: boolean;
   blurOnProgress?: boolean;
   enableAbortController?: boolean;

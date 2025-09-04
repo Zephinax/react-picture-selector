@@ -3,8 +3,6 @@ import * as react_jsx_runtime from 'react/jsx-runtime';
 interface ProfileSelectorPropsTypes {
     profileImageUrl: string | null;
     onChangeImage: (img: string) => void;
-    deleteUrl?: string;
-    uploadUrl?: string;
     type?: "profile" | "image";
     viewOnly?: boolean;
     title?: string;
@@ -37,7 +35,6 @@ declare const PictureSelector: ({ apiConfig, profileImageUrl, type, onChangeImag
     colors?: ColorPalette;
     apiConfig?: apiConfig;
     additionalClassNames?: additionalClassNames;
-    apiBaseUrl?: string;
     showProgressRing?: boolean;
     blurOnProgress?: boolean;
     enableAbortController?: boolean;
