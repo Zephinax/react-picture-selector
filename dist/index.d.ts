@@ -7,7 +7,6 @@ interface ProfileSelectorPropsTypes {
     viewOnly?: boolean;
     title?: string;
 }
-
 interface ColorPalette {
     primary: string;
     error: string;
@@ -26,11 +25,13 @@ interface additionalClassNames {
 interface apiConfig {
     deleteUrl: string;
     uploadUrl: string;
-    baseUrl?: string;
+    baseUrl: string;
+    responsePath: string;
     formDataName?: string;
     additionalHeaders?: any;
 }
-declare const PictureSelector: ({ apiConfig, profileImageUrl, type, onChangeImage, viewOnly, title, size, colors, additionalClassNames, showProgressRing, blurOnProgress, enableAbortController, testMode, testUploadDelay, }: ProfileSelectorPropsTypes & {
+
+declare const PictureSelector: ({ apiConfig, additionalClassNames, colors, profileImageUrl, type, onChangeImage, viewOnly, title, size, showProgressRing, blurOnProgress, enableAbortController, testMode, testUploadDelay, }: ProfileSelectorPropsTypes & {
     size?: number;
     colors?: ColorPalette;
     apiConfig?: apiConfig;
