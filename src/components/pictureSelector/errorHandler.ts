@@ -1,8 +1,3 @@
-// errorHandler.ts
-
-/**
- * Types of possible errors
- */
 export interface ErrorWithResponse {
   response?: {
     status: number;
