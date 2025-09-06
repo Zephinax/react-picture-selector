@@ -35,7 +35,7 @@ export default [
       }),
       terser(),
     ],
-    external: ["react", "react-dom"],
+    external: ["react", "react-dom", "axios", "react-icons"],
   },
   {
     input: "./src/index.ts",
