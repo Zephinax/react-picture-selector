@@ -14,11 +14,6 @@ export default [
     input: "./src/index.ts",
     output: [
       {
-        file: packageJson.main,
-        format: "cjs",
-        sourcemap: false,
-      },
-      {
         file: packageJson.module,
         format: "esm",
         sourcemap: false,
@@ -40,7 +35,7 @@ export default [
       }),
       terser(),
     ],
-    external: ["react", "react-dom", "react-icons", "axios"],
+    external: ["react", "react-dom"],
   },
   {
     input: "./src/index.ts",
