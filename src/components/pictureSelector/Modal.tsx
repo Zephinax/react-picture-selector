@@ -14,7 +14,6 @@ const Modal: React.FC<ModalProps> = ({
   const handleClose = () => {
     onClose();
   };
-
   return (
     isOpen &&
     ReactDOM.createPortal(

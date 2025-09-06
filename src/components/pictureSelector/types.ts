@@ -29,7 +29,6 @@ export interface UploadResponse {
   data?: string;
 }
 
-// Configurable color palette
 export interface ColorPalette {
   primary: string;
   error: string;
