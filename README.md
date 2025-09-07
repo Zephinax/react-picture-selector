@@ -1,4 +1,28 @@
-# PictureSelector Component README
+<div style="
+  background-color: black; 
+  display: flex; 
+  justify-content: space-evenly; 
+  align-items: center; 
+  flex-wrap: wrap; 
+  padding: 20px;
+  border: 3px solid #d24670;
+  border-radius: 12px;
+  margin-bottom: 10px;
+">
+  <img 
+    src="https://raw.githubusercontent.com/Zephinax/ReactPictureSelector/refs/heads/dev/public/circle.gif" 
+    alt="gif1"
+    style="max-width: 45%; height: auto;"
+  />
+  <img 
+    src="https://raw.githubusercontent.com/Zephinax/ReactPictureSelector/refs/heads/dev/public/rect.gif" 
+    alt="gif2"
+    style="max-width: 45%; height: auto;"
+  />
+</div>
+
+# [PictureSelector Component 👉 Demo](https://zephinax.github.io/ReactPictureSelector)
+
 ![React](https://img.shields.io/badge/React-18.x-%231DAFBF) ![TypeScript](https://img.shields.io/badge/TypeScript-Included-%23178C6) ![Axios](https://img.shields.io/badge/Axios-1.x-%235A29E4)
 
 The `PictureSelector` component is a customizable React component designed for handling profile picture or image uploads, deletions, and previews. It supports both real API-based operations and a test mode for simulating uploads and deletions. The component is highly configurable, with options for styling, API configuration, progress indicators, and more.
@@ -11,7 +35,6 @@ The `PictureSelector` component is a customizable React component designed for h
 - [Props](#props)
 - [Dependencies](#dependencies)
 - [API Configuration](#api-configuration)
-- [Custom Hooks](#custom-hooks)
 - [Test Mode](#test-mode)
 - [Styling](#styling)
 - [Error Handling](#error-handling)
@@ -62,23 +85,6 @@ const App = () => {
   );
 };
 ```
-## Props
-| Prop Name                | Type                     | Default Value                                                                 | Description                                                                 |
-|--------------------------|--------------------------|-------------------------------------------------------------------------------|-----------------------------------------------------------------------------|
-| `apiConfig`              | `apiConfig`              | `{ deleteUrl: "POST_DELETE_AVATAR", uploadUrl: "POST_UPLOAD_AVATAR", baseUrl: "BASE_URL_SERVICES", formDataName: "File", additionalHeaders: { "Content-Type": "multipart/form-data" } }` | API configuration for upload and delete requests.                           |
-| `profileImageUrl`        | `string`                 | `null`                                                                        | Initial image URL to display.                                               |
-| `type`                   | `"profile" | "image"`    | `"profile"`                                                                   | Determines if the image is circular (`profile`) or rectangular (`image`).    |
-| `onChangeImage`          | `(url: string) => void`  | -                                                                             | Callback function triggered when the image changes (upload or delete).      |
-| `viewOnly`               | `boolean`                | `false`                                                                       | Disables edit and delete buttons if `true`.                                 |
-| `title`                  | `string`                 | `"Profile Picture"`                                                           | Title displayed above the image.                                           |
-| `size`                   | `number`                 | `180`                                                                         | Size of the image container (width and height in pixels).                   |
-| `colors`                 | `ColorPalette`           | `{ primary: "#2a84fa", error: "#EF4444", progress: "#d24670", placeholder: "#BCBEC0", text: "#fafafa", textDisabled: "#e6e6e6" }` | Color palette for styling the component.                                   |
-| `additionalClassNames`   | `additionalClassNames`   | `{ title: "", titleContainer: "", delete: "", edit: "", image: "" }`          | Additional CSS class names for styling specific elements.                   |
-| `showProgressRing`       | `boolean`                | `true`                                                                        | Show a progress ring for circular images during uploads.                    |
-| `blurOnProgress`         | `boolean`                | `true`                                                                        | Apply a blur effect to the image during upload.                             |
-| `enableAbortController`  | `boolean`                | `true`                                                                        | Enable/disable the use of AbortController for canceling uploads.            |
-| `testMode`               | `boolean`                | `false`                                                                       | Enable test mode to simulate upload/delete without API calls.               |
-| `testUploadDelay`        | `number`                 | `1000`
 
 ### ColorPalette Interface
 
@@ -146,13 +152,6 @@ const apiConfig = {
   },
 };
 ```
-
-## Custom Hooks
-
-The component uses a custom `useImagePreview` hook to handle image preview modals. Ensure this hook is implemented and available in your project. It should return:
-
-- `modalImagePreview`: A function to render the image preview modal.
-- `openImage`: A function to trigger the preview modal with a given image URL.
 
 ## Test Mode
 
