@@ -1,4 +1,27 @@
-# PictureSelector Component README
+<div style="
+  background-color: black; 
+  display: flex; 
+  justify-content: space-evenly; 
+  align-items: center; 
+  flex-wrap: wrap; 
+  padding: 20px;
+  border: 3px solid #d24670;
+  border-radius: 12px;
+  margin-bottom: 10px;
+">
+  <img 
+    src="https://raw.githubusercontent.com/Zephinax/ReactPictureSelector/refs/heads/dev/public/circle.gif" 
+    alt="gif1"
+    style="max-width: 45%; height: auto;"
+  />
+  <img 
+    src="https://raw.githubusercontent.com/Zephinax/ReactPictureSelector/refs/heads/dev/public/rect.gif" 
+    alt="gif2"
+    style="max-width: 45%; height: auto;"
+  />
+</div>
+
+# [PictureSelector Component 👉 Demo](https://zephinax.github.io/ReactPictureSelector)
 
 ![React](https://img.shields.io/badge/React-18.x-%231DAFBF) ![TypeScript](https://img.shields.io/badge/TypeScript-Included-%23178C6) ![Axios](https://img.shields.io/badge/Axios-1.x-%235A29E4)
 
@@ -12,7 +35,6 @@ The `PictureSelector` component is a customizable React component designed for h
 - [Props](#props)
 - [Dependencies](#dependencies)
 - [API Configuration](#api-configuration)
-- [Custom Hooks](#custom-hooks)
 - [Test Mode](#test-mode)
 - [Styling](#styling)
 - [Error Handling](#error-handling)
@@ -150,6 +172,7 @@ The progress ring (for circular images) and progress bar (for rectangular images
 Errors during upload or deletion are handled by the `errorHandler` utility. If an error occurs:
 
 - The error message is displayed below the component.
+- In test mode, errors are logged with a "🧪 Test Mode" prefix for clarity.
 - If an upload or deletion is canceled (via AbortController), a cancellation message is logged.
 
 ## Example
