@@ -21,7 +21,7 @@
   />
 </div>
 
-# [PictureSelector Component 👉 Demo](https://zephinax.github.io/ReactPictureSelector)
+# [PictureSelector 👉 Demo](https://zephinax.github.io/ReactPictureSelector)
 
 ![React](https://img.shields.io/badge/React-18.x-%231DAFBF) ![TypeScript](https://img.shields.io/badge/TypeScript-Included-%23178C6) ![Axios](https://img.shields.io/badge/Axios-1.x-%235A29E4)
 
