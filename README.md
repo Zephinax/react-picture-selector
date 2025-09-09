@@ -3,7 +3,7 @@
   display: flex; 
   justify-content: space-evenly; 
   align-items: center; 
-  flex-wrap: wrap; 
+  flex-wrap: no-wrap; 
   padding: 20px;
   border: 3px solid #d24670;
   border-radius: 12px;
