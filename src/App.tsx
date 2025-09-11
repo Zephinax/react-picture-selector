@@ -132,32 +132,35 @@ const App: React.FC = () => {
           </Card>
         </div>
 
-        <div className="flex flex-col md:flex-row items-center justify-center my-6 gap-4 text-gray-300">
-          <div className="flex flex-col md:flex-row items-center justify-center my-6 gap-4 text-gray-300">
-            <div
-              onClick={handleCopy}
-              className="flex items-center gap-2 bg-gray-300/30 px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer select-none relative"
-              title="Click to copy"
-            >
-              <FaNpm className="w-6 h-6 text-white" />
-              <span className="flex items-center gap-1">
-                Install with{" "}
-                <code className="bg-gray-900 px-1 py-0.5 rounded">
-                  npm install react-picture-selector
-                </code>
-                {copied ? (
-                  <FaCheck className="w-4 h-4 text-green-600 ml-2 transition-transform" />
-                ) : (
-                  <FaRegCopy className="w-4 h-4 text-gray-400 ml-2" />
-                )}
-              </span>
-            </div>
+        <div className="flex flex-col md:flex-row items-center justify-center my-6 gap-4 text-gray-300 w-full max-w-3xl mx-auto">
+          {/* Copy Section */}
+          <div
+            onClick={handleCopy}
+            className="flex flex-col md:flex-row items-center justify-center gap-2 bg-gray-300/30 px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer select-none relative min-w-[250px]"
+            title="Click to copy"
+          >
+            {/* آیکون کپی: بالای متن در موبایل، کنار متن در دسکتاپ */}
+            <FaNpm className="w-6 h-6 text-white order-1 md:order-0" />
+
+            <span className="flex flex-col md:flex-row items-center gap-1 text-center md:text-left order-0 md:order-1">
+              <span>Install with</span>
+              <code className="bg-gray-900 px-1 py-0.5 rounded break-all">
+                npm install react-picture-selector
+              </code>
+              {copied ? (
+                <FaCheck className="w-4 h-4 text-green-600 ml-0 md:ml-2 mt-1 md:mt-0 transition-transform" />
+              ) : (
+                <FaRegCopy className="w-4 h-4 text-gray-400 ml-0 md:ml-2 mt-1 md:mt-0" />
+              )}
+            </span>
           </div>
+
+          {/* GitHub Link */}
           <a
             href="https://github.com/Zephinax/PictureSelector"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 bg-gray-300/30 px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-shadow hover:bg-gray-700 text-white"
+            className="flex flex-1 items-center justify-center gap-2 bg-gray-300/30 px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-shadow hover:bg-gray-700 text-white min-w-[250px]"
           >
             <FaGithub className="w-6 h-6 text-white" />
             <span>View on GitHub</span>

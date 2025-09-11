@@ -3,10 +3,7 @@
   display: flex; 
   justify-content: space-evenly; 
   align-items: center; 
-  flex-wrap: wrap; 
   padding: 20px;
-  border: 3px solid #d24670;
-  border-radius: 12px;
   margin-bottom: 10px;
 ">
   <img 
