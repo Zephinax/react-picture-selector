@@ -8,7 +8,7 @@
 <h1 align="center">
 React Picture Selector
   <br/>
-<a href="https://zephinax.github.io/ReactPictureSelector" target="_blank">Click Here To Show Demo</a>
+<a href="https://zephinax.github.io/react-picture-selector" target="_blank">Click Here To Show Demo</a>
 
 </h1>
 
