@@ -1,18 +1,9 @@
-<div style="
-  background-color: black; 
-  display: flex; 
-  width: 100%;
-  justify-content: space-evenly; 
-  align-items: center; 
-  padding: 20px;
-  margin-bottom: 10px;
-">
+<p align="center">
   <img 
     src="https://raw.githubusercontent.com/Zephinax/react-picture-selector/refs/heads/dev/public/circle.gif" 
     alt="gif1"
-    style="max-width: 45%; height: auto;"
   />
-</div>
+</p>
 
 <h1 align="center">
 React Picture Selector
