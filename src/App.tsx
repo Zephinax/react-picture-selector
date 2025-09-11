@@ -1,20 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import PictureSelector from "./components/pictureSelector/PictureSelector";
 import Particles from "./components/Particles";
 import Card from "./components/Card";
+import { FaCheck, FaGithub, FaNpm, FaRegCopy } from "react-icons/fa";
 
 const App: React.FC = () => {
-  const handleImageChange = (newImageUrl: string) => {
-    console.log("Selected image URL:", newImageUrl);
-    // You can send the URL to the server or manage state here
-  };
+  const [copied, setCopied] = useState(false);
 
-  const handleDelete = () => {
-    console.log("Image deleted");
-    // Operations after image deletion
-  };
-
-  // Custom color palette
   const customColors = {
     primary: "#8B5CF6", // Purple
     error: "#F43F5E", // Pink
@@ -24,11 +16,21 @@ const App: React.FC = () => {
     textDisabled: "#e6e6e6",
   };
 
+  const handleImageChange = (newImageUrl: string) => {
+    console.log("Selected image URL:", newImageUrl);
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText("npm install react-picture-selector");
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500); // پیام 1.5 ثانیه نمایش داده می‌شود
+  };
+
   return (
-    <div className="min-h-screen w-screen  p-6 bg-black">
+    <div className="min-h-screen w-screen max-w-screen overflow-x-hidden p-6 bg-black">
       <div
         style={{ width: "100%", height: "100vh", position: "absolute" }}
-        className="top-0"
+        className="top-0 max-w-[95vw]"
       >
         <Particles
           particleColors={["#ffffff", "#ffffff"]}
@@ -129,17 +131,42 @@ const App: React.FC = () => {
             />
           </Card>
         </div>
-        <p className="text-center my-4 text-gray-300">
-          Install with: <code>npm install react-picture-selector</code> |
+
+        <div className="flex flex-col md:flex-row items-center justify-center my-6 gap-4 text-gray-300">
+          <div className="flex flex-col md:flex-row items-center justify-center my-6 gap-4 text-gray-300">
+            <div
+              onClick={handleCopy}
+              className="flex items-center gap-2 bg-gray-300/30 px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer select-none relative"
+              title="Click to copy"
+            >
+              <FaNpm className="w-6 h-6 text-white" />
+              <span className="flex items-center gap-1">
+                Install with{" "}
+                <code className="bg-gray-900 px-1 py-0.5 rounded">
+                  npm install react-picture-selector
+                </code>
+                {copied ? (
+                  <FaCheck className="w-4 h-4 text-green-600 ml-2 transition-transform" />
+                ) : (
+                  <FaRegCopy className="w-4 h-4 text-gray-400 ml-2" />
+                )}
+              </span>
+            </div>
+          </div>
+
+          {/* لینک GitHub */}
           <a
             href="https://github.com/Zephinax/PictureSelector"
-            className="underline"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 bg-gray-300/30 px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-shadow hover:bg-gray-700 text-white"
           >
-            {" "}
-            GitHub Repo
+            <FaGithub className="w-6 h-6 text-white" />
+            <span>View on GitHub</span>
           </a>
-        </p>
-        <h2 className="text-2xl text-[#d24670] font-bold text-center mt-8">
+        </div>
+
+        <h2 className="text-xl text-[#d24670] font-bold text-center mt-8">
           Design with{" "}
           <svg
             xmlns="http://www.w3.org/2000/svg"
