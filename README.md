@@ -1,27 +1,25 @@
 <div style="
   background-color: black; 
   display: flex; 
+  width: 100%;
   justify-content: space-evenly; 
   align-items: center; 
-  flex-wrap: no-wrap; 
   padding: 20px;
-  border: 3px solid #d24670;
-  border-radius: 12px;
   margin-bottom: 10px;
 ">
   <img 
-    src="https://raw.githubusercontent.com/Zephinax/ReactPictureSelector/refs/heads/dev/public/circle.gif" 
+    src="https://raw.githubusercontent.com/Zephinax/react-picture-selector/refs/heads/dev/public/circle.gif" 
     alt="gif1"
-    style="max-width: 45%; height: auto;"
-  />
-  <img 
-    src="https://raw.githubusercontent.com/Zephinax/ReactPictureSelector/refs/heads/dev/public/rect.gif" 
-    alt="gif2"
     style="max-width: 45%; height: auto;"
   />
 </div>
 
-# [PictureSelector 👉 Demo](https://zephinax.github.io/ReactPictureSelector)
+<h1 align="center">
+React Picture Selector
+  <br/>
+<a href="https://zephinax.github.io/ReactPictureSelector" target="_blank">Click Here To Show Demo</a>
+
+</h1>
 
 ![React](https://img.shields.io/badge/React-18.x-%231DAFBF) ![TypeScript](https://img.shields.io/badge/TypeScript-Included-%23178C6) ![Axios](https://img.shields.io/badge/Axios-1.x-%235A29E4)
 
