@@ -1,6 +1,6 @@
 {
   "name": "react-picture-selector",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "A highly customizable React component for image selection, upload, and cropping with progress indicators and responsive design",
   "main": "dist/index.mjs",
   "module": "dist/index.mjs",
@@ -8,14 +8,14 @@
   "files": [
     "dist"
   ],
-  "homepage": "https://zephinax.github.io/ReactPictureSelector",
+  "homepage": "https://zephinax.github.io/react-picture-selector",
   "bugs": {
-    "url": "https://github.com/Zephinax/PictureSelector/issues",
+    "url": "https://github.com/Zephinax/react-picture-selector/issues",
     "email": "zephinax@gmail.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Zephinax/PictureSelector.git",
+    "url": "https://github.com/Zephinax/react-picture-selector.git",
     "directory": "/"
   },
   "funding": {
