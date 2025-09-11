@@ -140,17 +140,17 @@ const App: React.FC = () => {
             title="Click to copy"
           >
             {/* آیکون کپی: بالای متن در موبایل، کنار متن در دسکتاپ */}
-            <FaNpm className="w-6 h-6 text-white order-1 md:order-0" />
+            <FaNpm className="w-6 h-6 text-white order-1 shrink-0 md:order-0" />
 
-            <span className="flex flex-col md:flex-row items-center gap-1 text-center md:text-left order-0 md:order-1">
+            <span className="flex flex-col md:flex-row gap-2 items-center text-nowrap text-center md:text-left order-0 md:order-1">
               <span>Install with</span>
-              <code className="bg-gray-900 px-1 py-0.5 rounded break-all">
+              <code className="bg-gray-900 px-1 py-0.5 text-nowrap rounded break-all">
                 npm install react-picture-selector
               </code>
               {copied ? (
-                <FaCheck className="w-4 h-4 text-green-600 ml-0 md:ml-2 mt-1 md:mt-0 transition-transform" />
+                <FaCheck className="w-4 h-4 text-green-600 ml-0 md:ml-1 mt-1 md:mt-0 transition-transform" />
               ) : (
-                <FaRegCopy className="w-4 h-4 text-gray-400 ml-0 md:ml-2 mt-1 md:mt-0" />
+                <FaRegCopy className="w-4 h-4 text-gray-400 ml-0 md:ml-1 mt-1 md:mt-0" />
               )}
             </span>
           </div>
