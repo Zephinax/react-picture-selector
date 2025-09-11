@@ -7,13 +7,8 @@
   margin-bottom: 10px;
 ">
   <img 
-    src="https://raw.githubusercontent.com/Zephinax/ReactPictureSelector/refs/heads/dev/public/circle.gif" 
+    src="https://raw.githubusercontent.com/Zephinax/react-picture-selector/refs/heads/dev/public/circle.gif" 
     alt="gif1"
-    style="max-width: 45%; height: auto;"
-  />
-  <img 
-    src="https://raw.githubusercontent.com/Zephinax/ReactPictureSelector/refs/heads/dev/public/rect.gif" 
-    alt="gif2"
     style="max-width: 45%; height: auto;"
   />
 </div>
