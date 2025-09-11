@@ -3,7 +3,7 @@
   "version": "1.2.3",
   "description": "picture selector input",
   "main": "dist/index.js",
-  "homepage": "https://zephinax.github.io/ReactPictureSelector",
+  "homepage": "https://zephinax.github.io/react-picture-selector",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -38,7 +38,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Zephinax/PictureSelector.git"
+    "url": "https://github.com/Zephinax/react-picture-selector.git"
   },
   "keywords": [
     "react",
