@@ -23,7 +23,7 @@ const App: React.FC = () => {
   const handleCopy = () => {
     navigator.clipboard.writeText("npm install react-picture-selector");
     setCopied(true);
-    setTimeout(() => setCopied(false), 1500); // پیام 1.5 ثانیه نمایش داده می‌شود
+    setTimeout(() => setCopied(false), 1500);
   };
 
   return (
@@ -153,8 +153,6 @@ const App: React.FC = () => {
               </span>
             </div>
           </div>
-
-          {/* لینک GitHub */}
           <a
             href="https://github.com/Zephinax/PictureSelector"
             target="_blank"
