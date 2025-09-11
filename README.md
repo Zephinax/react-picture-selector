@@ -14,7 +14,12 @@
   />
 </div>
 
-# [PictureSelector Component 👉 Demo](https://zephinax.github.io/ReactPictureSelector)
+<h1 align="center">
+React Picture Selector
+  <br/>
+<a href="https://zephinax.github.io/ReactPictureSelector" target="_blank">Click Here To Show Demo</a>
+
+</h1>
 
 ![React](https://img.shields.io/badge/React-18.x-%231DAFBF) ![TypeScript](https://img.shields.io/badge/TypeScript-Included-%23178C6) ![Axios](https://img.shields.io/badge/Axios-1.x-%235A29E4)
 
