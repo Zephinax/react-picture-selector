@@ -321,8 +321,8 @@ const App: React.FC = () => {
 
             <div className="flex flex-col md:flex-row items-center gap-2 text-center md:text-left mt-2 md:mt-0">
               <span className="whitespace-nowrap">Install with</span>
-              <div className="flex items-center gap-1">
-                <code className="bg-gray-900 px-2 py-1 rounded text-sm md:text-base break-all max-w-[160px] md:max-w-none truncate">
+              <div className="flex items-center gap-2">
+                <code className="bg-gray-900 px-2 py-1 rounded text-sm md:text-base break-all max-w-[70vw] md:max-w-none truncate">
                   npm install react-picture-selector
                 </code>
                 {copied ? (
