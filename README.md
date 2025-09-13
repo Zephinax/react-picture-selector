@@ -55,7 +55,7 @@ The `PictureSelector` component is a customizable React component designed for h
 Import the `PictureSelector` component and include it in your JSX. Provide the necessary props to configure its behavior and appearance.
 
 ```jsx
-import PictureSelector from "./react-picture-selector";
+import PictureSelector from "react-picture-selector";
 
 const App = () => {
   const handleImageChange = (imageUrl: string) => {
@@ -166,7 +166,7 @@ Errors during upload or deletion are handled by the `errorHandler` utility. If a
 ## Example
 
 ```jsx
-import PictureSelector from "./react-picture-selector";
+import PictureSelector from "react-picture-selector";
 
 const App = () => {
   const handleImageChange = (imageUrl: string) => {
