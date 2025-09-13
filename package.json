@@ -1,7 +1,7 @@
 {
   "name": "react-picture-selector",
-  "version": "1.4.4",
-  "description": "A highly customizable React component for image selection, upload, and cropping with progress indicators and responsive design",
+  "version": "1.4.5",
+  "description": "A highly customizable React component for image selection, upload, and delete with progress indicators and responsive design",
   "main": "dist/index.mjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",

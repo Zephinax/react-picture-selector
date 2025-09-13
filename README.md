@@ -48,8 +48,7 @@ The `PictureSelector` component is a customizable React component designed for h
    ```bash
    npm install axios react-icons
    ```
-3. Copy the `PictureSelector` component and its associated files (e.g., `types.ts`, `useImagePreview.ts`, `errorHandler.ts`) into your project.
-4. Import and use the component in your React application.
+3. Import and use the component in your React application.
 
 ## Usage
 
