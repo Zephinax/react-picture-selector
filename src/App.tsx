@@ -14,7 +14,6 @@ const GitHubReadmeFetcher: React.FC<{ readmeUrl: string }> = ({
   const [readme, setReadme] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showReadme, setShowReadme] = useState(false);
 
   const fetchReadme = async () => {
     try {
@@ -205,10 +204,10 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen w-screen max-w-screen overflow-x-hidden p-6 bg-black">
+    <div className="min-h-screen w-screen overflow-x-hidden bg-black">
       <div
         style={{ width: "100%", height: "100vh", position: "absolute" }}
-        className="top-0 max-w-[95vw]"
+        className="top-0"
       >
         <Particles
           particleColors={["#ffffff", "#ffffff"]}
@@ -221,7 +220,8 @@ const App: React.FC = () => {
           disableRotation={false}
         />
       </div>
-      <div className="py-4 px-2">
+
+      <div className="max-w-7xl mx-auto px-4 lg:px-8 py-4">
         <div
           dir="ltr"
           className="flex flex-wrap gap-3 items-center justify-between w-full mb-8"
@@ -237,7 +237,7 @@ const App: React.FC = () => {
           </h3>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-[1300px] mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Default example (Profile) */}
           <Card>
             <PictureSelector
@@ -314,22 +314,24 @@ const App: React.FC = () => {
           {/* Copy Section */}
           <div
             onClick={handleCopy}
-            className="flex flex-col md:flex-row items-center justify-center gap-2 bg-gray-300/30 px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer select-none relative min-w-[250px]"
+            className="flex flex-col md:flex-row items-center justify-center gap-2 bg-gray-300/30 px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer select-none w-full md:w-auto"
             title="Click to copy"
           >
-            <FaNpm className="w-6 h-6 text-white order-1 shrink-0 md:order-0" />
+            <FaNpm className="w-6 h-6 text-white shrink-0" />
 
-            <span className="flex flex-col md:flex-row gap-2 items-center text-nowrap text-center md:text-left order-0 md:order-1">
-              <span>Install with</span>
-              <code className="bg-gray-900 px-1 py-0.5 text-nowrap rounded break-all">
-                npm install react-picture-selector
-              </code>
-              {copied ? (
-                <FaCheck className="w-4 h-4 text-green-600 ml-0 md:ml-1 mt-1 md:mt-0 transition-transform" />
-              ) : (
-                <FaRegCopy className="w-4 h-4 text-gray-400 ml-0 md:ml-1 mt-1 md:mt-0" />
-              )}
-            </span>
+            <div className="flex flex-col md:flex-row items-center gap-2 text-center md:text-left mt-2 md:mt-0">
+              <span className="whitespace-nowrap">Install with</span>
+              <div className="flex items-center gap-1">
+                <code className="bg-gray-900 px-2 py-1 rounded text-sm md:text-base break-all max-w-[160px] md:max-w-none truncate">
+                  npm install react-picture-selector
+                </code>
+                {copied ? (
+                  <FaCheck className="w-4 h-4 text-green-600 shrink-0" />
+                ) : (
+                  <FaRegCopy className="w-4 h-4 text-gray-400 shrink-0" />
+                )}
+              </div>
+            </div>
           </div>
 
           {/* GitHub Link */}
@@ -337,15 +339,15 @@ const App: React.FC = () => {
             href="https://github.com/Zephinax/PictureSelector"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex flex-1 items-center justify-center gap-2 bg-gray-300/30 px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-shadow hover:bg-gray-700 text-white min-w-[250px]"
+            className="flex items-center justify-center gap-2 bg-gray-300/30 px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-shadow hover:bg-gray-700 text-white w-full md:w-auto"
           >
-            <FaGithub className="w-6 h-6 text-white" />
-            <span>View on GitHub</span>
+            <FaGithub className="w-6 h-6 text-white shrink-0" />
+            <span className="whitespace-nowrap">View on GitHub</span>
           </a>
         </div>
 
         {/* README Section */}
-        <div className="max-w-[1300px] mx-auto mt-12">
+        <div className="mt-12">
           <GitHubReadmeFetcher readmeUrl="https://github.com/Zephinax/react-picture-selector/blob/main/README.md" />
         </div>
 
