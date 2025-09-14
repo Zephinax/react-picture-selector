@@ -40,6 +40,6 @@ interface apiConfig {
     additionalHeaders?: any;
 }
 
-declare const PictureSelector: ({ apiConfig, additionalClassNames, colors, imageUrl: defaultImage, type, onChangeImage, viewOnly, title, size, showProgressRing, blurOnProgress, enableAbortController, testMode, testUploadDelay, }: ProfileSelectorPropsTypes) => react_jsx_runtime.JSX.Element;
+declare const PictureSelector: ({ apiConfig, additionalClassNames, colors, imageUrl, type, onChangeImage, viewOnly, title, size, showProgressRing, blurOnProgress, enableAbortController, testMode, testUploadDelay, }: ProfileSelectorPropsTypes) => react_jsx_runtime.JSX.Element;
 
 export { PictureSelector as default };
