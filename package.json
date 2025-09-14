@@ -1,6 +1,6 @@
 {
   "name": "react-picture-selector",
-  "version": "1.5.0",
+  "version": "2.0.0",
   "description": "A highly customizable React component for image selection, upload, and delete with progress indicators and responsive design",
   "homepage": "https://zephinax.github.io/react-picture-selector",
   "main": "dist/index.mjs",
