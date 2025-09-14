@@ -1,6 +1,6 @@
 {
   "name": "react-picture-selector",
-  "version": "1.4.8",
+  "version": "1.4.9",
   "description": "A highly customizable React component for image selection, upload, and delete with progress indicators and responsive design",
   "main": "dist/index.mjs",
   "module": "dist/index.mjs",
@@ -26,7 +26,7 @@
     "rollup": "rollup -c --bundleConfigAsCjs",
     "build": "rollup -c --bundleConfigAsCjs",
     "prepublishOnly": "npm run build",
-    "release": "standard-version",
+    "release:manual": "standard-version --release-as",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": {
