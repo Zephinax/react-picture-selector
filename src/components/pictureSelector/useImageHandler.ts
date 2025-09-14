@@ -36,9 +36,10 @@ export const useImageHandler = ({
   const [loading, setLoading] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
-  const testIntervalRef = useRef<any | null>(null); // فقط برای testMode
-  const smoothIntervalRef = useRef<any | null>(null); // فقط برای smooth در real mode
+  const testIntervalRef = useRef<any | null>(null);
+  const smoothIntervalRef = useRef<any | null>(null);
   const targetProgressRef = useRef<number>(0);
+  const isFirstUpdateRef = useRef<boolean>(true); // برای کنترل اولین آپدیت
 
   const handleAbort = () => {
     if (!enableAbortController) return new AbortController();
@@ -56,9 +57,8 @@ export const useImageHandler = ({
     return abortController;
   };
 
-  // تابع smooth فقط برای real mode (هر 50ms گام کوچک به سمت هدف با ease-out)
   const smoothProgressUpdate = () => {
-    if (smoothIntervalRef.current) return; // جلوگیری از multiple
+    if (smoothIntervalRef.current) return;
     smoothIntervalRef.current = setInterval(() => {
       setUploadProgress((prev) => {
         if (prev >= targetProgressRef.current || prev >= 100) {
@@ -66,9 +66,8 @@ export const useImageHandler = ({
           smoothIntervalRef.current = null;
           return Math.min(100, prev);
         }
-        // گام دینامیک با ease-out (کوچک‌تر در پایان)
         const diff = targetProgressRef.current - prev;
-        const step = Math.max(0.5, diff * 0.1); // 10% از فاصله، حداقل 0.5
+        const step = Math.max(0.5, diff * 0.15); // گام کمی بزرگتر برای سرعت
         return Math.min(100, prev + step);
       });
     }, 50);
@@ -79,10 +78,10 @@ export const useImageHandler = ({
       const reader = new FileReader();
       reader.onload = () => {
         let progress = 0;
-        const interval = testUploadDelay / 100; // e.g., 10ms for 1000ms total
+        const interval = testUploadDelay / 100;
         testIntervalRef.current = setInterval(() => {
           progress += 1;
-          setUploadProgress(progress); // مستقیم ست کن برای test (روان)
+          setUploadProgress(progress);
           if (progress >= 100) {
             clearInterval(testIntervalRef.current!);
             testIntervalRef.current = null;
@@ -105,27 +104,28 @@ export const useImageHandler = ({
 
     const abortController = handleAbort();
     setLoading(true);
-    setUploadProgress(0); // از 0 شروع کن
+    setUploadProgress(0);
     targetProgressRef.current = 0;
+    isFirstUpdateRef.current = true; // ریست برای آپدیت اول
+    await new Promise((resolve) => setTimeout(resolve, 50)); // اطمینان از رندر 0
 
     try {
-      const minUploadTime = new Promise((resolve) => setTimeout(resolve, 1000)); // حداقل 1 ثانیه
+      const minUploadTime = new Promise((resolve) => setTimeout(resolve, 1000));
 
       if (testMode) {
         if (imageUrl) {
           await new Promise((resolve) => setTimeout(resolve, 300));
         }
-        const base64Image = await simulateUpload(file); // progress مستقیم آپدیت می‌شه
+        const base64Image = await simulateUpload(file);
         if (abortController.signal.aborted) {
           throw new Error("Upload canceled");
         }
-        await minUploadTime; // بعد از simulate، صبر اضافی اگر لازم
+        await minUploadTime;
         setLoading(false);
         setImageUrl(base64Image);
         onChangeImage(base64Image);
         setUploadProgress(0);
       } else {
-        // real mode
         if (imageUrl) {
           await axios.post(
             `${apiConfig.baseUrl}${apiConfig.deleteUrl}${imageUrl}`,
@@ -149,14 +149,17 @@ export const useImageHandler = ({
                   (progressEvent.loaded / progressEvent.total) * 100
                 );
               } else {
-                // fallback
-                progress = Math.min(99, uploadProgress + 2); // گام کوچکتر
+                progress = Math.min(99, uploadProgress + 2);
+              }
+              if (isFirstUpdateRef.current && progress > 5) {
+                progress = 5; // اولین آپدیت رو محدود کن
+                isFirstUpdateRef.current = false;
               }
               targetProgressRef.current = Math.max(
                 targetProgressRef.current,
                 progress
               );
-              smoothProgressUpdate(); // smooth فعال
+              smoothProgressUpdate();
             },
             headers: apiConfig.additionalHeaders,
           }
@@ -164,11 +167,9 @@ export const useImageHandler = ({
 
         const [response] = await Promise.all([uploadPromise, minUploadTime]);
 
-        // بعد از موفقیت، به 100% برسون
         targetProgressRef.current = 100;
-        smoothProgressUpdate(); // smooth به 100
-
-        await new Promise((resolve) => setTimeout(resolve, 300)); // کمی صبر برای دیدن 100%
+        smoothProgressUpdate();
+        await new Promise((resolve) => setTimeout(resolve, 300));
 
         setLoading(false);
         const newImageUrl = getNestedValue(
@@ -180,6 +181,7 @@ export const useImageHandler = ({
           onChangeImage(newImageUrl);
           setUploadProgress(0);
           targetProgressRef.current = 0;
+          isFirstUpdateRef.current = true;
         } else {
           throw new Error("Failed to extract image URL from response");
         }
@@ -202,6 +204,7 @@ export const useImageHandler = ({
       setLoading(false);
       setUploadProgress(0);
       targetProgressRef.current = 0;
+      isFirstUpdateRef.current = true;
       if (testIntervalRef.current) {
         clearInterval(testIntervalRef.current);
         testIntervalRef.current = null;
