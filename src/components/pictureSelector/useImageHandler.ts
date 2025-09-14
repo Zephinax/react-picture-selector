@@ -39,7 +39,7 @@ export const useImageHandler = ({
   const testIntervalRef = useRef<any | null>(null);
   const smoothIntervalRef = useRef<any | null>(null);
   const targetProgressRef = useRef<number>(0);
-  const isFirstUpdateRef = useRef<boolean>(true); // برای کنترل اولین آپدیت
+  const isFirstUpdateRef = useRef<boolean>(true);
 
   const handleAbort = () => {
     if (!enableAbortController) return new AbortController();
@@ -104,7 +104,6 @@ export const useImageHandler = ({
       alert("Please select an image file");
       return;
     }
-
     handleAbort();
     const abortController = new AbortController();
     abortControllerRef.current = abortController;
@@ -116,7 +115,6 @@ export const useImageHandler = ({
 
     try {
       const minUploadTime = new Promise((resolve) => setTimeout(resolve, 700));
-
       if (testMode) {
         if (imageUrl) {
           await new Promise((resolve) => setTimeout(resolve, 300));
@@ -141,7 +139,6 @@ export const useImageHandler = ({
 
         const formData = new FormData();
         formData.append(apiConfig.formDataName || "", file);
-
         const uploadPromise = axios.post(
           `${apiConfig.baseUrl}${apiConfig.uploadUrl}`,
           formData,
@@ -154,7 +151,6 @@ export const useImageHandler = ({
                   (progressEvent.loaded / progressEvent.total) * 100
                 );
               } else {
-                // فال‌بک غیرخطی: سریع شروع می‌شه، نزدیک 100 کند می‌شه
                 const increment = Math.min(
                   99,
                   uploadProgress + (100 - uploadProgress) * 0.05
@@ -176,7 +172,6 @@ export const useImageHandler = ({
         );
 
         const [response] = await Promise.all([uploadPromise, minUploadTime]);
-
         targetProgressRef.current = 100;
         smoothProgressUpdate();
         await new Promise((resolve) => setTimeout(resolve, 300));
@@ -201,7 +196,6 @@ export const useImageHandler = ({
         error.name === "CanceledError" ||
         error.message === "Upload canceled"
       ) {
-        // نادیده بگیر
       } else {
         console.error(
           testMode

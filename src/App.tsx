@@ -185,12 +185,13 @@ const App: React.FC = () => {
   const [copied, setCopied] = useState(false);
 
   const customColors = {
-    primary: "#8B5CF6", // Purple
-    error: "#F43F5E", // Pink
-    progress: "#06B6D4", // Cyan
-    placeholder: "#94A3B8", // Slate-400
-    text: "#fafafa",
-    textDisabled: "#e6e6e6",
+    primary: "#d24670",
+    error: "#ff4754",
+    progress: "#00FFF7",
+    placeholder: "#A0AEC0",
+    text: "#F5F5F5",
+    textDisabled: "#E2E8F0",
+    buttonText: "#FFFFFF",
   };
 
   const handleImageChange = (newImageUrl: string) => {
@@ -264,6 +265,17 @@ const App: React.FC = () => {
             />
           </Card>
 
+          {/* Rectangle shape example */}
+          <Card>
+            <PictureSelector
+              profileImageUrl=""
+              onChangeImage={handleImageChange}
+              title="Rectangle shape example"
+              type="image"
+              testMode
+            />
+          </Card>
+
           {/* Custom colors example */}
           <Card>
             <PictureSelector
@@ -271,18 +283,6 @@ const App: React.FC = () => {
               onChangeImage={handleImageChange}
               colors={customColors}
               title="Custom colors example"
-              testMode
-            />
-          </Card>
-
-          {/* Rectangle shape example */}
-          <Card>
-            <PictureSelector
-              profileImageUrl=""
-              onChangeImage={handleImageChange}
-              title="Rectangle shape example"
-              colors={customColors}
-              type="image"
               testMode
             />
           </Card>
