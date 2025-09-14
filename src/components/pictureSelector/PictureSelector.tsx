@@ -48,17 +48,7 @@ const PictureSelector = ({
   enableAbortController = true,
   testMode = false,
   testUploadDelay = 1000,
-}: ProfileSelectorPropsTypes & {
-  size?: number;
-  colors?: ColorPalette;
-  apiConfig?: apiConfig;
-  additionalClassNames?: additionalClassNames;
-  showProgressRing?: boolean;
-  blurOnProgress?: boolean;
-  enableAbortController?: boolean;
-  testMode?: boolean;
-  testUploadDelay?: number;
-}) => {
+}: ProfileSelectorPropsTypes) => {
   const { modalImagePreview, openImage } = useImagePreview();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [_imgError, setImgError] = useState(false);

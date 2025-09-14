@@ -6,6 +6,15 @@ export interface ProfileSelectorPropsTypes {
   type?: "profile" | "image";
   viewOnly?: boolean;
   title?: string;
+  size?: number;
+  colors?: ColorPalette;
+  apiConfig?: apiConfig;
+  additionalClassNames?: additionalClassNames;
+  showProgressRing?: boolean;
+  blurOnProgress?: boolean;
+  enableAbortController?: boolean;
+  testMode?: boolean;
+  testUploadDelay?: number;
 }
 
 export interface ModalProps {
