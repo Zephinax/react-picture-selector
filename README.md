@@ -46,7 +46,7 @@ The `PictureSelector` component is a customizable React component designed for h
 1. Ensure you have React and the required dependencies installed.
 2. Install the necessary packages:
    ```bash
-   npm install axios react-icons
+   npm i react-picture-selector
    ```
 3. Import and use the component in your React application.
 
