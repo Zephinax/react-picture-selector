@@ -212,7 +212,7 @@ const PictureSelector = ({
                   className="text-sm font-semibold text-white"
                   style={{ fontSize: buttonSize * 0.5 }}
                 >
-                  {uploadProgress}%
+                  {Math.round(uploadProgress)}%
                 </div>
               </div>
             )}

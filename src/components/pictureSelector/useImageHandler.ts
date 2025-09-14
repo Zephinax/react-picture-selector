@@ -110,7 +110,7 @@ export const useImageHandler = ({
     await new Promise((resolve) => setTimeout(resolve, 50)); // اطمینان از رندر 0
 
     try {
-      const minUploadTime = new Promise((resolve) => setTimeout(resolve, 1000));
+      const minUploadTime = new Promise((resolve) => setTimeout(resolve, 700));
 
       if (testMode) {
         if (imageUrl) {
