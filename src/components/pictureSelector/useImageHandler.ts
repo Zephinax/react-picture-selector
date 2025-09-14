@@ -49,7 +49,7 @@ export const useImageHandler = ({
       testIntervalRef.current = null;
     }
     if (smoothIntervalRef.current) {
-      clearInterval(smoothIntervalRef.current);
+      cancelAnimationFrame(smoothIntervalRef.current);
       smoothIntervalRef.current = null;
     }
     const abortController = new AbortController();
@@ -59,18 +59,21 @@ export const useImageHandler = ({
 
   const smoothProgressUpdate = () => {
     if (smoothIntervalRef.current) return;
-    smoothIntervalRef.current = setInterval(() => {
+    const update = () => {
       setUploadProgress((prev) => {
         if (prev >= targetProgressRef.current || prev >= 100) {
-          clearInterval(smoothIntervalRef.current!);
           smoothIntervalRef.current = null;
           return Math.min(100, prev);
         }
         const diff = targetProgressRef.current - prev;
-        const step = Math.max(0.5, diff * 0.15); // گام کمی بزرگتر برای سرعت
-        return Math.min(100, prev + step);
+        const step = Math.max(0.5, diff * 0.15);
+        const next = Math.min(100, prev + step);
+        if (next < 100)
+          smoothIntervalRef.current = requestAnimationFrame(update);
+        return next;
       });
-    }, 50);
+    };
+    smoothIntervalRef.current = requestAnimationFrame(update);
   };
 
   const simulateUpload = (file: File): Promise<string> => {
@@ -261,7 +264,7 @@ export const useImageHandler = ({
         testIntervalRef.current = null;
       }
       if (smoothIntervalRef.current) {
-        clearInterval(smoothIntervalRef.current);
+        cancelAnimationFrame(smoothIntervalRef.current);
         smoothIntervalRef.current = null;
       }
     };
