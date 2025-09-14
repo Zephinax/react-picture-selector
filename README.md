@@ -31,18 +31,19 @@ The `PictureSelector` component is a highly customizable React component designe
   <li><a href="#release-notes">Release Notes</a></li>
 </ul>
 
-## Features
+# Features
 
 - **Smooth Image Upload**: Upload images with a visually appealing progress ring (for profiles) or percentage display, powered by `requestAnimationFrame` for smooth animations and low CPU usage.
 - **Image Deletion**: Delete images via API or simulated deletion in test mode.
 - **Progress Indicator**: Displays a progress ring for circular profiles or a percentage-based indicator, with non-linear fallback for servers without `Content-Length`.
+- **Drag and Drop Support**: Allows users to drag and drop images onto the component with visual feedback (dashed border and message) and error handling for non-image file types.
 - **Image Preview**: Clickable modal preview for uploaded images, supporting circular and rectangular formats.
 - **Configurable Styling**: Customize colors, sizes, shapes, and additional CSS classes for full control over appearance.
 - **Abort Controller**: Cancel ongoing uploads using `AbortController` for better user control.
 - **Test Mode**: Simulate uploads and deletions with configurable delays, ideal for testing without API dependencies.
-- **Responsive Design**: Supports RTL layouts, responsive sizing, and both circular (profile) و rectangular image types.
+- **Responsive Design**: Supports RTL layouts, responsive sizing, and both circular (profile) and rectangular image types.
 - **Robust Error Handling**: Displays clear error messages for failed operations, with proper cleanup to prevent resource leaks.
-- **Performance Optimizations**: Prevents race conditions, ensures clean percentage displays, and optimizes resource usage.
+- **Performance Optimizations**: Prevents race conditions, ensures clean percentage displays, and optimizes resource usage using `useMemo` and `useCallback` to avoid unnecessary re-renders for computed styles and event handlers.
 
 ## Installation
 
