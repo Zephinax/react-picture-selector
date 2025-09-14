@@ -36,18 +36,44 @@ export const useImageHandler = ({
   const [loading, setLoading] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
-  const testProgressRef = useRef<any | null>(null);
+  const testIntervalRef = useRef<any | null>(null);
+  const smoothIntervalRef = useRef<any | null>(null);
+  const targetProgressRef = useRef<number>(0);
+  const isFirstUpdateRef = useRef<boolean>(true);
 
   const handleAbort = () => {
     if (!enableAbortController) return new AbortController();
     abortControllerRef.current?.abort();
-    if (testMode && testProgressRef.current) {
-      clearInterval(testProgressRef.current);
-      testProgressRef.current = null;
+    if (testIntervalRef.current) {
+      clearInterval(testIntervalRef.current);
+      testIntervalRef.current = null;
+    }
+    if (smoothIntervalRef.current) {
+      cancelAnimationFrame(smoothIntervalRef.current);
+      smoothIntervalRef.current = null;
     }
     const abortController = new AbortController();
     abortControllerRef.current = abortController;
     return abortController;
+  };
+
+  const smoothProgressUpdate = () => {
+    if (smoothIntervalRef.current) return;
+    const update = () => {
+      setUploadProgress((prev) => {
+        if (prev >= targetProgressRef.current || prev >= 100) {
+          smoothIntervalRef.current = null;
+          return Math.min(100, prev);
+        }
+        const diff = targetProgressRef.current - prev;
+        const step = Math.max(0.5, diff * 0.15);
+        const next = Math.min(100, prev + step);
+        if (next < 100)
+          smoothIntervalRef.current = requestAnimationFrame(update);
+        return next;
+      });
+    };
+    smoothIntervalRef.current = requestAnimationFrame(update);
   };
 
   const simulateUpload = (file: File): Promise<string> => {
@@ -56,14 +82,12 @@ export const useImageHandler = ({
       reader.onload = () => {
         let progress = 0;
         const interval = testUploadDelay / 100;
-        testProgressRef.current = setInterval(() => {
+        testIntervalRef.current = setInterval(() => {
           progress += 1;
           setUploadProgress(progress);
           if (progress >= 100) {
-            if (testProgressRef.current) {
-              clearInterval(testProgressRef.current);
-              testProgressRef.current = null;
-            }
+            clearInterval(testIntervalRef.current!);
+            testIntervalRef.current = null;
             resolve(reader.result as string);
           }
         }, interval);
@@ -80,12 +104,17 @@ export const useImageHandler = ({
       alert("Please select an image file");
       return;
     }
-
-    const abortController = handleAbort();
+    handleAbort();
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
     setLoading(true);
-    setUploadProgress(1);
+    setUploadProgress(0);
+    targetProgressRef.current = 0;
+    isFirstUpdateRef.current = true;
+    await new Promise((resolve) => setTimeout(resolve, 50));
 
     try {
+      const minUploadTime = new Promise((resolve) => setTimeout(resolve, 700));
       if (testMode) {
         if (imageUrl) {
           await new Promise((resolve) => setTimeout(resolve, 300));
@@ -94,6 +123,7 @@ export const useImageHandler = ({
         if (abortController.signal.aborted) {
           throw new Error("Upload canceled");
         }
+        await minUploadTime;
         setLoading(false);
         setImageUrl(base64Image);
         onChangeImage(base64Image);
@@ -109,28 +139,42 @@ export const useImageHandler = ({
 
         const formData = new FormData();
         formData.append(apiConfig.formDataName || "", file);
-
-        const response = await axios.post(
+        const uploadPromise = axios.post(
           `${apiConfig.baseUrl}${apiConfig.uploadUrl}`,
           formData,
           {
             signal: abortController.signal,
             onUploadProgress: (progressEvent) => {
+              let progress = 0;
               if (progressEvent.total && progressEvent.total > 0) {
-                const progress = Math.round(
+                progress = Math.round(
                   (progressEvent.loaded / progressEvent.total) * 100
                 );
-                setUploadProgress(Math.max(uploadProgress, progress));
               } else {
-                const fallbackInterval = setInterval(() => {
-                  setUploadProgress((prev) => Math.min(99, prev + 5));
-                }, 200);
-                testProgressRef.current = fallbackInterval;
+                const increment = Math.min(
+                  99,
+                  uploadProgress + (100 - uploadProgress) * 0.05
+                );
+                progress = Math.round(increment);
               }
+              if (isFirstUpdateRef.current && progress > 5) {
+                progress = 5;
+                isFirstUpdateRef.current = false;
+              }
+              targetProgressRef.current = Math.max(
+                targetProgressRef.current,
+                progress
+              );
+              smoothProgressUpdate();
             },
             headers: apiConfig.additionalHeaders,
           }
         );
+
+        const [response] = await Promise.all([uploadPromise, minUploadTime]);
+        targetProgressRef.current = 100;
+        smoothProgressUpdate();
+        await new Promise((resolve) => setTimeout(resolve, 300));
 
         setLoading(false);
         const newImageUrl = getNestedValue(
@@ -141,6 +185,8 @@ export const useImageHandler = ({
           setImageUrl(newImageUrl);
           onChangeImage(newImageUrl);
           setUploadProgress(0);
+          targetProgressRef.current = 0;
+          isFirstUpdateRef.current = true;
         } else {
           throw new Error("Failed to extract image URL from response");
         }
@@ -150,7 +196,6 @@ export const useImageHandler = ({
         error.name === "CanceledError" ||
         error.message === "Upload canceled"
       ) {
-        // نادیده بگیر
       } else {
         console.error(
           testMode
@@ -162,9 +207,15 @@ export const useImageHandler = ({
       }
       setLoading(false);
       setUploadProgress(0);
-      if (testProgressRef.current) {
-        clearInterval(testProgressRef.current);
-        testProgressRef.current = null;
+      targetProgressRef.current = 0;
+      isFirstUpdateRef.current = true;
+      if (testIntervalRef.current) {
+        clearInterval(testIntervalRef.current);
+        testIntervalRef.current = null;
+      }
+      if (smoothIntervalRef.current) {
+        clearInterval(smoothIntervalRef.current);
+        smoothIntervalRef.current = null;
       }
     }
   };
@@ -209,9 +260,13 @@ export const useImageHandler = ({
       if (enableAbortController) {
         abortControllerRef.current?.abort();
       }
-      if (testProgressRef.current) {
-        clearInterval(testProgressRef.current);
-        testProgressRef.current = null;
+      if (testIntervalRef.current) {
+        clearInterval(testIntervalRef.current);
+        testIntervalRef.current = null;
+      }
+      if (smoothIntervalRef.current) {
+        cancelAnimationFrame(smoothIntervalRef.current);
+        smoothIntervalRef.current = null;
       }
     };
   }, [initialImageUrl, enableAbortController]);

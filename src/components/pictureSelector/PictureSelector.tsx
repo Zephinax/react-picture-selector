@@ -15,8 +15,8 @@ const PictureSelector = ({
     deleteUrl: "POST_DELETE_AVATAR",
     uploadUrl: "POST_UPLOAD_AVATAR",
     baseUrl: "BASE_URL_SERVICES",
-    formDataName: "File",
     responsePath: "data.data",
+    formDataName: "File",
     additionalHeaders: {
       "Content-Type": "multipart/form-data",
     },
@@ -62,7 +62,6 @@ const PictureSelector = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [_imgError, setImgError] = useState(false);
   const isCircle = type === "profile";
-
   const {
     imageUrl,
     uploadProgress,
@@ -81,7 +80,6 @@ const PictureSelector = ({
   });
 
   const triggerFileInput = () => fileInputRef.current?.click();
-
   const radius = size / 2;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = (1 - uploadProgress / 100) * circumference;
@@ -130,7 +128,6 @@ const PictureSelector = ({
               }}
             >
               {isCircle ? (
-                // Profile placeholder SVG
                 <svg
                   width={size}
                   height={size}
@@ -195,7 +192,6 @@ const PictureSelector = ({
               )}
             </div>
           )}
-          {/* Show percentage when no progress ring or not circle */}
           {loading &&
             ((blurOnProgress && imageUrl) ||
               (!showProgressRing && !imageUrl)) && (
@@ -205,19 +201,18 @@ const PictureSelector = ({
                   borderRadius: isCircle ? "50%" : "12%",
                   backdropFilter: "blur(4px)",
                   WebkitBackdropFilter: "blur(4px)",
-                  backgroundColor: "rgba(0, 0, 0, 0.2)", // معادل bg-black/20
+                  backgroundColor: "rgba(0, 0, 0, 0.2)",
                 }}
               >
                 <div
                   className="text-sm font-semibold text-white"
                   style={{ fontSize: buttonSize * 0.5 }}
                 >
-                  {uploadProgress}%
+                  {Math.round(uploadProgress)}%
                 </div>
               </div>
             )}
 
-          {/* Progress ring - only show for circle (profile) type */}
           {showProgressRing &&
           uploadProgress > 0 &&
           uploadProgress < 100 &&
@@ -226,15 +221,15 @@ const PictureSelector = ({
               className="absolute z-[6] top-0 left-0 pointer-events-none"
               width={size}
               height={size}
-              viewBox={`0 0 ${size} ${size}`} // viewBox مقیاس‌پذیر
+              viewBox={`0 0 ${size} ${size}`}
             >
               <circle
                 cx={size / 2}
                 cy={size / 2}
-                r={size / 2 - size * 0.035} // شعاع نسبی با جبران حاشیه
+                r={size / 2 - size * 0.035}
                 fill="none"
                 stroke={colors.progress}
-                strokeWidth={size * (10 / 180)} // ضخامت خط نسبی
+                strokeWidth={size * (10 / 180)}
                 strokeDasharray={circumference}
                 strokeDashoffset={strokeDashoffset}
                 transform={`rotate(-90 ${size / 2} ${size / 2})`}
@@ -281,7 +276,6 @@ const PictureSelector = ({
               </div>
             )
           )}
-
           {!viewOnly && (
             <>
               <button
