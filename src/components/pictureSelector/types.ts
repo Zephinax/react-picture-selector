@@ -1,11 +1,20 @@
 import { ReactNode } from "react";
 
 export interface ProfileSelectorPropsTypes {
-  profileImageUrl: string | null;
+  imageUrl: string | null;
   onChangeImage: (img: string) => void;
   type?: "profile" | "image";
   viewOnly?: boolean;
   title?: string;
+  size?: number;
+  colors?: ColorPalette;
+  apiConfig?: apiConfig;
+  additionalClassNames?: additionalClassNames;
+  showProgressRing?: boolean;
+  blurOnProgress?: boolean;
+  enableAbortController?: boolean;
+  testMode?: boolean;
+  testUploadDelay?: number;
 }
 
 export interface ModalProps {

@@ -1,11 +1,20 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
 
 interface ProfileSelectorPropsTypes {
-    profileImageUrl: string | null;
+    imageUrl: string | null;
     onChangeImage: (img: string) => void;
     type?: "profile" | "image";
     viewOnly?: boolean;
     title?: string;
+    size?: number;
+    colors?: ColorPalette;
+    apiConfig?: apiConfig;
+    additionalClassNames?: additionalClassNames;
+    showProgressRing?: boolean;
+    blurOnProgress?: boolean;
+    enableAbortController?: boolean;
+    testMode?: boolean;
+    testUploadDelay?: number;
 }
 interface ColorPalette {
     primary: string;
@@ -31,16 +40,6 @@ interface apiConfig {
     additionalHeaders?: any;
 }
 
-declare const PictureSelector: ({ apiConfig, additionalClassNames, colors, profileImageUrl, type, onChangeImage, viewOnly, title, size, showProgressRing, blurOnProgress, enableAbortController, testMode, testUploadDelay, }: ProfileSelectorPropsTypes & {
-    size?: number;
-    colors?: ColorPalette;
-    apiConfig?: apiConfig;
-    additionalClassNames?: additionalClassNames;
-    showProgressRing?: boolean;
-    blurOnProgress?: boolean;
-    enableAbortController?: boolean;
-    testMode?: boolean;
-    testUploadDelay?: number;
-}) => react_jsx_runtime.JSX.Element;
+declare const PictureSelector: ({ apiConfig, additionalClassNames, colors, imageUrl: defaultImage, type, onChangeImage, viewOnly, title, size, showProgressRing, blurOnProgress, enableAbortController, testMode, testUploadDelay, }: ProfileSelectorPropsTypes) => react_jsx_runtime.JSX.Element;
 
 export { PictureSelector as default };
