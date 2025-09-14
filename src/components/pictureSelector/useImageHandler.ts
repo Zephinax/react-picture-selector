@@ -7,8 +7,8 @@ interface UseImageHandlerProps {
   apiConfig: apiConfig;
   testMode: boolean;
   testUploadDelay: number;
-  initialImageUrl: string | null;
   onChangeImage: (url: string) => void;
+  currentImageUrl: string | null;
   enableAbortController: boolean;
 }
 
@@ -26,11 +26,10 @@ export const useImageHandler = ({
   apiConfig,
   testMode,
   testUploadDelay,
-  initialImageUrl,
   onChangeImage,
+  currentImageUrl,
   enableAbortController,
 }: UseImageHandlerProps) => {
-  const [imageUrl, setImageUrl] = useState<string | null>(initialImageUrl);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -112,31 +111,21 @@ export const useImageHandler = ({
     targetProgressRef.current = 0;
     isFirstUpdateRef.current = true;
     await new Promise((resolve) => setTimeout(resolve, 50));
-
+    if (currentImageUrl) {
+      await handleDeleteImage();
+    }
     try {
       const minUploadTime = new Promise((resolve) => setTimeout(resolve, 700));
       if (testMode) {
-        if (imageUrl) {
-          await new Promise((resolve) => setTimeout(resolve, 300));
-        }
         const base64Image = await simulateUpload(file);
         if (abortController.signal.aborted) {
           throw new Error("Upload canceled");
         }
         await minUploadTime;
         setLoading(false);
-        setImageUrl(base64Image);
         onChangeImage(base64Image);
         setUploadProgress(0);
       } else {
-        if (imageUrl) {
-          await axios.post(
-            `${apiConfig.baseUrl}${apiConfig.deleteUrl}${imageUrl}`,
-            null,
-            { signal: abortController.signal }
-          );
-        }
-
         const formData = new FormData();
         formData.append(apiConfig.formDataName || "", file);
         const uploadPromise = axios.post(
@@ -182,7 +171,6 @@ export const useImageHandler = ({
           apiConfig.responsePath || "data.data"
         );
         if (newImageUrl) {
-          setImageUrl(newImageUrl);
           onChangeImage(newImageUrl);
           setUploadProgress(0);
           targetProgressRef.current = 0;
@@ -214,33 +202,30 @@ export const useImageHandler = ({
         testIntervalRef.current = null;
       }
       if (smoothIntervalRef.current) {
-        clearInterval(smoothIntervalRef.current);
+        cancelAnimationFrame(smoothIntervalRef.current);
         smoothIntervalRef.current = null;
       }
     }
   };
 
   const handleDeleteImage = async () => {
-    if (!imageUrl) return;
-
+    if (!currentImageUrl) return;
     const abortController = handleAbort();
     setDeleting(true);
     setError(null);
     try {
       if (testMode) {
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 300));
+        onChangeImage("");
         if (abortController.signal.aborted) {
           throw new Error("Delete canceled");
         }
-        setImageUrl(null);
-        onChangeImage("");
       } else {
         await axios.post(
-          `${apiConfig.baseUrl}${apiConfig.deleteUrl}${imageUrl}`,
+          `${apiConfig.baseUrl}${apiConfig.deleteUrl}/${currentImageUrl}`,
           null,
           { signal: abortController.signal }
         );
-        setImageUrl(null);
         onChangeImage("");
       }
     } catch (error) {
@@ -255,24 +240,12 @@ export const useImageHandler = ({
   };
 
   useEffect(() => {
-    setImageUrl(initialImageUrl);
     return () => {
-      if (enableAbortController) {
-        abortControllerRef.current?.abort();
-      }
-      if (testIntervalRef.current) {
-        clearInterval(testIntervalRef.current);
-        testIntervalRef.current = null;
-      }
-      if (smoothIntervalRef.current) {
-        cancelAnimationFrame(smoothIntervalRef.current);
-        smoothIntervalRef.current = null;
-      }
+      handleAbort();
     };
-  }, [initialImageUrl, enableAbortController]);
+  }, [enableAbortController]);
 
   return {
-    imageUrl,
     uploadProgress,
     error,
     loading,

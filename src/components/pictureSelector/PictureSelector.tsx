@@ -32,7 +32,7 @@ const PictureSelector = ({
     text: "#fafafa",
     textDisabled: "#e6e6e6",
   },
-  imageUrl: defaultImage,
+  imageUrl,
   type = "profile",
   onChangeImage,
   viewOnly = false,
@@ -49,7 +49,6 @@ const PictureSelector = ({
   const [_imgError, setImgError] = useState(false);
   const isCircle = type === "profile";
   const {
-    imageUrl,
     uploadProgress,
     error,
     loading,
@@ -60,9 +59,9 @@ const PictureSelector = ({
     apiConfig,
     testMode,
     testUploadDelay,
-    initialImageUrl: defaultImage,
     onChangeImage,
     enableAbortController,
+    currentImageUrl: imageUrl,
   });
   const [isDragging, setIsDragging] = useState(false);
   const triggerFileInput = useCallback(() => {
@@ -129,7 +128,7 @@ const PictureSelector = ({
           {imageUrl ? (
             <img
               src={imageUrl}
-              alt={isCircle ? "Profile" : "Image"}
+              alt={""}
               className={`w-full h-full object-cover ${
                 additionalClassNames.image || ""
               }`}

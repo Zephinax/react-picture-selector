@@ -183,6 +183,32 @@ const GitHubReadmeFetcher: React.FC<{ readmeUrl: string }> = ({
 
 const App: React.FC = () => {
   const [copied, setCopied] = useState(false);
+  const [defaultImgUrl, setDefaultImgUrl] = useState<string | null>(null);
+  const [smallImgUrl, setSmallImgUrl] = useState<string | null>(null);
+  const [rectangleImgUrl, setRectangleImgUrl] = useState<string | null>(null);
+  const [customColorsImgUrl, setCustomColorsImgUrl] = useState<string | null>(
+    null
+  );
+  const [noProgressImgUrl, setNoProgressImgUrl] = useState<string | null>(null);
+
+  const handleDefaultImageChange = (newImageUrl: string) => {
+    setDefaultImgUrl(newImageUrl || null);
+  };
+  const handleSmallImageChange = (newImageUrl: string) => {
+    setSmallImgUrl(newImageUrl || null);
+  };
+  const handleRectangleImageChange = (newImageUrl: string) => {
+    setRectangleImgUrl(newImageUrl || null);
+  };
+  const handleCustomColorsImageChange = (newImageUrl: string) => {
+    setCustomColorsImgUrl(newImageUrl || null);
+  };
+  const handleNoProgressImageChange = (newImageUrl: string) => {
+    setNoProgressImgUrl(newImageUrl || null);
+  };
+  const handleViewOnlyImageChange = (newImageUrl: string) => {
+    // نیازی به تغییر نیست، چون viewOnly است
+  };
 
   const customColors = {
     primary: "#d24670",
@@ -192,10 +218,6 @@ const App: React.FC = () => {
     text: "#F5F5F5",
     textDisabled: "#E2E8F0",
     buttonText: "#FFFFFF",
-  };
-
-  const handleImageChange = (newImageUrl: string) => {
-    console.log("Selected image URL:", newImageUrl);
   };
 
   const handleCopy = () => {
@@ -247,8 +269,8 @@ const App: React.FC = () => {
                 delete: "cursor-target",
                 image: "cursor-target",
               }}
-              imageUrl=""
-              onChangeImage={handleImageChange}
+              imageUrl={defaultImgUrl}
+              onChangeImage={handleDefaultImageChange}
               title="Default example (Profile)"
               testMode
             />
@@ -257,8 +279,8 @@ const App: React.FC = () => {
           {/* Small size example */}
           <Card>
             <PictureSelector
-              imageUrl=""
-              onChangeImage={handleImageChange}
+              imageUrl={smallImgUrl}
+              onChangeImage={handleSmallImageChange}
               size={120}
               title="Small size example"
               testMode
@@ -268,8 +290,8 @@ const App: React.FC = () => {
           {/* Rectangle shape example */}
           <Card>
             <PictureSelector
-              imageUrl=""
-              onChangeImage={handleImageChange}
+              imageUrl={rectangleImgUrl}
+              onChangeImage={handleRectangleImageChange}
               title="Rectangle shape example"
               type="image"
               testMode
@@ -279,8 +301,8 @@ const App: React.FC = () => {
           {/* Custom colors example */}
           <Card>
             <PictureSelector
-              imageUrl=""
-              onChangeImage={handleImageChange}
+              imageUrl={customColorsImgUrl}
+              onChangeImage={handleCustomColorsImageChange}
               colors={customColors}
               title="Custom colors example"
               testMode
@@ -291,7 +313,7 @@ const App: React.FC = () => {
           <Card>
             <PictureSelector
               imageUrl="https://avatars.githubusercontent.com/u/156062098?v=4"
-              onChangeImage={handleImageChange}
+              onChangeImage={() => {}}
               viewOnly={true}
               title="View only example (non editable)"
               testMode
@@ -301,8 +323,8 @@ const App: React.FC = () => {
           {/* No progress ring example */}
           <Card>
             <PictureSelector
-              imageUrl=""
-              onChangeImage={handleImageChange}
+              imageUrl={noProgressImgUrl}
+              onChangeImage={handleNoProgressImageChange}
               showProgressRing={false}
               title="No progress ring example"
               testMode
