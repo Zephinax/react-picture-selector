@@ -15,7 +15,7 @@
     "deploy": "gh-pages -d dist"
   },
   "author": "Zephinax",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^26.0.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
