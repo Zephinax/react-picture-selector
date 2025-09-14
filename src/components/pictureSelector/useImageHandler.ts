@@ -105,12 +105,14 @@ export const useImageHandler = ({
       return;
     }
 
-    const abortController = handleAbort();
+    handleAbort();
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
     setLoading(true);
     setUploadProgress(0);
     targetProgressRef.current = 0;
-    isFirstUpdateRef.current = true; // ریست برای آپدیت اول
-    await new Promise((resolve) => setTimeout(resolve, 50)); // اطمینان از رندر 0
+    isFirstUpdateRef.current = true;
+    await new Promise((resolve) => setTimeout(resolve, 50));
 
     try {
       const minUploadTime = new Promise((resolve) => setTimeout(resolve, 700));
@@ -152,10 +154,15 @@ export const useImageHandler = ({
                   (progressEvent.loaded / progressEvent.total) * 100
                 );
               } else {
-                progress = Math.min(99, uploadProgress + 2);
+                // فال‌بک غیرخطی: سریع شروع می‌شه، نزدیک 100 کند می‌شه
+                const increment = Math.min(
+                  99,
+                  uploadProgress + (100 - uploadProgress) * 0.05
+                );
+                progress = Math.round(increment);
               }
               if (isFirstUpdateRef.current && progress > 5) {
-                progress = 5; // اولین آپدیت رو محدود کن
+                progress = 5;
                 isFirstUpdateRef.current = false;
               }
               targetProgressRef.current = Math.max(
