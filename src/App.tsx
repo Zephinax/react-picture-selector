@@ -247,7 +247,7 @@ const App: React.FC = () => {
                 delete: "cursor-target",
                 image: "cursor-target",
               }}
-              profileImageUrl=""
+              imageUrl=""
               onChangeImage={handleImageChange}
               title="Default example (Profile)"
               testMode
@@ -257,7 +257,7 @@ const App: React.FC = () => {
           {/* Small size example */}
           <Card>
             <PictureSelector
-              profileImageUrl=""
+              imageUrl=""
               onChangeImage={handleImageChange}
               size={120}
               title="Small size example"
@@ -268,7 +268,7 @@ const App: React.FC = () => {
           {/* Rectangle shape example */}
           <Card>
             <PictureSelector
-              profileImageUrl=""
+              imageUrl=""
               onChangeImage={handleImageChange}
               title="Rectangle shape example"
               type="image"
@@ -279,7 +279,7 @@ const App: React.FC = () => {
           {/* Custom colors example */}
           <Card>
             <PictureSelector
-              profileImageUrl=""
+              imageUrl=""
               onChangeImage={handleImageChange}
               colors={customColors}
               title="Custom colors example"
@@ -290,7 +290,7 @@ const App: React.FC = () => {
           {/* View-only example (non-editable) */}
           <Card>
             <PictureSelector
-              profileImageUrl="https://avatars.githubusercontent.com/u/156062098?v=4"
+              imageUrl="https://avatars.githubusercontent.com/u/156062098?v=4"
               onChangeImage={handleImageChange}
               viewOnly={true}
               title="View only example (non editable)"
@@ -301,7 +301,7 @@ const App: React.FC = () => {
           {/* No progress ring example */}
           <Card>
             <PictureSelector
-              profileImageUrl=""
+              imageUrl=""
               onChangeImage={handleImageChange}
               showProgressRing={false}
               title="No progress ring example"

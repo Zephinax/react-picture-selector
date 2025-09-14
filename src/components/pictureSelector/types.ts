@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 
 export interface ProfileSelectorPropsTypes {
-  profileImageUrl: string | null;
+  imageUrl: string | null;
   onChangeImage: (img: string) => void;
   type?: "profile" | "image";
   viewOnly?: boolean;

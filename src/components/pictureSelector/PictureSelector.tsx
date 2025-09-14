@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
-import { MdDeleteOutline, MdOutlineEdit } from "react-icons/md";
+import { MdOutlineEdit } from "react-icons/md";
+import { HiOutlineTrash } from "react-icons/hi2";
 import {
   additionalClassNames,
   apiConfig,
@@ -36,7 +37,7 @@ const PictureSelector = ({
     text: "#fafafa",
     textDisabled: "#e6e6e6",
   },
-  profileImageUrl,
+  imageUrl: defaultImage,
   type = "profile",
   onChangeImage,
   viewOnly = false,
@@ -74,7 +75,7 @@ const PictureSelector = ({
     apiConfig,
     testMode,
     testUploadDelay,
-    initialImageUrl: profileImageUrl,
+    initialImageUrl: defaultImage,
     onChangeImage,
     enableAbortController,
   });
@@ -287,15 +288,16 @@ const PictureSelector = ({
                   right: `${buttonPosition}px`,
                   borderRadius: isCircle ? "50%" : "28%",
                 }}
-                className={`absolute p-1 cursor-pointer  shadow-lg flex items-center justify-center z-10 ${
+                className={`absolute p-1 cursor-pointer active:scale-[0.9] transition-transform duration-150 ease-in-out shadow-lg flex items-center justify-center z-10 ${
                   additionalClassNames.edit || ""
                 } ${isCircle ? "rounded-full" : "rounded-[12px]"}`}
                 onClick={triggerFileInput}
                 disabled={loading}
               >
                 <MdOutlineEdit
+                  className="flex items-center justify-center"
                   color={loading ? colors.text : colors.textDisabled}
-                  size={buttonSize * 0.6}
+                  size={buttonSize * 0.55}
                 />
               </button>
               {imageUrl && (
@@ -308,7 +310,7 @@ const PictureSelector = ({
                     left: `${buttonPosition}px`,
                     borderRadius: isCircle ? "50%" : "28%",
                   }}
-                  className={`absolute p-1 cursor-pointer shadow-lg flex items-center justify-center z-10 ${
+                  className={`absolute p-1 cursor-pointer active:scale-[0.9] transition-transform duration-150 ease-in-out shadow-lg flex items-center justify-center z-10 ${
                     additionalClassNames.delete || ""
                   }`}
                   onClick={handleDeleteImage}
@@ -317,6 +319,7 @@ const PictureSelector = ({
                   {deleting ? (
                     <>
                       <LuRefreshCcw
+                        className="flex items-center justify-center"
                         color={loading ? colors.text : colors.textDisabled}
                         size={buttonSize * 0.5}
                         style={{
@@ -334,9 +337,10 @@ const PictureSelector = ({
                       </style>
                     </>
                   ) : (
-                    <MdDeleteOutline
+                    <HiOutlineTrash
+                      className="flex items-center justify-center"
                       color={loading ? colors.text : colors.textDisabled}
-                      size={buttonSize * 0.6}
+                      size={buttonSize * 0.55}
                     />
                   )}
                 </button>
