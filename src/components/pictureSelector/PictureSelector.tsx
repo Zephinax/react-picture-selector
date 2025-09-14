@@ -1,12 +1,7 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo, useCallback } from "react";
 import { MdOutlineEdit } from "react-icons/md";
 import { HiOutlineTrash } from "react-icons/hi2";
-import {
-  additionalClassNames,
-  apiConfig,
-  ColorPalette,
-  ProfileSelectorPropsTypes,
-} from "./types";
+import { ProfileSelectorPropsTypes } from "./types";
 import useImagePreview from "./useImagePreview";
 import { LuRefreshCcw } from "react-icons/lu";
 import { useImageHandler } from "./useImageHandler";
@@ -69,18 +64,27 @@ const PictureSelector = ({
     onChangeImage,
     enableAbortController,
   });
+  const [isDragging, setIsDragging] = useState(false);
+  const triggerFileInput = useCallback(() => {
+    fileInputRef.current?.click();
+  }, []);
+  const radius = useMemo(() => size / 2, [size]);
+  const circumference = useMemo(() => 2 * Math.PI * radius, [radius]);
+  const strokeDashoffset = useMemo(
+    () => (1 - uploadProgress / 100) * circumference,
+    [uploadProgress, circumference]
+  );
+  const buttonPosition = useMemo(() => size * 0.06, [size]);
+  const buttonSize = useMemo(() => size * 0.2, [size]);
 
-  const triggerFileInput = () => fileInputRef.current?.click();
-  const radius = size / 2;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = (1 - uploadProgress / 100) * circumference;
-  const buttonPosition = size * 0.06;
-  const buttonSize = size * 0.2;
-  const imageContainerStyle = {
-    width: `${size}px`,
-    height: `${size}px`,
-    borderRadius: isCircle ? "50%" : "12%",
-  };
+  const imageContainerStyle = useMemo(
+    () => ({
+      width: `${size}px`,
+      height: `${size}px`,
+      borderRadius: isCircle ? "50%" : "12%",
+    }),
+    [size, isCircle]
+  );
 
   return (
     <div
@@ -96,7 +100,32 @@ const PictureSelector = ({
       </div>
       <div className="flex flex-col items-center justify-center relative">
         {modalImagePreview()}
-        <div className="relative" style={imageContainerStyle}>
+        <div
+          onDragOver={(e) => {
+            e.preventDefault();
+            setIsDragging(true);
+          }}
+          onDragLeave={() => setIsDragging(false)}
+          onDrop={(e) => {
+            e.preventDefault();
+            setIsDragging(false);
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+              const file = files[0];
+              if (file.type.startsWith("image/")) {
+                handleImageChange({
+                  target: { files: [file] },
+                } as unknown as React.ChangeEvent<HTMLInputElement>);
+              }
+            }
+          }}
+          className={`relative transition-all duration-100 ${
+            isDragging
+              ? "outline-2 outline-dashed outline-blue-500 bg-blue-300/50"
+              : ""
+          }`}
+          style={imageContainerStyle}
+        >
           {imageUrl ? (
             <img
               src={imageUrl}
@@ -104,6 +133,7 @@ const PictureSelector = ({
               className={`w-full h-full object-cover ${
                 additionalClassNames.image || ""
               }`}
+              aria-describedby="image-description"
               onError={() => setImgError(true)}
               onClick={() => openImage(imageUrl)}
               style={{
@@ -270,6 +300,7 @@ const PictureSelector = ({
           {!viewOnly && (
             <>
               <button
+                aria-label="Edit profile picture"
                 style={{
                   backgroundColor: colors.primary,
                   width: `${buttonSize}px`,
@@ -292,6 +323,7 @@ const PictureSelector = ({
               </button>
               {imageUrl && (
                 <button
+                  aria-label="Delete profile picture"
                   style={{
                     backgroundColor: colors.error,
                     width: `${buttonSize}px`,
@@ -338,6 +370,9 @@ const PictureSelector = ({
             </>
           )}
         </div>
+        <span id="image-description" className="sr-only">
+          {imageUrl ? "Current profile picture" : "No image selected"}
+        </span>
         <input
           ref={fileInputRef}
           type="file"
@@ -345,7 +380,12 @@ const PictureSelector = ({
           onChange={handleImageChange}
           className="hidden"
           disabled={loading}
+          aria-label="Upload image"
+          aria-describedby="file-upload-description"
         />
+        <span id="file-upload-description" className="sr-only">
+          Upload an image file for your profile picture
+        </span>
       </div>
       {error && (
         <div className="flex items-center justify-center">
