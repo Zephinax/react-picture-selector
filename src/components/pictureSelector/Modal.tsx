@@ -20,7 +20,7 @@ const Modal: React.FC<ModalProps> = ({
     ReactDOM.createPortal(
       <div
         onClick={handleClose} // کلیک روی بک‌دراپ
-        className={`fixed inset-0 z-[999] bg-[#0000006c]/30 backdrop-blur-[4px] flex items-end md:items-center justify-center ${
+        className={`fixed inset-0 z-[999] bg-[#0000006c]/30 backdrop-blur-[4px] flex items-center justify-center ${
           isOpen ? "translate-y-0" : "translate-y-[100%] delay-500"
         }`}
       >
