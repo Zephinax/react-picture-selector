@@ -21,7 +21,6 @@ The `PictureSelector` component is a highly customizable React component designe
   <li><a href="#features">Features</a></li>
   <li><a href="#installation">Installation</a></li>
   <li><a href="#usage">Usage</a></li>
-  <li><a href="#props">Props</a></li>
   <li><a href="#dependencies">Dependencies</a></li>
   <li><a href="#api-configuration">API Configuration</a></li>
   <li><a href="#test-mode">Test Mode</a></li>
@@ -77,105 +76,6 @@ const App = () => {
   );
 };
 ```
-
-## Props
-
-<table>
-  <thead>
-    <tr>
-      <th>Prop</th>
-      <th>Type</th>
-      <th>Default Value</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>apiConfig</code></td>
-      <td><code>apiConfig</code></td>
-      <td>See below</td>
-      <td>Configuration for API endpoints and headers.</td>
-    </tr>
-    <tr>
-      <td><code>imageUrl</code></td>
-      <td><code>string | null</code></td>
-      <td><code>null</code></td>
-      <td>Initial image URL to display.</td>
-    </tr>
-    <tr>
-      <td><code>onChangeImage</code></td>
-      <td><code>(url: string) => void</code></td>
-      <td>-</td>
-      <td>Callback triggered when the image changes (upload or deletion).</td>
-    </tr>
-    <tr>
-      <td><code>type</code></td>
-      <td><code>"profile" | "image"</code></td>
-      <td><code>"profile"</code></td>
-      <td>Image shape: circular (<code>profile</code>) or rectangular (<code>image</code>).</td>
-    </tr>
-    <tr>
-      <td><code>title</code></td>
-      <td><code>string</code></td>
-      <td><code>"Profile Picture"</code></td>
-      <td>Title displayed above the component.</td>
-    </tr>
-    <tr>
-      <td><code>size</code></td>
-      <td><code>number</code></td>
-      <td><code>180</code></td>
-      <td>Size of the image container in pixels.</td>
-    </tr>
-    <tr>
-      <td><code>colors</code></td>
-      <td><code>ColorPalette</code></td>
-      <td>See below</td>
-      <td>Custom colors for buttons, progress, and text.</td>
-    </tr>
-    <tr>
-      <td><code>additionalClassNames</code></td>
-      <td><code>additionalClassNames</code></td>
-      <td><code>{}</code></td>
-      <td>Custom CSS classes for title, buttons, and image.</td>
-    </tr>
-    <tr>
-      <td><code>viewOnly</code></td>
-      <td><code>boolean</code></td>
-      <td><code>false</code></td>
-      <td>Disables edit/delete buttons for view-only mode.</td>
-    </tr>
-    <tr>
-      <td><code>showProgressRing</code></td>
-      <td><code>boolean</code></td>
-      <td><code>true</code></td>
-      <td>Shows progress ring for circular profiles or percentage for others.</td>
-    </tr>
-    <tr>
-      <td><code>blurOnProgress</code></td>
-      <td><code>boolean</code></td>
-      <td><code>true</code></td>
-      <td>Applies blur effect during uploads when an image is present.</td>
-    </tr>
-    <tr>
-      <td><code>enableAbortController</code></td>
-      <td><code>boolean</code></td>
-      <td><code>true</code></td>
-      <td>Enables <code>AbortController</code> for canceling uploads.</td>
-    </tr>
-    <tr>
-      <td><code>testMode</code></td>
-      <td><code>boolean</code></td>
-      <td><code>false</code></td>
-      <td>Enables test mode for simulated uploads/deletions.</td>
-    </tr>
-    <tr>
-      <td><code>testUploadDelay</code></td>
-      <td><code>number</code></td>
-      <td><code>1000</code></td>
-      <td>Delay (in ms) for simulated uploads in test mode.</td>
-    </tr>
-  </tbody>
-</table>
 
 ### ColorPalette Interface
 
