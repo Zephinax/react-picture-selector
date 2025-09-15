@@ -129,20 +129,16 @@ export const useImageHandler = ({
     targetProgressRef.current = 0;
     isFirstUpdateRef.current = true;
     await new Promise((resolve) => setTimeout(resolve, 50));
-    if (currentImageUrl) {
-      await handleDeleteImage();
-    }
     try {
       const minUploadTime = new Promise((resolve) => setTimeout(resolve, 700));
+      let newImageUrl: string;
       if (testMode) {
         const base64Image = await simulateUpload(file);
         if (abortController.signal.aborted) {
           throw new Error("Upload canceled");
         }
         await minUploadTime;
-        setLoading(false);
-        onChangeImage(base64Image);
-        setUploadProgress(0);
+        newImageUrl = base64Image;
       } else {
         const formData = new FormData();
         formData.append(apiConfig.formDataName || "", file);
@@ -183,46 +179,39 @@ export const useImageHandler = ({
         smoothProgressUpdate();
         await new Promise((resolve) => setTimeout(resolve, 300));
 
-        setLoading(false);
-        const newImageUrl = getNestedValue(
+        newImageUrl = getNestedValue(
           response,
           apiConfig.responsePath || "data.data"
         );
-        if (newImageUrl) {
-          onChangeImage(newImageUrl);
-          setUploadProgress(0);
-          targetProgressRef.current = 0;
-          isFirstUpdateRef.current = true;
-        } else {
+        if (!newImageUrl) {
           throw new Error("Failed to extract image URL from response");
         }
       }
+
+      // بعد از آپلود موفق، عکس قبلی رو حذف کن
+      if (currentImageUrl) {
+        await handleDeleteImage();
+      }
+
+      setLoading(false);
+      onChangeImage(newImageUrl);
+      setUploadProgress(0);
+      targetProgressRef.current = 0;
+      isFirstUpdateRef.current = true;
     } catch (error: any) {
       if (
         error.name === "CanceledError" ||
         error.message === "Upload canceled"
       ) {
+        // عملیات کنسل شده، نیازی به نمایش خطا نیست
       } else {
-        console.error(
-          testMode
-            ? "🧪 Test Mode: Error simulating upload:"
-            : "Error uploading the image:",
-          error instanceof Error ? error.message : error
-        );
-        setError("Failed to upload image");
+        handleError(error, {
+          setError: setError,
+          context: "uploading image",
+          isTestMode: testMode,
+        });
       }
-      setLoading(false);
-      setUploadProgress(0);
-      targetProgressRef.current = 0;
-      isFirstUpdateRef.current = true;
-      if (testIntervalRef.current) {
-        clearInterval(testIntervalRef.current);
-        testIntervalRef.current = null;
-      }
-      if (smoothIntervalRef.current) {
-        cancelAnimationFrame(smoothIntervalRef.current);
-        smoothIntervalRef.current = null;
-      }
+      resetState();
     }
   };
 
