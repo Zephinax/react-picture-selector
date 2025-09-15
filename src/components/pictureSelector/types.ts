@@ -55,11 +55,29 @@ export interface additionalClassNames {
   image?: string;
 }
 
+export interface UseImageHandlerProps {
+  apiConfig: apiConfig;
+  testMode: boolean;
+  testUploadDelay: number;
+  onChangeImage: (url: string) => void;
+  currentImageUrl: string | null;
+  enableAbortController: boolean;
+  onUploadSuccess?: (url: string) => void;
+  onUploadError?: (error: any) => void;
+  onDeleteStart?: () => void;
+  onDeleteSuccess?: () => void;
+}
+
 export interface apiConfig {
   deleteUrl: string;
   uploadUrl: string;
   baseUrl: string;
-  responsePath: string;
+  responsePath?: string;
   formDataName?: string;
-  additionalHeaders?: any;
+  additionalHeaders?: Record<string, string>;
+  uploadMethod?: "POST" | "PUT" | "PATCH";
+  deleteMethod?: "POST" | "DELETE" | "PUT";
+  deleteBody?:
+    | Record<string, unknown>
+    | ((imageUrl: string) => Record<string, unknown>);
 }

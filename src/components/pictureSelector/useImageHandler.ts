@@ -1,16 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { handleError } from "./errorHandler";
-import { apiConfig } from "./types";
-
-interface UseImageHandlerProps {
-  apiConfig: apiConfig;
-  testMode: boolean;
-  testUploadDelay: number;
-  onChangeImage: (url: string) => void;
-  currentImageUrl: string | null;
-  enableAbortController: boolean;
-}
+import { UseImageHandlerProps } from "./types";
 
 const getNestedValue = (obj: any, path: string | string[]): any => {
   if (!obj) return null;
