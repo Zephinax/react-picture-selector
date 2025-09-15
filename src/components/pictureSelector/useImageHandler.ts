@@ -26,8 +26,8 @@ export const useImageHandler = ({
   const [loading, setLoading] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
-  const testIntervalRef = useRef<any | null>(null);
-  const smoothIntervalRef = useRef<any | null>(null);
+  const testIntervalRef = useRef<number | null>(null);
+  const smoothIntervalRef = useRef<number | null>(null);
   const targetProgressRef = useRef<number>(0);
   const isFirstUpdateRef = useRef<boolean>(true);
 
@@ -112,6 +112,7 @@ export const useImageHandler = ({
     if (!file) return;
     if (!file.type.startsWith("image/")) {
       setError("Please select an image file");
+      apiConfig.onUploadError?.(new Error("Invalid file type"));
       return;
     }
     const abortController = handleAbort();
@@ -133,37 +134,36 @@ export const useImageHandler = ({
       } else {
         const formData = new FormData();
         formData.append(apiConfig.formDataName || "", file);
-        const uploadPromise = axios.post(
-          `${apiConfig.baseUrl}${apiConfig.uploadUrl}`,
-          formData,
-          {
-            signal: abortController.signal,
-            onUploadProgress: (progressEvent) => {
-              let progress = 0;
-              if (progressEvent.total && progressEvent.total > 0) {
-                progress = Math.round(
-                  (progressEvent.loaded / progressEvent.total) * 100
-                );
-              } else {
-                const increment = Math.min(
-                  99,
-                  uploadProgress + (100 - uploadProgress) * 0.05
-                );
-                progress = Math.round(increment);
-              }
-              if (isFirstUpdateRef.current && progress > 5) {
-                progress = 5;
-                isFirstUpdateRef.current = false;
-              }
-              targetProgressRef.current = Math.max(
-                targetProgressRef.current,
-                progress
+        const uploadPromise = axios.request({
+          method: apiConfig.uploadMethod || "POST",
+          url: `${apiConfig.baseUrl}${apiConfig.uploadUrl}`,
+          data: formData,
+          signal: abortController.signal,
+          onUploadProgress: (progressEvent) => {
+            let progress = 0;
+            if (progressEvent.total && progressEvent.total > 0) {
+              progress = Math.round(
+                (progressEvent.loaded / progressEvent.total) * 100
               );
-              smoothProgressUpdate();
-            },
-            headers: apiConfig.additionalHeaders,
-          }
-        );
+            } else {
+              const increment = Math.min(
+                99,
+                uploadProgress + (100 - uploadProgress) * 0.05
+              );
+              progress = Math.round(increment);
+            }
+            if (isFirstUpdateRef.current && progress > 5) {
+              progress = 5;
+              isFirstUpdateRef.current = false;
+            }
+            targetProgressRef.current = Math.max(
+              targetProgressRef.current,
+              progress
+            );
+            smoothProgressUpdate();
+          },
+          headers: apiConfig.additionalHeaders,
+        });
 
         const [response] = await Promise.all([uploadPromise, minUploadTime]);
         targetProgressRef.current = 100;
@@ -185,6 +185,7 @@ export const useImageHandler = ({
 
       setLoading(false);
       onChangeImage(newImageUrl);
+      apiConfig.onUploadSuccess?.(newImageUrl);
       setUploadProgress(0);
       targetProgressRef.current = 0;
       isFirstUpdateRef.current = true;
@@ -199,6 +200,7 @@ export const useImageHandler = ({
           context: "uploading image",
           isTestMode: testMode,
         });
+        apiConfig.onUploadError?.(error);
       }
       resetState();
     }
@@ -208,6 +210,7 @@ export const useImageHandler = ({
     if (!currentImageUrl) return;
     setDeleting(true);
     setError(null);
+    apiConfig.onDeleteStart?.();
     try {
       if (testMode) {
         await new Promise((resolve) => setTimeout(resolve, 300));
@@ -219,17 +222,21 @@ export const useImageHandler = ({
         }
         onChangeImage("");
       } else {
-        await axios.post(
-          `${apiConfig.baseUrl}${apiConfig.deleteUrl}/${currentImageUrl}`,
-          null,
-          {
-            signal: enableAbortController
-              ? abortControllerRef.current?.signal
-              : undefined,
-          }
-        );
+        await axios.request({
+          method: apiConfig.deleteMethod || "POST",
+          url: `${apiConfig.baseUrl}${apiConfig.deleteUrl}`,
+          data:
+            typeof apiConfig.deleteBody === "function"
+              ? apiConfig.deleteBody(currentImageUrl)
+              : apiConfig.deleteBody,
+          headers: apiConfig.additionalHeaders,
+          signal: enableAbortController
+            ? abortControllerRef.current?.signal
+            : undefined,
+        });
         onChangeImage("");
       }
+      apiConfig.onDeleteSuccess?.();
     } catch (error) {
       handleError(error, {
         setError: setError,

@@ -1,4 +1,21 @@
 import { ReactNode } from "react";
+export interface apiConfig {
+  deleteUrl: string;
+  uploadUrl: string;
+  baseUrl: string;
+  responsePath?: string;
+  formDataName?: string;
+  additionalHeaders?: Record<string, string>;
+  uploadMethod?: "POST" | "PUT" | "PATCH";
+  deleteMethod?: "POST" | "DELETE" | "PUT";
+  deleteBody?:
+    | Record<string, unknown>
+    | ((imageUrl: string) => Record<string, unknown>);
+  onUploadSuccess?: (url: string) => void;
+  onUploadError?: (error: any) => void;
+  onDeleteStart?: () => void;
+  onDeleteSuccess?: () => void;
+}
 
 export interface ProfileSelectorPropsTypes {
   imageUrl: string | null;
@@ -62,22 +79,4 @@ export interface UseImageHandlerProps {
   onChangeImage: (url: string) => void;
   currentImageUrl: string | null;
   enableAbortController: boolean;
-  onUploadSuccess?: (url: string) => void;
-  onUploadError?: (error: any) => void;
-  onDeleteStart?: () => void;
-  onDeleteSuccess?: () => void;
-}
-
-export interface apiConfig {
-  deleteUrl: string;
-  uploadUrl: string;
-  baseUrl: string;
-  responsePath?: string;
-  formDataName?: string;
-  additionalHeaders?: Record<string, string>;
-  uploadMethod?: "POST" | "PUT" | "PATCH";
-  deleteMethod?: "POST" | "DELETE" | "PUT";
-  deleteBody?:
-    | Record<string, unknown>
-    | ((imageUrl: string) => Record<string, unknown>);
 }

@@ -1,22 +1,31 @@
 import { useState, useRef, useMemo, useCallback } from "react";
 import { MdOutlineEdit } from "react-icons/md";
 import { HiOutlineTrash } from "react-icons/hi2";
-import { ProfileSelectorPropsTypes } from "./types";
+import { apiConfig, ProfileSelectorPropsTypes } from "./types";
 import useImagePreview from "./useImagePreview";
 import { LuRefreshCcw } from "react-icons/lu";
 import { useImageHandler } from "./useImageHandler";
 
-const PictureSelector = ({
-  apiConfig = {
-    deleteUrl: "POST_DELETE_AVATAR",
-    uploadUrl: "POST_UPLOAD_AVATAR",
-    baseUrl: "BASE_URL_SERVICES",
-    responsePath: "data.data",
-    formDataName: "File",
-    additionalHeaders: {
-      "Content-Type": "multipart/form-data",
-    },
+const defaultApiConfig = {
+  deleteUrl: "DELETE_URL",
+  uploadUrl: "UPLOAD_URL",
+  baseUrl: "BASE_URL",
+  responsePath: "data",
+  formDataName: "File",
+  deleteBody: {},
+  deleteMethod: "POST",
+  uploadMethod: "POST",
+  additionalHeaders: {
+    "Content-Type": "multipart/form-data",
   },
+  onUploadSuccess: () => {},
+  onUploadError: () => {},
+  onDeleteStart: () => {},
+  onDeleteSuccess: () => {},
+} as apiConfig;
+
+const PictureSelector = ({
+  apiConfig,
   additionalClassNames = {
     title: "",
     titleContainer: "",
@@ -41,6 +50,16 @@ const PictureSelector = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [_imgError, setImgError] = useState(false);
   const isCircle = type === "profile";
+
+  const mergedApiConfig = {
+    ...defaultApiConfig,
+    ...apiConfig,
+    additionalHeaders: {
+      ...defaultApiConfig.additionalHeaders,
+      ...(apiConfig?.additionalHeaders || {}),
+    },
+  };
+
   const {
     uploadProgress,
     error,
@@ -49,7 +68,7 @@ const PictureSelector = ({
     handleImageChange,
     handleDeleteImage,
   } = useImageHandler({
-    apiConfig,
+    apiConfig: mergedApiConfig,
     testMode,
     testUploadDelay,
     onChangeImage,
