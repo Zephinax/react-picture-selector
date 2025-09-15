@@ -40,9 +40,12 @@ export const useImageHandler = ({
   const targetProgressRef = useRef<number>(0);
   const isFirstUpdateRef = useRef<boolean>(true);
 
-  const handleAbort = () => {
-    if (!enableAbortController) return new AbortController();
-    abortControllerRef.current?.abort();
+  const resetState = () => {
+    setUploadProgress(0);
+    targetProgressRef.current = 0;
+    isFirstUpdateRef.current = true;
+    setLoading(false);
+    setError(null);
     if (testIntervalRef.current) {
       clearInterval(testIntervalRef.current);
       testIntervalRef.current = null;
@@ -51,13 +54,21 @@ export const useImageHandler = ({
       cancelAnimationFrame(smoothIntervalRef.current);
       smoothIntervalRef.current = null;
     }
-    const abortController = new AbortController();
-    abortControllerRef.current = abortController;
-    return abortController;
+  };
+
+  const handleAbort = () => {
+    if (!enableAbortController) return new AbortController();
+    abortControllerRef.current?.abort();
+    abortControllerRef.current = new AbortController();
+    resetState();
+    return abortControllerRef.current;
   };
 
   const smoothProgressUpdate = () => {
-    if (smoothIntervalRef.current) return;
+    if (smoothIntervalRef.current) {
+      cancelAnimationFrame(smoothIntervalRef.current);
+      smoothIntervalRef.current = null;
+    }
     const update = () => {
       setUploadProgress((prev) => {
         if (prev >= targetProgressRef.current || prev >= 100) {
@@ -65,10 +76,15 @@ export const useImageHandler = ({
           return Math.min(100, prev);
         }
         const diff = targetProgressRef.current - prev;
+        if (diff < 0.1) {
+          smoothIntervalRef.current = null;
+          return prev;
+        }
         const step = Math.max(0.5, diff * 0.15);
         const next = Math.min(100, prev + step);
-        if (next < 100)
+        if (next < 100) {
           smoothIntervalRef.current = requestAnimationFrame(update);
+        }
         return next;
       });
     };
@@ -91,7 +107,11 @@ export const useImageHandler = ({
           }
         }, interval);
       };
-      reader.onerror = () => reject(new Error("Error reading file"));
+      reader.onerror = () => {
+        clearInterval(testIntervalRef.current!);
+        testIntervalRef.current = null;
+        reject(new Error("Error reading file"));
+      };
       reader.readAsDataURL(file);
     });
   };
@@ -100,12 +120,10 @@ export const useImageHandler = ({
     const file = e.target?.files?.[0];
     if (!file) return;
     if (!file.type.startsWith("image/")) {
-      alert("Please select an image file");
+      setError("Please select an image file");
       return;
     }
-    handleAbort();
-    const abortController = new AbortController();
-    abortControllerRef.current = abortController;
+    const abortController = handleAbort();
     setLoading(true);
     setUploadProgress(0);
     targetProgressRef.current = 0;
@@ -210,21 +228,27 @@ export const useImageHandler = ({
 
   const handleDeleteImage = async () => {
     if (!currentImageUrl) return;
-    const abortController = handleAbort();
     setDeleting(true);
     setError(null);
     try {
       if (testMode) {
         await new Promise((resolve) => setTimeout(resolve, 300));
-        onChangeImage("");
-        if (abortController.signal.aborted) {
+        if (
+          enableAbortController &&
+          abortControllerRef.current?.signal.aborted
+        ) {
           throw new Error("Delete canceled");
         }
+        onChangeImage("");
       } else {
         await axios.post(
           `${apiConfig.baseUrl}${apiConfig.deleteUrl}/${currentImageUrl}`,
           null,
-          { signal: abortController.signal }
+          {
+            signal: enableAbortController
+              ? abortControllerRef.current?.signal
+              : undefined,
+          }
         );
         onChangeImage("");
       }
@@ -241,7 +265,10 @@ export const useImageHandler = ({
 
   useEffect(() => {
     return () => {
-      handleAbort();
+      if (enableAbortController && abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      resetState();
     };
   }, [enableAbortController]);
 
