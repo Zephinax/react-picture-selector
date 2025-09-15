@@ -1,4 +1,21 @@
 import { ReactNode } from "react";
+export interface apiConfig {
+  deleteUrl: string;
+  uploadUrl: string;
+  baseUrl: string;
+  responsePath?: string;
+  formDataName?: string;
+  additionalHeaders?: Record<string, string>;
+  uploadMethod?: "POST" | "PUT" | "PATCH";
+  deleteMethod?: "POST" | "DELETE" | "PUT";
+  deleteBody?:
+    | Record<string, unknown>
+    | ((imageUrl: string) => Record<string, unknown>);
+  onUploadSuccess?: (url: string) => void;
+  onUploadError?: (error: any) => void;
+  onDeleteStart?: () => void;
+  onDeleteSuccess?: () => void;
+}
 
 export interface ProfileSelectorPropsTypes {
   imageUrl: string | null;
@@ -38,7 +55,6 @@ export interface UploadResponse {
   data?: string;
 }
 
-// Configurable color palette
 export interface ColorPalette {
   primary: string;
   error: string;
@@ -56,11 +72,11 @@ export interface additionalClassNames {
   image?: string;
 }
 
-export interface apiConfig {
-  deleteUrl: string;
-  uploadUrl: string;
-  baseUrl: string;
-  responsePath: string;
-  formDataName?: string;
-  additionalHeaders?: any;
+export interface UseImageHandlerProps {
+  apiConfig: apiConfig;
+  testMode: boolean;
+  testUploadDelay: number;
+  onChangeImage: (url: string) => void;
+  currentImageUrl: string | null;
+  enableAbortController: boolean;
 }

@@ -26,7 +26,6 @@ function useImagePreview() {
   const openImage = useCallback((url: string) => {
     if (url) {
       setOpenPreview({ status: true, url });
-      // Reset states when opening new image
       setIsZoomEnable(false);
       setZoomValue(1);
       setRotate(0);
@@ -62,16 +61,13 @@ function useImagePreview() {
     const { width: naturalW, height: naturalH } = imageSize;
     const containerRect = container.getBoundingClientRect();
 
-    // Calculate scale while maintaining aspect ratio
     const containerAspect = containerRect.width / containerRect.height;
     const imageAspect = naturalW / naturalH;
 
     let zoomScale;
     if (containerAspect > imageAspect) {
-      // Container is wider than image (relative to aspect ratio)
       zoomScale = (naturalH / containerRect.height) * zoomValue;
     } else {
-      // Container is taller than image (relative to aspect ratio)
       zoomScale = (naturalW / containerRect.width) * zoomValue;
     }
 
@@ -179,7 +175,7 @@ function useImagePreview() {
     const ratio = Math.min(
       maxWidth / imageSize.width,
       maxHeight / imageSize.height,
-      1 // Don't scale up
+      1
     );
 
     return {
