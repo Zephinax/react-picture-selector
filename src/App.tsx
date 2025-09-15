@@ -7,7 +7,6 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 
-// GitHub README Fetcher Component
 const GitHubReadmeFetcher: React.FC<{ readmeUrl: string }> = ({
   readmeUrl,
 }) => {
@@ -20,7 +19,6 @@ const GitHubReadmeFetcher: React.FC<{ readmeUrl: string }> = ({
       setLoading(true);
       setError(null);
 
-      // Convert GitHub URL to raw content URL
       const rawUrl = readmeUrl
         .replace("github.com", "raw.githubusercontent.com")
         .replace("/blob/", "/");
@@ -205,9 +203,6 @@ const App: React.FC = () => {
   };
   const handleNoProgressImageChange = (newImageUrl: string) => {
     setNoProgressImgUrl(newImageUrl || null);
-  };
-  const handleViewOnlyImageChange = (newImageUrl: string) => {
-    // نیازی به تغییر نیست، چون viewOnly است
   };
 
   const customColors = {

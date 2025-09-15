@@ -19,13 +19,13 @@ const Modal: React.FC<ModalProps> = ({
     isOpen &&
     ReactDOM.createPortal(
       <div
-        onClick={handleClose} // کلیک روی بک‌دراپ
+        onClick={handleClose}
         className={`fixed inset-0 z-[999] bg-[#0000006c]/30 backdrop-blur-[4px] flex items-center justify-center ${
           isOpen ? "translate-y-0" : "translate-y-[100%] delay-500"
         }`}
       >
         <div
-          onClick={(e) => e.stopPropagation()} // جلوی بسته شدن موقع کلیک روی محتوا
+          onClick={(e) => e.stopPropagation()}
           className={`relative z-[9999] rounded-t-2xl md:rounded-lg border-secondary-200 mx-0  transition-all duration-300 delay-200 ${
             isOpen ? "opacity-100" : "opacity-0"
           } md:max-w-[90%] ${

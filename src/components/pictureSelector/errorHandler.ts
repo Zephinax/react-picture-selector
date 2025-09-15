@@ -48,17 +48,12 @@ export function isCancelError(error: unknown): boolean {
   );
 }
 
-/**
- * Converts error to user-friendly string message
- */
 export function getErrorMessage(error: unknown): string {
   if (isAxiosError(error)) {
-    // Axios error with response from server
     if (error.response) {
       const status = error.response.status;
       const serverMessage =
         error.response.data?.message || error.response.data?.error;
-
       switch (status) {
         case 400:
           return serverMessage || "Bad request";
@@ -74,27 +69,19 @@ export function getErrorMessage(error: unknown): string {
           return serverMessage || `Server error: ${status}`;
       }
     } else if (error.request) {
-      // Request was made but no response received
       return "Network error: Could not connect to server";
     } else {
-      // Other Axios error
       return error.message || "Request configuration error";
     }
   } else if (error instanceof Error) {
-    // Standard JavaScript Error
     return error.message;
   } else if (typeof error === "string") {
-    // String error
     return error;
   } else {
-    // Unknown error
     return "An unexpected error occurred";
   }
 }
 
-/**
- * Logs error for developers
- */
 export function logError(
   error: unknown,
   context: string = "",
@@ -106,9 +93,6 @@ export function logError(
   console.error(`${prefix} Error in ${context}:`, errorMessage);
 }
 
-/**
- * Unified error handling
- */
 export function handleError(
   error: unknown,
   options: {
@@ -125,10 +109,8 @@ export function handleError(
     onCancel,
   } = options;
 
-  // Log the error
   logError(error, context, isTestMode);
 
-  // Handle cancellation errors
   if (isCancelError(error)) {
     if (onCancel) {
       onCancel();
@@ -136,16 +118,12 @@ export function handleError(
     return;
   }
 
-  // Show error to user if setError function is provided
   if (setError) {
     const errorMessage = getErrorMessage(error);
     setError(errorMessage);
   }
 }
 
-/**
- * Extracts HTTP status code from error if available
- */
 export function getErrorStatus(error: unknown): number | null {
   if (isAxiosError(error) && error.response) {
     return error.response.status;
@@ -153,9 +131,6 @@ export function getErrorStatus(error: unknown): number | null {
   return null;
 }
 
-/**
- * Checks if error is a network error (no response received)
- */
 export function isNetworkError(error: unknown): boolean {
   return isAxiosError(error) && !!error.request && !error.response;
 }
