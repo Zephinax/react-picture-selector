@@ -188,7 +188,6 @@ export const useImageHandler = ({
         }
       }
 
-      // بعد از آپلود موفق، عکس قبلی رو حذف کن
       if (currentImageUrl) {
         await handleDeleteImage();
       }
@@ -203,7 +202,6 @@ export const useImageHandler = ({
         error.name === "CanceledError" ||
         error.message === "Upload canceled"
       ) {
-        // عملیات کنسل شده، نیازی به نمایش خطا نیست
       } else {
         handleError(error, {
           setError: setError,
