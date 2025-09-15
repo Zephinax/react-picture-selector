@@ -32,17 +32,18 @@ The `PictureSelector` component is a highly customizable React component designe
 
 # Features
 
-- **Smooth Image Upload**: Upload images with a visually appealing progress ring (for profiles) or percentage display, powered by `requestAnimationFrame` for smooth animations and low CPU usage.
-- **Image Deletion**: Delete images via API or simulated deletion in test mode.
+- **Smooth Image Upload**: Upload images with a progress ring (for profiles) or percentage display, powered by `requestAnimationFrame` for smooth animations and low CPU usage.
+- **Flexible Image Deletion**: Delete images via API with customizable HTTP methods, headers, and request body, or simulated deletion in test mode.
 - **Progress Indicator**: Displays a progress ring for circular profiles or a percentage-based indicator, with non-linear fallback for servers without `Content-Length`.
-- **Drag and Drop Support**: Allows users to drag and drop images onto the component with visual feedback (dashed border and message) and error handling for non-image file types.
+- **Drag and Drop Support**: Allows users to drag and drop images with visual feedback and error handling for non-image file types.
 - **Image Preview**: Clickable modal preview for uploaded images, supporting circular and rectangular formats.
 - **Configurable Styling**: Customize colors, sizes, shapes, and additional CSS classes for full control over appearance.
 - **Abort Controller**: Cancel ongoing uploads using `AbortController` for better user control.
+- **Event Callbacks**: Support for `onUploadSuccess`, `onUploadError`, `onDeleteStart`, and `onDeleteSuccess` callbacks to handle upload and deletion events.
 - **Test Mode**: Simulate uploads and deletions with configurable delays, ideal for testing without API dependencies.
 - **Responsive Design**: Supports RTL layouts, responsive sizing, and both circular (profile) and rectangular image types.
 - **Robust Error Handling**: Displays clear error messages for failed operations, with proper cleanup to prevent resource leaks.
-- **Performance Optimizations**: Prevents race conditions, ensures clean percentage displays, and optimizes resource usage using `useMemo` and `useCallback` to avoid unnecessary re-renders for computed styles and event handlers.
+- **Performance Optimizations**: Prevents race conditions, ensures clean percentage displays, and optimizes resource usage using `useMemo` and `useCallback`.
 
 ## Installation
 
@@ -94,11 +95,21 @@ interface ColorPalette {
 
 ```typescript
 interface apiConfig {
-  deleteUrl: string; // URL endpoint for deleting images
-  uploadUrl: string; // URL endpoint for uploading images
-  baseUrl?: string; // Base URL for API requests
+  deleteUrl: string; // Path for deleting images, combined with baseUrl
+  uploadUrl: string; // Path for uploading images, combined with baseUrl
+  baseUrl: string; // Base URL for API requests
+  responsePath?: string; // Path to extract image URL from API response (default: "data.data")
   formDataName?: string; // Name of the file field in FormData
-  additionalHeaders?: any; // Additional headers for API requests
+  additionalHeaders?: Record<string, string>; // Additional headers for API requests
+  uploadMethod?: "POST" | "PUT" | "PATCH"; // HTTP method for upload requests
+  deleteMethod?: "POST" | "DELETE" | "PUT"; // HTTP method for delete requests
+  deleteBody?:
+    | Record<string, unknown>
+    | ((imageUrl: string) => Record<string, unknown>); // Request body for delete operations
+  onUploadSuccess?: (url: string) => void; // Callback for successful upload
+  onUploadError?: (error: any) => void; // Callback for upload errors
+  onDeleteStart?: () => void; // Callback when deletion starts
+  onDeleteSuccess?: () => void; // Callback for successful deletion
 }
 ```
 
@@ -122,29 +133,35 @@ interface additionalClassNames {
 
 ## API Configuration
 
-The `apiConfig` prop allows you to specify the endpoints and headers for upload and delete operations. In real mode, the component sends HTTP POST requests to the provided URLs. Ensure your API supports:
+The `apiConfig` prop allows you to specify endpoints, HTTP methods, headers, and callbacks for upload and delete operations. In real mode, the component sends HTTP requests to the combined `baseUrl` and `uploadUrl`/`deleteUrl`. Ensure your API supports:
 
-- **Upload**: Accepts a `multipart/form-data` request with the file attached.
-- **Delete**: Accepts a POST request to delete an image by its URL.
+- **Upload**: Accepts a `multipart/form-data` request with the file attached, using the specified `uploadMethod` (default: POST).
+- **Delete**: Accepts a request to the combined `baseUrl` and `deleteUrl`, with customizable `deleteMethod` (default: POST), `deleteBody`, and `additionalHeaders`.
 
 Example:
 
 ```typescript
 const apiConfig = {
-  baseUrl: "https://api.example.com/",
+  baseUrl: "https://api.example.com",
   uploadUrl: "/upload",
-  deleteUrl: "/delete/",
+  deleteUrl: "/remove/123",
   formDataName: "image",
   additionalHeaders: {
-    "Content-Type": "multipart/form-data",
     Authorization: "Bearer your-token",
   },
+  uploadMethod: "POST",
+  deleteMethod: "DELETE",
+  deleteBody: (imageUrl: string) => ({ imageId: imageUrl.split("/").pop() }),
+  onUploadSuccess: (url: string) => console.log("Uploaded:", url),
+  onUploadError: (error: any) => console.error("Upload failed:", error),
+  onDeleteStart: () => console.log("Deletion started"),
+  onDeleteSuccess: () => console.log("Deletion succeeded"),
 };
 ```
 
 ## Test Mode
 
-When `testMode` is set to `true`, the component simulates upload and deletion operations without making actual API calls. This is useful for development and testing. The `testUploadDelay` prop controls the duration of the simulated upload process (in milliseconds).
+When `testMode` is set to `true`, the component simulates upload and deletion operations without making actual API calls. The `testUploadDelay` prop controls the duration of the simulated upload process (in milliseconds).
 
 ## Styling
 
@@ -163,6 +180,7 @@ Errors during upload or deletion are handled by the `errorHandler` utility. If a
 - The error message is displayed below the component.
 - In test mode, errors are logged with a "🧪 Test Mode" prefix for clarity.
 - If an upload or deletion is canceled (via AbortController), a cancellation message is logged.
+- Callbacks (`onUploadError`, `onDeleteStart`, `onDeleteSuccess`) allow custom handling of operation results.
 
 ## Example
 
@@ -175,14 +193,20 @@ const App = () => {
   };
 
   const customApiConfig = {
-    baseUrl: "https://api.example.com/",
+    baseUrl: "https://api.example.com",
     uploadUrl: "/upload",
-    deleteUrl: "/delete/",
+    deleteUrl: "/remove/123",
     formDataName: "image",
     additionalHeaders: {
-      "Content-Type": "multipart/form-data",
       Authorization: "Bearer your-token",
     },
+    uploadMethod: "POST",
+    deleteMethod: "DELETE",
+    deleteBody: (imageUrl: string) => ({ imageId: imageUrl.split("/").pop() }),
+    onUploadSuccess: (url: string) => console.log("Uploaded:", url),
+    onUploadError: (error: any) => console.error("Upload failed:", error),
+    onDeleteStart: () => console.log("Deletion started"),
+    onDeleteSuccess: () => console.log("Deletion succeeded"),
   };
 
   const customColors = {
@@ -214,3 +238,14 @@ const App = () => {
 
 export default App;
 ```
+
+## Release Notes
+
+- **Latest Release**:
+  - Fixed image replacement bug to ensure new image uploads before deleting the old one.
+  - Added support for custom HTTP methods (`uploadMethod`, `deleteMethod`) and request body (`deleteBody`) in `apiConfig`.
+  - Added event callbacks (`onUploadSuccess`, `onUploadError`, `onDeleteStart`, `onDeleteSuccess`) to `apiConfig`.
+  - Made `responsePath` optional with default `"data.data"`.
+  - Improved TypeScript safety for refs and deleteBody.
+  - Ensured `deleteUrl` is always combined with `baseUrl` for consistent API requests.
+  - Enhanced error handling and performance optimizations.
