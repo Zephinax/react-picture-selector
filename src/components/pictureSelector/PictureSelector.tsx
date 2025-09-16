@@ -322,6 +322,7 @@ const PictureSelector = ({
           {!viewOnly && (
             <>
               <button
+                type="button"
                 aria-label="Edit profile picture"
                 style={{
                   backgroundColor: mergedColors.primary,
@@ -331,7 +332,16 @@ const PictureSelector = ({
                   right: `${buttonPosition}px`,
                   borderRadius: isCircle ? "50%" : "28%",
                 }}
-                className={`absolute p-1 cursor-pointer active:scale-[0.9] transition-transform duration-150 ease-in-out shadow-lg flex items-center justify-center z-10 ${
+                onMouseDown={(e) => {
+                  e.currentTarget.style.transform = "scale(0.9)";
+                }}
+                onMouseUp={(e) => {
+                  e.currentTarget.style.transform = "scale(1)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "scale(1)";
+                }}
+                className={`absolute p-1 cursor-pointer transition-transform duration-150 ease-in-out shadow-lg flex items-center justify-center z-10 ${
                   additionalClassNames.edit || ""
                 } ${isCircle ? "rounded-full" : "rounded-[12px]"}`}
                 onClick={triggerFileInput}
@@ -347,6 +357,16 @@ const PictureSelector = ({
               </button>
               {imageUrl && (
                 <button
+                  type="button"
+                  onMouseDown={(e) => {
+                    e.currentTarget.style.transform = "scale(0.9)";
+                  }}
+                  onMouseUp={(e) => {
+                    e.currentTarget.style.transform = "scale(1)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "scale(1)";
+                  }}
                   aria-label="Delete profile picture"
                   style={{
                     backgroundColor: mergedColors.error,
@@ -356,7 +376,7 @@ const PictureSelector = ({
                     left: `${buttonPosition}px`,
                     borderRadius: isCircle ? "50%" : "28%",
                   }}
-                  className={`absolute p-1 cursor-pointer active:scale-[0.9] transition-transform duration-150 ease-in-out shadow-lg flex items-center justify-center z-10 ${
+                  className={`absolute p-1 cursor-pointer transition-transform duration-150 ease-in-out shadow-lg flex items-center justify-center z-10 ${
                     additionalClassNames.delete || ""
                   }`}
                   onClick={handleDeleteImage}
