@@ -322,6 +322,7 @@ const PictureSelector = ({
           {!viewOnly && (
             <>
               <button
+                type="button"
                 aria-label="Edit profile picture"
                 style={{
                   backgroundColor: mergedColors.primary,
@@ -356,6 +357,7 @@ const PictureSelector = ({
               </button>
               {imageUrl && (
                 <button
+                  type="button"
                   onMouseDown={(e) => {
                     e.currentTarget.style.transform = "scale(0.9)";
                   }}
