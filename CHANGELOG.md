@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.1](https://github.com/Zephinax/react-picture-selector/compare/v2.2.0...v2.2.1) (2025-09-16)
+
+
+### Bug Fixes
+
+* **main component:** fix submit in form and UI improvments ([21a9406](https://github.com/Zephinax/react-picture-selector/commit/21a940638877ee7093724bdd285c5c1f58e43546))
+
 ## [2.2.0](https://github.com/Zephinax/react-picture-selector/compare/v2.1.0...v2.2.0) (2025-09-15)
 
 
