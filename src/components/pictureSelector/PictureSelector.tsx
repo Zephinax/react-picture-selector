@@ -455,3 +455,4 @@ const PictureSelector = ({
 };
 
 export default PictureSelector;
+export type { ProfileSelectorPropsTypes };
