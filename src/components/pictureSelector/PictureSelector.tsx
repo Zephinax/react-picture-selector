@@ -142,7 +142,15 @@ const PictureSelector = ({
             }
           }}
           className={`relative`}
-          style={imageContainerStyle}
+          style={{
+            ...imageContainerStyle,
+            outlineWidth: isDragging ? "2px" : undefined,
+            outlineStyle: isDragging ? "dashed" : undefined,
+            outlineColor: isDragging ? "#3b82f6" : undefined,
+            backgroundColor: isDragging ? "rgba(147,197,253,0.5)" : undefined,
+            transitionProperty: isDragging ? "background-color" : undefined,
+            transitionDuration: isDragging ? "100ms" : undefined,
+          }}
         >
           {imageUrl ? (
             <img
@@ -154,10 +162,6 @@ const PictureSelector = ({
               alt={""}
               className={`w-full h-full object-cover ${
                 additionalClassNames.image || ""
-              }${
-                isDragging
-                  ? "outline-2 transition-bg duration-100 outline-dashed outline-blue-500 bg-blue-300/50"
-                  : ""
               }`}
               aria-describedby="image-description"
               onError={() => setImgError(true)}
