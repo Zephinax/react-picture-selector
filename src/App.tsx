@@ -90,7 +90,7 @@ const App: React.FC = () => {
                 delete: "cursor-target",
                 image: "cursor-target",
               }}
-              imageUrl={defaultImgUrl}
+              imageUrl={"ksdfsdkjfskj"}
               onChangeImage={handleDefaultImageChange}
               title="Default example (Profile)"
               testMode

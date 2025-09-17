@@ -48,7 +48,7 @@ const PictureSelector = ({
 }: ProfileSelectorPropsTypes) => {
   const { modalImagePreview, openImage } = useImagePreview();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [_imgError, setImgError] = useState(false);
+  const [imgError, setImgError] = useState(false);
   const isCircle = type === "profile";
 
   const mergedApiConfig = {
@@ -150,7 +150,11 @@ const PictureSelector = ({
         >
           {imageUrl ? (
             <img
-              src={imageUrl}
+              src={
+                imgError
+                  ? "https://github.com/Zephinax/react-picture-selector/blob/dev/public/error.svg"
+                  : imageUrl
+              }
               alt={""}
               className={`w-full h-full object-cover ${
                 additionalClassNames.image || ""
