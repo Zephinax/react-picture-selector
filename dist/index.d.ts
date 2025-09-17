@@ -50,3 +50,4 @@ interface additionalClassNames {
 declare const PictureSelector: ({ apiConfig, additionalClassNames, colors, imageUrl, type, onChangeImage, viewOnly, title, size, showProgressRing, blurOnProgress, enableAbortController, testMode, testUploadDelay, }: ProfileSelectorPropsTypes) => react_jsx_runtime.JSX.Element;
 
 export { PictureSelector as default };
+export type { ProfileSelectorPropsTypes };

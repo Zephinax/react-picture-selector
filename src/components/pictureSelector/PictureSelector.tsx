@@ -48,7 +48,7 @@ const PictureSelector = ({
 }: ProfileSelectorPropsTypes) => {
   const { modalImagePreview, openImage } = useImagePreview();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [_imgError, setImgError] = useState(false);
+  const [imgError, setImgError] = useState(false);
   const isCircle = type === "profile";
 
   const mergedApiConfig = {
@@ -141,16 +141,24 @@ const PictureSelector = ({
               }
             }
           }}
-          className={`relative transition-all duration-100 ${
-            isDragging
-              ? "outline-2 outline-dashed outline-blue-500 bg-blue-300/50"
-              : ""
-          }`}
-          style={imageContainerStyle}
+          className={`relative`}
+          style={{
+            ...imageContainerStyle,
+            outlineWidth: isDragging ? "2px" : undefined,
+            outlineStyle: isDragging ? "dashed" : undefined,
+            outlineColor: isDragging ? "#3b82f6" : undefined,
+            backgroundColor: isDragging ? "rgba(147,197,253,0.5)" : undefined,
+            transitionProperty: isDragging ? "background-color" : undefined,
+            transitionDuration: isDragging ? "100ms" : undefined,
+          }}
         >
           {imageUrl ? (
             <img
-              src={imageUrl}
+              src={
+                imgError
+                  ? "data:image/svg+xml,%3Csvg%20version%3D%221.0%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22500.000000pt%22%20height%3D%22500.000000pt%22%20viewBox%3D%22-100%20-50%20500.000000%20500.000000%22%20preserveAspectRatio%3D%22xMidYMid%20meet%22%3E%3Cg%20transform%3D%22translate(0.000000%2C400.000000)%20scale(0.100000%2C-0.100000)%22%20fill%3D%22%23000000%22%20stroke%3D%22none%22%3E%3Cpath%20d%3D%22M480%202005%20l0%20-1305%201020%200%201020%200%200%201125%200%201125%20-100%200%20-100%200%200%2095%200%2095%20-100%200%20-100%200%200%2085%200%2085%20-820%200%20-820%200%200%20-1305z%20m1078%20753%20l2%20-378%20380%200%20380%200%200%20-740%200%20-740%20-845%200%20-845%200%200%201120%200%201120%20463%20-2%20462%20-3%203%20-377z%20m564%20290%20l3%20-93%2098%20-3%2097%20-3%200%20-190%200%20-189%20-282%202%20-283%203%20-3%20270%20c-1%20148%200%20275%203%20282%203%2010%2048%2013%20184%2013%20l180%200%203%20-92z%22%2F%3E%3Cpath%20d%3D%22M970%202570%20l0%20-190%20105%200%20105%200%200%20190%200%20190%20-105%200%20-105%200%200%20-190z%22%2F%3E%3Cpath%20d%3D%22M1180%201565%20l0%20-95%20-105%200%20-105%200%200%20-105%200%20-106%20103%203%20102%203%203%20103%203%20102%20317%20-2%20317%20-3%203%20-102%203%20-103%2099%200%20100%200%200%20105%200%20105%20-100%200%20-100%200%200%2095%200%2095%20-320%200%20-320%200%200%20-95z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"
+                  : imageUrl
+              }
               alt={""}
               className={`w-full h-full object-cover ${
                 additionalClassNames.image || ""
@@ -447,3 +455,4 @@ const PictureSelector = ({
 };
 
 export default PictureSelector;
+export type { ProfileSelectorPropsTypes };
