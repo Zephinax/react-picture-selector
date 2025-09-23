@@ -1,6 +1,6 @@
 {
   "name": "react-picture-selector",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "description": "A highly customizable React component for image selection, upload, and delete with progress indicators and responsive design",
   "main": "dist/index.mjs",
   "module": "dist/index.mjs",
@@ -8,6 +8,13 @@
   "files": [
     "dist"
   ],
+  "scripts": {
+    "rollup": "rollup -c --bundleConfigAsCjs",
+    "build": "rollup -c --bundleConfigAsCjs",
+    "prepublishOnly": "npm run build",
+    "release:manual": "standard-version --release-as",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "homepage": "https://zephinax.github.io/react-picture-selector",
   "bugs": {
     "url": "https://github.com/Zephinax/react-picture-selector/issues",
@@ -22,13 +29,6 @@
     "type": "individual",
     "url": "https://github.com/sponsors/Zephinax"
   },
-  "scripts": {
-    "rollup": "rollup -c --bundleConfigAsCjs",
-    "build": "rollup -c --bundleConfigAsCjs",
-    "prepublishOnly": "npm run build",
-    "release:manual": "standard-version --release-as",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": {
     "name": "Zephinax",
     "email": "zephinax@gmail.com",
@@ -40,8 +40,7 @@
     "react-dom": ">=16.8"
   },
   "dependencies": {
-    "axios": ">=0.22.0 <2",
-    "react-icons": ">=4.7.0 <6"
+    "axios": ">=0.22.0 <2"
   },
   "sideEffects": false,
   "exports": {
@@ -69,7 +68,8 @@
     "standard-version": "^9.5.0",
     "tailwindcss": "^3.4.17",
     "tslib": "^2.6.3",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.3",
+    "react-icons": ">=4.7.0 <6"
   },
   "keywords": [
     "react",
