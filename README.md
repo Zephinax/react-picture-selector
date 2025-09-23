@@ -35,8 +35,9 @@ The `PictureSelector` component is a highly customizable React component designe
 - **Smooth Image Upload**: Upload images with a progress ring (for profiles) or percentage display, powered by `requestAnimationFrame` for smooth animations and low CPU usage.
 - **Flexible Image Deletion**: Delete images via API with customizable HTTP methods, headers, and request body, or simulated deletion in test mode.
 - **Progress Indicator**: Displays a progress ring for circular profiles or a percentage-based indicator, with non-linear fallback for servers without `Content-Length`.
-- **Drag and Drop Support**: Allows users to drag and drop images with visual feedback and error handling for non-image file types.
+- **Drag and Drop Support**: Allows users to drag and drop images with visual feedback, with prevention of dragging selected photos for better UX.
 - **Image Preview**: Clickable modal preview for uploaded images, supporting circular and rectangular formats.
+- **Full API Response Access**: Provides the full API response body as an optional parameter in `onChangeImage` for advanced use cases.
 - **Configurable Styling**: Customize colors, sizes, shapes, and additional CSS classes for full control over appearance.
 - **Abort Controller**: Cancel ongoing uploads using `AbortController` for better user control.
 - **Event Callbacks**: Support for `onUploadSuccess`, `onUploadError`, `onDeleteStart`, and `onDeleteSuccess` callbacks to handle upload and deletion events.
@@ -62,8 +63,9 @@ Import the `PictureSelector` component and configure it with the necessary props
 import PictureSelector from "react-picture-selector";
 
 const App = () => {
-  const handleImageChange = (imageUrl: string) => {
+  const handleImageChange = (imageUrl: string, responseData?: any) => {
     console.log("New image URL:", imageUrl);
+    console.log("API response data:", responseData);
   };
 
   return (
@@ -129,7 +131,6 @@ interface additionalClassNames {
 
 - **React**: For component rendering and state management.
 - **Axios**: For making API requests in real mode.
-- **React Icons**: For edit, delete, and loading icons.
 
 ## API Configuration
 
@@ -188,8 +189,9 @@ Errors during upload or deletion are handled by the `errorHandler` utility. If a
 import PictureSelector from "react-picture-selector";
 
 const App = () => {
-  const handleImageChange = (imageUrl: string) => {
+  const handleImageChange = (imageUrl: string, responseData?: any) => {
     console.log("Image changed to:", imageUrl);
+    console.log("API response data:", responseData);
   };
 
   const customApiConfig = {
@@ -242,6 +244,9 @@ export default App;
 ## Release Notes
 
 - **Latest Release**:
+  - Added support for passing full API response body as an optional second parameter to `onChangeImage`.
+  - Prevented dragging of selected photo to improve user experience.
+  - Improved error management with better validation (e.g., `deleteUrl` checks) and type safety for TypeScript.
   - Fixed image replacement bug to ensure new image uploads before deleting the old one.
   - Added support for custom HTTP methods (`uploadMethod`, `deleteMethod`) and request body (`deleteBody`) in `apiConfig`.
   - Added event callbacks (`onUploadSuccess`, `onUploadError`, `onDeleteStart`, `onDeleteSuccess`) to `apiConfig`.
