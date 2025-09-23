@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.42](https://github.com/Zephinax/react-picture-selector/compare/v2.2.41...v2.2.42) (2025-09-23)
+
+
+### Bug Fixes
+
+* resolve audit error on rollup module ([6a0263f](https://github.com/Zephinax/react-picture-selector/commit/6a0263f93a46e0a06c2cf75af6fc7f610c43226b))
+
 ### [2.2.41](https://github.com/Zephinax/react-picture-selector/compare/v2.2.4...v2.2.41) (2025-09-23)
 
 
