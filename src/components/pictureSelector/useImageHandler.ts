@@ -9,7 +9,7 @@ const getNestedValue = (obj: any, path: string | string[]): any => {
   return pathArray.reduce(
     (current, key) =>
       current && current[key] !== undefined ? current[key] : null,
-    obj
+    obj,
   );
 };
 
@@ -101,6 +101,8 @@ export const useImageHandler = ({
       reader.onerror = () => {
         clearInterval(testIntervalRef.current!);
         testIntervalRef.current = null;
+        const error = new Error("Error reading file");
+        apiConfig.onUploadError?.(error);
         reject(new Error("Error reading file"));
       };
       reader.readAsDataURL(file);
@@ -124,6 +126,7 @@ export const useImageHandler = ({
     try {
       const minUploadTime = new Promise((resolve) => setTimeout(resolve, 700));
       let newImageUrl: string;
+      let responseData: any;
       if (testMode) {
         const base64Image = await simulateUpload(file);
         if (abortController.signal.aborted) {
@@ -131,6 +134,7 @@ export const useImageHandler = ({
         }
         await minUploadTime;
         newImageUrl = base64Image;
+        responseData = { data: { url: base64Image } };
       } else {
         const formData = new FormData();
         formData.append(apiConfig.formDataName || "", file);
@@ -143,12 +147,12 @@ export const useImageHandler = ({
             let progress = 0;
             if (progressEvent.total && progressEvent.total > 0) {
               progress = Math.round(
-                (progressEvent.loaded / progressEvent.total) * 100
+                (progressEvent.loaded / progressEvent.total) * 100,
               );
             } else {
               const increment = Math.min(
                 99,
-                uploadProgress + (100 - uploadProgress) * 0.05
+                uploadProgress + (100 - uploadProgress) * 0.05,
               );
               progress = Math.round(increment);
             }
@@ -158,7 +162,7 @@ export const useImageHandler = ({
             }
             targetProgressRef.current = Math.max(
               targetProgressRef.current,
-              progress
+              progress,
             );
             smoothProgressUpdate();
           },
@@ -172,8 +176,9 @@ export const useImageHandler = ({
 
         newImageUrl = getNestedValue(
           response,
-          apiConfig.responsePath || "data.data"
+          apiConfig.responsePath || "data.data",
         );
+        responseData = response.data;
         if (!newImageUrl) {
           throw new Error("Failed to extract image URL from response");
         }
@@ -184,7 +189,7 @@ export const useImageHandler = ({
       }
 
       setLoading(false);
-      onChangeImage(newImageUrl);
+      onChangeImage(newImageUrl, responseData);
       apiConfig.onUploadSuccess?.(newImageUrl);
       setUploadProgress(0);
       targetProgressRef.current = 0;
@@ -220,8 +225,11 @@ export const useImageHandler = ({
         ) {
           throw new Error("Delete canceled");
         }
-        onChangeImage("");
+        onChangeImage("", undefined);
       } else {
+        if (!apiConfig.deleteUrl) {
+          throw new Error("Delete URL is not provided");
+        }
         await axios.request({
           method: apiConfig.deleteMethod || "POST",
           url: `${apiConfig.baseUrl}${apiConfig.deleteUrl}`,
@@ -234,7 +242,7 @@ export const useImageHandler = ({
             ? abortControllerRef.current?.signal
             : undefined,
         });
-        onChangeImage("");
+        onChangeImage("", undefined);
       }
       apiConfig.onDeleteSuccess?.();
     } catch (error) {

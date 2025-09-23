@@ -19,7 +19,7 @@ export interface apiConfig {
 
 export interface ProfileSelectorPropsTypes {
   imageUrl: string | null;
-  onChangeImage: (img: string) => void;
+  onChangeImage: (imageUrl: string, responseData?: any) => void;
   type?: "profile" | "image";
   viewOnly?: boolean;
   title?: string;
@@ -76,7 +76,7 @@ export interface UseImageHandlerProps {
   apiConfig: apiConfig;
   testMode: boolean;
   testUploadDelay: number;
-  onChangeImage: (url: string) => void;
+  onChangeImage: (imageUrl: string, responseData?: any) => void;
   currentImageUrl: string | null;
   enableAbortController: boolean;
 }
