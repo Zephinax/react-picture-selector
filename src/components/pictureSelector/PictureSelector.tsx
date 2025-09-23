@@ -154,7 +154,8 @@ const PictureSelector = ({
         >
           {imageUrl ? (
             <img
-              alt={`${__APP_VERSION__ || "zephinax"}`}
+              alt=""
+              title={`version: ${__APP_VERSION__}`}
               draggable="false"
               src={
                 imgError
