@@ -6,6 +6,7 @@ import terser from "@rollup/plugin-terser";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import json from "@rollup/plugin-json";
 import postcss from "rollup-plugin-postcss";
+import analyze from "rollup-plugin-analyzer";
 
 const packageJson = require("./package.json");
 
@@ -34,6 +35,7 @@ export default [
         },
       }),
       terser(),
+      analyze({ summaryOnly: true }),
     ],
     external: ["react", "react-dom", "axios"],
   },
