@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.4](https://github.com/Zephinax/react-picture-selector/compare/v2.2.3...v2.2.4) (2025-09-23)
+
+
+### Features
+
+* Update Types to support optional responseData ([66e096d](https://github.com/Zephinax/react-picture-selector/commit/66e096de458f5746632769f2af4887f25ec2d2e3))
+
 ### [2.2.3](https://github.com/Zephinax/react-picture-selector/compare/v2.2.2...v2.2.3) (2025-09-23)
 
 ### [2.2.2](https://github.com/Zephinax/react-picture-selector/compare/v2.2.1...v2.2.2) (2025-09-17)
