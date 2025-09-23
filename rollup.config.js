@@ -7,8 +7,8 @@ import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import json from "@rollup/plugin-json";
 import postcss from "rollup-plugin-postcss";
 import analyze from "rollup-plugin-analyzer";
-
-const packageJson = require("./package.json");
+import replace from "@rollup/plugin-replace";
+import packageJson from "./package.json" assert { type: "json" };
 
 export default [
   {
@@ -21,6 +21,10 @@ export default [
       },
     ],
     plugins: [
+      replace({
+        preventAssignment: true,
+        __APP_VERSION__: JSON.stringify(packageJson.version),
+      }),
       peerDepsExternal(),
       resolve(),
       commonjs(),
@@ -34,6 +38,7 @@ export default [
           path: "./postcss.config.js",
         },
       }),
+
       terser(),
       analyze({ summaryOnly: true }),
     ],

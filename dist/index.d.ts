@@ -17,7 +17,7 @@ interface apiConfig {
 }
 interface ProfileSelectorPropsTypes {
     imageUrl: string | null;
-    onChangeImage: (img: string) => void;
+    onChangeImage: (imageUrl: string, responseData?: any) => void;
     type?: "profile" | "image";
     viewOnly?: boolean;
     title?: string;
@@ -49,5 +49,5 @@ interface additionalClassNames {
 
 declare const PictureSelector: ({ apiConfig, additionalClassNames, colors, imageUrl, type, onChangeImage, viewOnly, title, size, showProgressRing, blurOnProgress, enableAbortController, testMode, testUploadDelay, }: ProfileSelectorPropsTypes) => react_jsx_runtime.JSX.Element;
 
-export { PictureSelector as default };
+export { PictureSelector, PictureSelector as default };
 export type { ProfileSelectorPropsTypes };
