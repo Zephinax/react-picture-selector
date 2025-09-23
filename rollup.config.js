@@ -3,7 +3,7 @@ import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
 import dts from "rollup-plugin-dts";
 import terser from "@rollup/plugin-terser";
-import peerDepsExternal from "rollup-plugin-peer-deps-external";
+import autoExternal from "rollup-plugin-auto-external";
 import json from "@rollup/plugin-json";
 import postcss from "rollup-plugin-postcss";
 import analyze from "rollup-plugin-analyzer";
@@ -25,7 +25,7 @@ export default [
         preventAssignment: true,
         __APP_VERSION__: JSON.stringify(packageJson.version),
       }),
-      peerDepsExternal(),
+      autoExternal(),
       resolve(),
       commonjs(),
       json(),
@@ -38,11 +38,9 @@ export default [
           path: "./postcss.config.js",
         },
       }),
-
       terser(),
       analyze({ summaryOnly: true }),
     ],
-    external: ["react", "react-dom", "axios"],
   },
   {
     input: "./src/index.ts",
