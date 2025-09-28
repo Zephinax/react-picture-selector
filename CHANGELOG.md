@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.5](https://github.com/Zephinax/react-picture-selector/compare/v2.2.42...v2.2.5) (2025-09-28)
+
+
+### Bug Fixes
+
+* resolve image not load on error ([c786fc1](https://github.com/Zephinax/react-picture-selector/commit/c786fc1f11f0f285c32f9e1e466433f4f0530c89))
+
 ### [2.2.42](https://github.com/Zephinax/react-picture-selector/compare/v2.2.41...v2.2.42) (2025-09-23)
 
 
