@@ -50,7 +50,6 @@ const PictureSelector = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imgError, setImgError] = useState(false);
   const isCircle = type === "profile";
-
   const mergedApiConfig = {
     ...defaultApiConfig,
     ...apiConfig,
@@ -74,6 +73,7 @@ const PictureSelector = ({
     onChangeImage,
     enableAbortController,
     currentImageUrl: imageUrl,
+    setImgError,
   });
   const defaultColors = {
     primary: "#2a84fa",

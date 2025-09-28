@@ -79,4 +79,5 @@ export interface UseImageHandlerProps {
   onChangeImage: (imageUrl: string, responseData?: any) => void;
   currentImageUrl: string | null;
   enableAbortController: boolean;
+  setImgError: (value: boolean) => void;
 }
