@@ -20,6 +20,7 @@ export const useImageHandler = ({
   onChangeImage,
   currentImageUrl,
   enableAbortController,
+  setImgError,
 }: UseImageHandlerProps) => {
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
@@ -37,6 +38,7 @@ export const useImageHandler = ({
     isFirstUpdateRef.current = true;
     setLoading(false);
     setError(null);
+    setImgError(false);
     if (testIntervalRef.current) {
       clearInterval(testIntervalRef.current);
       testIntervalRef.current = null;
@@ -187,7 +189,7 @@ export const useImageHandler = ({
       if (currentImageUrl) {
         await handleDeleteImage();
       }
-
+      setImgError(false);
       setLoading(false);
       onChangeImage(newImageUrl, responseData);
       apiConfig.onUploadSuccess?.(newImageUrl);
@@ -215,6 +217,7 @@ export const useImageHandler = ({
     if (!currentImageUrl) return;
     setDeleting(true);
     setError(null);
+    setImgError(false);
     apiConfig.onDeleteStart?.();
     try {
       if (testMode) {
