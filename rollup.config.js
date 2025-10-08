@@ -4,7 +4,6 @@ import typescript from "@rollup/plugin-typescript";
 import dts from "rollup-plugin-dts";
 import terser from "@rollup/plugin-terser";
 import json from "@rollup/plugin-json";
-import postcss from "rollup-plugin-postcss";
 import analyze from "rollup-plugin-analyzer";
 import replace from "@rollup/plugin-replace";
 import packageJson from "./package.json" assert { type: "json" };
@@ -29,14 +28,6 @@ export default [
       commonjs(),
       json(),
       typescript({ tsconfig: "./tsconfig.json" }),
-      postcss({
-        inject: true,
-        extract: false,
-        minimize: true,
-        config: {
-          path: "./postcss.config.js",
-        },
-      }),
       terser(),
       analyze({ summaryOnly: true }),
     ],
