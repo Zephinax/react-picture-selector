@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.3.5](https://github.com/Zephinax/react-picture-selector/compare/v2.3.0...v2.3.5) (2025-10-08)
+
+
+### Features
+
+* convert picture selector to pure css ([d92a131](https://github.com/Zephinax/react-picture-selector/commit/d92a131e8dbf4d7fd0d0cfda562ec729b32bc1af))
+
 ## [2.3.0](https://github.com/Zephinax/react-picture-selector/compare/v2.2.5...v2.3.0) (2025-09-28)
 
 ### [2.2.5](https://github.com/Zephinax/react-picture-selector/compare/v2.2.42...v2.2.5) (2025-09-28)
