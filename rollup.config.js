@@ -20,6 +20,7 @@ export default [
         sourcemap: false,
       },
     ],
+    external: ["react", "react-dom"],
     plugins: [
       replace({
         preventAssignment: true,
