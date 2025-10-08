@@ -111,16 +111,37 @@ const PictureSelector = ({
   return (
     <div
       dir="ltr"
-      className="max-w-xs w-full flex flex-col mx-auto p-4 gap-3 pt-0 rounded-lg"
+      style={{
+        maxWidth: "20rem",
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        margin: "0 auto",
+        padding: "1rem",
+        gap: "0.75rem",
+        paddingTop: "0",
+        borderRadius: "0.5rem",
+      }}
     >
       <div
-        className={`flex items-center justify-center ${
-          additionalClassNames.titleContainer || ""
-        }`}
+        style={{
+          display: "flex",
+          justifyItems: "center",
+          justifyContent: "center",
+        }}
+        className={`${additionalClassNames.titleContainer || ""}`}
       >
         <h3 className={additionalClassNames.title || ""}>{title}</h3>
       </div>
-      <div className="flex flex-col items-center justify-center relative">
+      <div
+        style={{
+          display: "flex",
+          // flexDirection: "column",
+          justifyItems: "center",
+          justifyContent: "center",
+          position: "relative",
+        }}
+      >
         {modalImagePreview()}
         <div
           onDragOver={(e) => {
@@ -141,9 +162,9 @@ const PictureSelector = ({
               }
             }
           }}
-          className={`relative`}
           style={{
             ...imageContainerStyle,
+            position: "relative",
             outlineWidth: isDragging ? "2px" : undefined,
             outlineStyle: isDragging ? "dashed" : undefined,
             outlineColor: isDragging ? "#3b82f6" : undefined,
@@ -162,9 +183,7 @@ const PictureSelector = ({
                   ? "data:image/svg+xml,%3Csvg%20version%3D%221.0%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22500.000000pt%22%20height%3D%22500.000000pt%22%20viewBox%3D%22-100%20-50%20500.000000%20500.000000%22%20preserveAspectRatio%3D%22xMidYMid%20meet%22%3E%3Cg%20transform%3D%22translate(0.000000%2C400.000000)%20scale(0.100000%2C-0.100000)%22%20fill%3D%22%23000000%22%20stroke%3D%22none%22%3E%3Cpath%20d%3D%22M480%202005%20l0%20-1305%201020%200%201020%200%200%201125%200%201125%20-100%200%20-100%200%200%2095%200%2095%20-100%200%20-100%200%200%2085%200%2085%20-820%200%20-820%200%200%20-1305z%20m1078%20753%20l2%20-378%20380%200%20380%200%200%20-740%200%20-740%20-845%200%20-845%200%200%201120%200%201120%20463%20-2%20462%20-3%203%20-377z%20m564%20290%20l3%20-93%2098%20-3%2097%20-3%200%20-190%200%20-189%20-282%202%20-283%203%20-3%20270%20c-1%20148%200%20275%203%20282%203%2010%2048%2013%20184%2013%20l180%200%203%20-92z%22%2F%3E%3Cpath%20d%3D%22M970%202570%20l0%20-190%20105%200%20105%200%200%20190%200%20190%20-105%200%20-105%200%200%20-190z%22%2F%3E%3Cpath%20d%3D%22M1180%201565%20l0%20-95%20-105%200%20-105%200%200%20-105%200%20-106%20103%203%20102%203%203%20103%203%20102%20317%20-2%20317%20-3%203%20-102%203%20-103%2099%200%20100%200%200%20105%200%20105%20-100%200%20-100%200%200%2095%200%2095%20-320%200%20-320%200%200%20-95z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"
                   : imageUrl
               }
-              className={`w-full h-full object-cover ${
-                additionalClassNames.image || ""
-              }`}
+              className={`${additionalClassNames.image || ""}`}
               onDragStart={(e) => {
                 e.preventDefault();
               }}
@@ -172,6 +191,9 @@ const PictureSelector = ({
               onError={() => setImgError(true)}
               onClick={() => openImage(imageUrl)}
               style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
                 cursor: "pointer",
                 borderRadius: isCircle ? "50%" : "12%",
                 userSelect: "none",
@@ -179,9 +201,13 @@ const PictureSelector = ({
             />
           ) : (
             <div
-              className={`w-full h-full flex items-center justify-center `}
               style={{
                 borderRadius: isCircle ? "50%" : "12%",
+                display: "flex",
+                width: "100%",
+                height: "100%",
+                justifyItems: "center",
+                justifyContent: "center",
               }}
             >
               {isCircle ? (
@@ -253,17 +279,31 @@ const PictureSelector = ({
             ((blurOnProgress && imageUrl) ||
               (!showProgressRing && !imageUrl)) && (
               <div
-                className={`absolute mx-auto inset-0 bg-opacity-80 flex items-center z-[5] justify-center !w-[${size}px] !h-[${size}px]`}
                 style={{
+                  margin: "0 auto",
+                  top: "0",
+                  right: "0",
+                  bottom: "0",
+                  left: "0",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: `${size}px !important`,
+                  height: `${size}px !important`,
+                  position: "absolute",
                   borderRadius: isCircle ? "50%" : "12%",
                   backdropFilter: "blur(4px)",
+                  zIndex: 5,
                   WebkitBackdropFilter: "blur(4px)",
                   backgroundColor: "rgba(0, 0, 0, 0.2)",
                 }}
               >
                 <div
-                  className="text-sm font-semibold text-white"
-                  style={{ fontSize: buttonSize * 0.5 }}
+                  style={{
+                    fontSize: buttonSize * 0.5,
+                    fontWeight: "600",
+                    color: "white",
+                  }}
                 >
                   {Math.round(uploadProgress)}%
                 </div>
@@ -275,7 +315,13 @@ const PictureSelector = ({
           uploadProgress < 100 &&
           isCircle ? (
             <svg
-              className="absolute z-[6] top-0 left-0 pointer-events-none"
+              style={{
+                position: "absolute",
+                zIndex: 6,
+                top: "0",
+                left: "0",
+                pointerEvents: "none",
+              }}
               width={size}
               height={size}
               viewBox={`0 0 ${size} ${size}`}
@@ -297,7 +343,7 @@ const PictureSelector = ({
             showProgressRing &&
             uploadProgress > 0 &&
             uploadProgress < 100 && (
-              <div className="">
+              <div>
                 {(() => {
                   const rectWidth = size * 0.94;
                   const rectHeight = size * 0.94;
@@ -307,14 +353,18 @@ const PictureSelector = ({
 
                   return (
                     <svg
-                      className="absolute top-0 z-[6] left-0"
                       width={size}
                       height={size}
+                      style={{
+                        position: "absolute",
+                        top: "0",
+                        zIndex: 6,
+                        left: "0",
+                      }}
                       viewBox={`0 0 ${size} ${size}`}
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <rect
-                        className="rounded-lg overflow-hidden"
                         x={size * 0.03}
                         y={size * 0.03}
                         rx={size * 0.09}
@@ -325,7 +375,11 @@ const PictureSelector = ({
                         strokeWidth={size * (10 / 180)}
                         strokeDasharray={rectPerimeter}
                         strokeDashoffset={rectProgressOffset}
-                        style={{ transition: "stroke-dashoffset 0.3s ease" }}
+                        style={{
+                          transition: "stroke-dashoffset 0.3s ease",
+                          borderRadius: "0.5rem",
+                          overflow: "hidden",
+                        }}
                       />
                     </svg>
                   );
@@ -345,7 +399,18 @@ const PictureSelector = ({
                   bottom: `${buttonPosition}px`,
                   right: `${buttonPosition}px`,
                   borderRadius: isCircle ? "50%" : "28%",
+                  position: "absolute",
+                  padding: "0.25rem",
+                  cursor: "pointer",
+                  transition: "transform 150ms ease-in-out",
+                  boxShadow:
+                    "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  zIndex: 10,
                 }}
+                className={`${additionalClassNames.edit || ""}`}
                 onMouseDown={(e) => {
                   e.currentTarget.style.transform = "scale(0.9)";
                 }}
@@ -355,14 +420,15 @@ const PictureSelector = ({
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = "scale(1)";
                 }}
-                className={`absolute p-1 cursor-pointer transition-transform duration-150 ease-in-out shadow-lg flex items-center justify-center z-10 ${
-                  additionalClassNames.edit || ""
-                } ${isCircle ? "rounded-full" : "rounded-[12px]"}`}
                 onClick={triggerFileInput}
                 disabled={loading}
               >
                 <MdOutlineEdit
-                  className="flex items-center justify-center"
+                  style={{
+                    display: "flex",
+                    justifyItems: "center",
+                    justifyContent: "center",
+                  }}
                   color={
                     loading ? mergedColors.text : mergedColors.textDisabled
                   }
@@ -389,17 +455,24 @@ const PictureSelector = ({
                     bottom: `${buttonPosition}px`,
                     left: `${buttonPosition}px`,
                     borderRadius: isCircle ? "50%" : "28%",
+                    position: "absolute",
+                    padding: "0.25rem",
+                    cursor: "pointer",
+                    transition: "transform 150ms ease-in-out",
+                    boxShadow:
+                      "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    zIndex: 10,
                   }}
-                  className={`absolute p-1 cursor-pointer transition-transform duration-150 ease-in-out shadow-lg flex items-center justify-center z-10 ${
-                    additionalClassNames.delete || ""
-                  }`}
+                  className={`${additionalClassNames.delete || ""}`}
                   onClick={handleDeleteImage}
                   disabled={loading}
                 >
                   {deleting ? (
                     <>
                       <LuRefreshCcw
-                        className="flex items-center justify-center"
                         color={
                           loading
                             ? mergedColors.text
@@ -407,6 +480,9 @@ const PictureSelector = ({
                         }
                         size={buttonSize * 0.5}
                         style={{
+                          display: "flex",
+                          justifyItems: "center",
+                          justifyContent: "center",
                           animation: "spin 1s linear infinite",
                           transformOrigin: "center",
                         }}
@@ -422,7 +498,11 @@ const PictureSelector = ({
                     </>
                   ) : (
                     <HiOutlineTrash
-                      className="flex items-center justify-center"
+                      style={{
+                        display: "flex",
+                        justifyItems: "center",
+                        justifyContent: "center",
+                      }}
                       color={
                         loading ? mergedColors.text : mergedColors.textDisabled
                       }
@@ -434,7 +514,20 @@ const PictureSelector = ({
             </>
           )}
         </div>
-        <span id="image-description" className="sr-only">
+        <span
+          id="image-description"
+          style={{
+            position: "absolute",
+            width: "1px",
+            height: "1px",
+            padding: "0",
+            margin: "-1px",
+            overflow: "hidden",
+            clip: "rect(0, 0, 0, 0)",
+            whiteSpace: "nowrap",
+            border: "0",
+          }}
+        >
           {imageUrl ? "Current profile picture" : "No image selected"}
         </span>
         <input
@@ -442,18 +535,47 @@ const PictureSelector = ({
           type="file"
           accept="image/*"
           onChange={handleImageChange}
-          className="hidden"
+          style={{
+            display: "none",
+          }}
           disabled={loading}
           aria-label="Upload image"
           aria-describedby="file-upload-description"
         />
-        <span id="file-upload-description" className="sr-only">
+        <span
+          id="file-upload-description"
+          style={{
+            position: "absolute",
+            width: "1px",
+            height: "1px",
+            padding: "0",
+            margin: "-1px",
+            overflow: "hidden",
+            clip: "rect(0, 0, 0, 0)",
+            whiteSpace: "nowrap",
+            border: "0",
+          }}
+        >
           Upload an image file for your profile picture
         </span>
       </div>
       {error && (
-        <div className="flex items-center justify-center">
-          <span className="text-red-600 text-center text-sm">{error}</span>
+        <div
+          style={{
+            display: "flex",
+            justifyItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <span
+            style={{
+              color: "#dc2626",
+              textAlign: "center",
+              fontSize: "0.875rem",
+            }}
+          >
+            {error}
+          </span>
         </div>
       )}
     </div>
