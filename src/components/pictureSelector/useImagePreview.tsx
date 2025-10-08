@@ -51,7 +51,7 @@ function useImagePreview() {
 
       container.style.backgroundPosition = `${xPercent}% ${yPercent}%`;
     },
-    [isZoomEnable]
+    [isZoomEnable],
   );
 
   const updateZoom = useCallback(() => {
@@ -106,7 +106,7 @@ function useImagePreview() {
       if (container) {
         container.requestFullscreen?.().catch((err: any) => {
           console.error(
-            `Error attempting to enable fullscreen: ${err.message}`
+            `Error attempting to enable fullscreen: ${err.message}`,
           );
         });
       }
@@ -175,7 +175,7 @@ function useImagePreview() {
     const ratio = Math.min(
       maxWidth / imageSize.width,
       maxHeight / imageSize.height,
-      1
+      1,
     );
 
     return {
@@ -188,6 +188,86 @@ function useImagePreview() {
     const { width, height } = imageSize;
     const initialSize = calculateInitialSize();
 
+    const containerStyle: React.CSSProperties = {
+      width: "100%",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      color: "white",
+      position: "relative",
+    };
+
+    const imageWrapperStyle: React.CSSProperties = {
+      position: "relative",
+      width: `${initialSize.width}px`,
+      height: `${initialSize.height}px`,
+      maxWidth: "90vw",
+      maxHeight: "90vh",
+    };
+
+    const imageContainerStyle: React.CSSProperties = {
+      width: "100%",
+      height: "100%",
+      backgroundImage: `url(${openPreview.url})`,
+      backgroundSize: "contain",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+      overflow: "hidden",
+      transform: `rotate(${rotate}deg)`,
+      transition: "transform 0.2s ease, background-size 0.15s ease",
+      border: "1px solid #ccc",
+      borderRadius: "8px",
+      boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+    };
+
+    const controlsContainerStyle: React.CSSProperties = {
+      position: "absolute",
+      top: "1rem",
+      left: "1rem",
+      display: "flex",
+      gap: "0.5rem",
+      zIndex: 10,
+      flexWrap: "wrap",
+    };
+
+    const buttonStyle: React.CSSProperties = {
+      backgroundColor: "rgba(0, 0, 0, 0.3)",
+      borderRadius: "0.375rem",
+      padding: "0.5rem",
+      backdropFilter: "blur(16px)",
+      transition: "background-color 0.2s ease",
+      border: "none",
+      cursor: "pointer",
+      color: "white",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    };
+
+    const buttonHoverStyle: React.CSSProperties = {
+      ...buttonStyle,
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+    };
+
+    const infoStyle: React.CSSProperties = {
+      position: "absolute",
+      bottom: "1rem",
+      left: "1rem",
+      backgroundColor: "rgba(0, 0, 0, 0.3)",
+      borderRadius: "0.375rem",
+      padding: "0.25rem 0.5rem",
+      backdropFilter: "blur(16px)",
+      fontSize: "0.75rem",
+      lineHeight: "1rem",
+    };
+
+    const loadingStyle: React.CSSProperties = {
+      minHeight: "300px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    };
+
     return (
       <Modal
         title="مشاهده عکس"
@@ -196,37 +276,15 @@ function useImagePreview() {
         className="image-preview-modal"
       >
         {openPreview.url && width && height ? (
-          <div className="w-full flex justify-center items-center text-white relative">
+          <div style={containerStyle}>
             <div
-              className="relative"
-              style={{
-                width: `${initialSize.width}px`,
-                height: `${initialSize.height}px`,
-                maxWidth: "90vw",
-                maxHeight: "90vh",
-              }}
+              style={imageWrapperStyle}
               onMouseMove={handleMouseMove}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
-              <div
-                ref={containerRef}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  backgroundImage: `url(${openPreview.url})`,
-                  backgroundSize: "contain",
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "center",
-                  overflow: "hidden",
-                  transform: `rotate(${rotate}deg)`,
-                  transition: "transform 0.2s ease, background-size 0.15s ease",
-                  border: "1px solid #ccc",
-                  borderRadius: "8px",
-                  boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
-                }}
-              />
-              <div className="absolute top-4 left-4 flex gap-2 z-10 flex-wrap">
+              <div ref={containerRef} style={imageContainerStyle} />
+              <div style={controlsContainerStyle}>
                 <button
                   onClick={() => {
                     setZoomValue((prev) => {
@@ -235,7 +293,15 @@ function useImagePreview() {
                       return newZoom;
                     });
                   }}
-                  className="bg-black/30 rounded-md p-2 backdrop-blur-3xl hover:bg-black/50 transition"
+                  style={buttonStyle}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      "rgba(0, 0, 0, 0.5)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      "rgba(0, 0, 0, 0.3)";
+                  }}
                   title="Zoom Out"
                 >
                   <ImZoomOut />
@@ -248,7 +314,15 @@ function useImagePreview() {
                       return newZoom;
                     });
                   }}
-                  className="bg-black/30 rounded-md p-2 backdrop-blur-3xl hover:bg-black/50 transition"
+                  style={buttonStyle}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      "rgba(0, 0, 0, 0.5)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      "rgba(0, 0, 0, 0.3)";
+                  }}
                   title="Zoom In"
                 >
                   <ImZoomIn />
@@ -257,7 +331,15 @@ function useImagePreview() {
                   onClick={() => {
                     setRotate((prev) => (prev + 90) % 360);
                   }}
-                  className="bg-black/30 rounded-md p-2 backdrop-blur-3xl hover:bg-black/50 transition"
+                  style={buttonStyle}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      "rgba(0, 0, 0, 0.5)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      "rgba(0, 0, 0, 0.3)";
+                  }}
                   title="Rotate Clockwise"
                 >
                   <MdOutlineRotate90DegreesCw />
@@ -266,26 +348,42 @@ function useImagePreview() {
                   onClick={() => {
                     setRotate((prev) => (prev - 90) % 360);
                   }}
-                  className="bg-black/30 rounded-md p-2 backdrop-blur-3xl hover:bg-black/50 transition"
+                  style={buttonStyle}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      "rgba(0, 0, 0, 0.5)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      "rgba(0, 0, 0, 0.3)";
+                  }}
                   title="Rotate Counter-Clockwise"
                 >
                   <MdOutlineRotate90DegreesCcw />
                 </button>
                 <button
                   onClick={toggleFullscreen}
-                  className="bg-black/30 rounded-md p-2 backdrop-blur-3xl hover:bg-black/50 transition"
+                  style={buttonStyle}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      "rgba(0, 0, 0, 0.5)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      "rgba(0, 0, 0, 0.3)";
+                  }}
                   title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
                 >
                   {isFullscreen ? <MdFullscreenExit /> : <MdFullscreen />}
                 </button>
               </div>
-              <div className="absolute bottom-4 left-4 bg-black/30 rounded-md px-2 py-1 backdrop-blur-3xl text-xs">
+              <div style={infoStyle}>
                 {Math.round(zoomValue * 100)}% • {width}×{height}
               </div>
             </div>
           </div>
         ) : (
-          <div className="min-h-[300px] flex items-center justify-center">
+          <div style={loadingStyle}>
             <p>Loading...</p>
           </div>
         )}
