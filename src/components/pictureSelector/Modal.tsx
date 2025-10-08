@@ -15,41 +15,69 @@ const Modal: React.FC<ModalProps> = ({
     onClose();
   };
 
+  // Size mapping
+  const sizeStyles = {
+    sm: { width: "370px" },
+    md: { width: "750px" },
+    lg: { width: "1100px" },
+    xl: { width: "80%" },
+    full: { width: "90%" },
+    fit: {},
+  };
+
+  const overlayStyle: React.CSSProperties = {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 999,
+    backgroundColor: "rgba(0, 0, 0, 0.424)",
+    backdropFilter: "blur(4px)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    transform: isOpen ? "translateY(0)" : "translateY(100%)",
+    transition: "transform 500ms ease",
+  };
+
+  const modalStyle: React.CSSProperties = {
+    position: "relative",
+    zIndex: 9999,
+    borderTopLeftRadius: "1rem",
+    borderTopRightRadius: "1rem",
+    borderBottomLeftRadius: "0.5rem",
+    borderBottomRightRadius: "0.5rem",
+    border: "1px solid #e5e7eb",
+    marginLeft: 0,
+    marginRight: 0,
+    transition: "all 300ms ease 200ms",
+    opacity: isOpen ? 1 : 0,
+    maxWidth: "90%",
+    ...sizeStyles[size as keyof typeof sizeStyles],
+  };
+
+  const contentStyle: React.CSSProperties = {
+    maxHeight: "80svh",
+    borderRadius: "1rem",
+    overflowY: overflowY === "overflow-y-auto" ? "auto" : "visible",
+  };
+
   return (
     isOpen &&
     ReactDOM.createPortal(
-      <div
-        onClick={handleClose}
-        className={`fixed inset-0 z-[999] bg-[#0000006c]/30 backdrop-blur-[4px] flex items-center justify-center ${
-          isOpen ? "translate-y-0" : "translate-y-[100%] delay-500"
-        }`}
-      >
+      <div onClick={handleClose} style={overlayStyle}>
         <div
           onClick={(e) => e.stopPropagation()}
-          className={`relative z-[9999] rounded-t-2xl md:rounded-lg border-secondary-200 mx-0  transition-all duration-300 delay-200 ${
-            isOpen ? "opacity-100" : "opacity-0"
-          } md:max-w-[90%] ${
-            size === "sm"
-              ? "w-[370px]"
-              : size === "md"
-              ? "w-[750px]"
-              : size === "lg"
-              ? "w-[1100px]"
-              : size === "xl"
-              ? "!w-[80%]"
-              : size === "full"
-              ? "w-[90%]"
-              : ""
-          }  max-md:!w-full ${className || ""}`}
+          style={modalStyle}
+          className={className}
         >
-          <div
-            className={`max-h-[80svh] rounded-2xl ${childrenClass} ${overflowY}`}
-          >
+          <div style={contentStyle} className={childrenClass}>
             {children}
           </div>
         </div>
       </div>,
-      document.body
+      document.body,
     )
   );
 };
