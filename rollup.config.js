@@ -3,7 +3,6 @@ import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
 import dts from "rollup-plugin-dts";
 import terser from "@rollup/plugin-terser";
-import autoExternal from "rollup-plugin-auto-external";
 import json from "@rollup/plugin-json";
 import postcss from "rollup-plugin-postcss";
 import analyze from "rollup-plugin-analyzer";
@@ -20,13 +19,12 @@ export default [
         sourcemap: false,
       },
     ],
-    external: ["react", "react-dom"],
+    external: ["react", "react-dom", "axios", "react/jsx-runtime"],
     plugins: [
       replace({
         preventAssignment: true,
         __APP_VERSION__: JSON.stringify(packageJson.version),
       }),
-      autoExternal(),
       resolve(),
       commonjs(),
       json(),
