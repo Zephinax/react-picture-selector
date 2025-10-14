@@ -11,7 +11,7 @@
   <a href="https://zephinax.github.io/react-picture-selector" target="_blank">Click Here To Show Demo</a>
 </h1>
 
-![React](https://img.shields.io/badge/React-18.x-%231DAFBF) ![TypeScript](https://img.shields.io/badge/TypeScript-Included-%23178C6) ![Axios](https://img.shields.io/badge/Axios-1.x-%235A29E4)
+![TypeScript](https://img.shields.io/badge/TypeScript-Included-%23178C6) ![Axios](https://img.shields.io/badge/Axios-1.x-%235A29E4) [![NPM](https://nodei.co/npm/react-picture-selector.svg?style=shields&color=blue)](https://nodei.co/npm/react-picture-selector/)
 
 The `PictureSelector` component is a highly customizable React component designed for seamless image upload, deletion, and preview functionality, ideal for profile pictures or general image management. It supports real API-based operations and a test mode for simulating uploads and deletions, making it versatile for both production and development environments.
 
