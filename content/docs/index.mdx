@@ -1,13 +1,100 @@
 ---
-title: Hello World
+title: Introduction
 description: Your first document
 ---
+<p align="center">
+  <img
+    src="https://raw.githubusercontent.com/Zephinax/react-picture-selector/refs/heads/dev/public/circle.gif"
+    alt="Profile Picture Upload Animation"
+    width="200"
+  />
+</p>
 
-Welcome to the docs! You can start writing documents in `/content/docs`.
-
-## What is Next?
+The `PictureSelector` component is a highly customizable React component designed for seamless image upload, deletion, and preview functionality, ideal for profile pictures or general image management.
 
 <Cards>
-  <Card title="Learn more about Next.js" href="https://nextjs.org/docs" />
-  <Card title="Learn more about Fumadocs" href="https://fumadocs.dev" />
+  <Card
+    title="🚀 Feature Rich"
+    description="Drag & drop, progress indicators, preview modals, and API integration"
+    href="#features"
+  />
+  <Card
+    title="🎨 Highly Customizable"
+    description="Colors, sizes, shapes, and full CSS class control"
+    href="#styling"
+  />
+  <Card
+    title="🧪 Test Mode"
+    description="Simulate uploads and deletions without API dependencies"
+    href="#test-mode"
+  />
+  <Card
+    title="⚡ Performance Optimized"
+    description="Smooth animations with requestAnimationFrame and abort controllers"
+    href="#features"
+  />
 </Cards>
+
+## Quick Start
+
+<CodeBlockTabs defaultValue="basic">
+  <CodeBlockTabsList>
+    <CodeBlockTabsTrigger value="basic">Basic Usage</CodeBlockTabsTrigger>
+    <CodeBlockTabsTrigger value="advanced">Advanced Configuration</CodeBlockTabsTrigger>
+  </CodeBlockTabsList>
+  <CodeBlockTab value="basic">
+        ```jsx
+        import PictureSelector from "react-picture-selector";
+
+        const App = () => {
+        const handleImageChange = (imageUrl: string, responseData?: any) => {
+          console.log("New image URL:", imageUrl);
+        };
+
+        return (
+        <PictureSelector
+        imageUrl="https://example.com/avatar.jpg"
+        onChangeImage={handleImageChange}
+        type="profile"
+        title="Profile Picture"
+        size={180}
+        />
+          );
+        };‍‍
+        ```
+  </CodeBlockTab>
+  <CodeBlockTab value="advanced">
+```jsx
+import PictureSelector from "react-picture-selector";
+
+const App = () => {
+  const handleImageChange = (imageUrl: string, responseData?: any) => {
+    console.log("Image changed:", imageUrl, responseData);
+  };
+
+  const apiConfig = {
+    baseUrl: "https://api.example.com",
+    uploadUrl: "/upload",
+    deleteUrl: "/remove/123",
+    formDataName: "image",
+    additionalHeaders: {
+      Authorization: "Bearer your-token",
+    },
+    uploadMethod: "POST",
+    deleteMethod: "DELETE",
+  };
+
+  return (
+    <PictureSelector
+      apiConfig={apiConfig}
+      imageUrl="https://example.com/avatar.jpg"
+      onChangeImage={handleImageChange}
+      type="profile"
+      title="User Avatar"
+      size={200}
+      testMode={false}
+    />
+  );
+};
+```
+</CodeBlockTab> </CodeBlockTabs>
