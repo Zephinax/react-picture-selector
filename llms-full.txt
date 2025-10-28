@@ -1,28 +1,446 @@
-# Hello World
+# Installation Guide
 
-Welcome to the docs! You can start writing documents in `/content/docs`.
+React Picture Selector provides a complete solution for handling image uploads with a modern and responsive interface. It supports both drag-and-drop and traditional selection methods, offering real-time progress indication through a smooth progress ring or percentage display. Animations are optimized with `requestAnimationFrame`, ensuring fluid transitions and minimal CPU consumption even on lower-end devices. Upload operations can be safely canceled using the built-in `AbortController`, providing users with full control over the process.
 
-## What is Next?
+***
 
-<Cards>
-  <Card title="Learn more about Next.js" href="https://nextjs.org/docs" />
+## Installation Steps
 
-  <Card title="Learn more about Fumadocs" href="https://fumadocs.dev" />
-</Cards>
+<CodeBlockTabs defaultValue="npm">
+  <CodeBlockTabsList>
+    <CodeBlockTabsTrigger value="npm">
+      npm
+    </CodeBlockTabsTrigger>
 
+    <CodeBlockTabsTrigger value="bun">
+      bun
+    </CodeBlockTabsTrigger>
 
-# Components
+    <CodeBlockTabsTrigger value="yarn">
+      yarn
+    </CodeBlockTabsTrigger>
 
-## Code Block
+    <CodeBlockTabsTrigger value="pnpm">
+      pnpm
+    </CodeBlockTabsTrigger>
+  </CodeBlockTabsList>
 
-```js
-console.log('Hello World');
+  <CodeBlockTab value="npm">
+    ```bash
+    npm install react-picture-selector
+    ```
+  </CodeBlockTab>
+
+  <CodeBlockTab value="bun">
+    ```bash
+    bun add react-picture-selector
+    ```
+  </CodeBlockTab>
+
+  <CodeBlockTab value="yarn">
+    ```bash
+    yarn add react-picture-selector
+    ```
+  </CodeBlockTab>
+
+  <CodeBlockTab value="pnpm">
+    ```bash
+    pnpm add react-picture-selector
+    ```
+  </CodeBlockTab>
+</CodeBlockTabs>
+
+## Dependencies
+
+* React (for component rendering and state management)
+* Axios (for making API requests in real mode)
+
+<Callout type="info" title="Required Dependencies">
+   The component requires these peer dependencies to be installed in your project: 
+</Callout>
+
+## Basic Setup
+
+```jsx
+import PictureSelector from "react-picture-selector";
+import { useState } from "react";
+
+function ProfilePage() {
+  const [currentImage, setCurrentImage] = useState("https://example.com/avatar.jpg");
+
+  const handleImageChange = (imageUrl: string, responseData?: any) => {
+    setCurrentImage(imageUrl);
+    console.log("API Response:", responseData);
+  };
+
+  return (
+    <PictureSelector
+      imageUrl={currentImage}
+      onChangeImage={handleImageChange}
+      type="profile"
+      title="Profile Photo"
+      size={150}
+    />
+  );
+}
 ```
 
-## Cards
+<Callout type="success" title="Ready to Use">
+   Your React Picture Selector is now installed and ready! Continue to the next section to explore advanced configuration options. 
+</Callout>
+
+
+# API and Styling
+
+The `apiConfig` prop allows you to specify endpoints, HTTP methods, headers, and callbacks for upload and delete operations.
+
+## API Configuration Interface
+
+```typescript
+interface apiConfig {
+  // Required URLs
+  deleteUrl: string;        // Path for deleting images, combined with baseUrl
+  uploadUrl: string;        // Path for uploading images, combined with baseUrl
+  baseUrl: string;          // Base URL for API requests
+
+  // Optional Configuration
+  responsePath?: string;    // Path to extract image URL from API response (default: "data.data")
+  formDataName?: string;    // Name of the file field in FormData (default: "file")
+  additionalHeaders?: Record<string, string>; // Additional headers for API requests
+
+  // HTTP Methods
+  uploadMethod?: "POST" | "PUT" | "PATCH";  // HTTP method for upload requests
+  deleteMethod?: "POST" | "DELETE" | "PUT"; // HTTP method for delete requests
+
+  // Request Body
+  deleteBody?: Record<string, unknown> | ((imageUrl: string) => Record<string, unknown>);
+
+  // Event Callbacks
+  onUploadSuccess?: (url: string) => void;
+  onUploadError?: (error: any) => void;
+  onDeleteStart?: () => void;
+  onDeleteSuccess?: () => void;
+}
+```
+
+## Complete API Configuration Example
+
+<CodeBlockTabs defaultValue="full">
+  <CodeBlockTabsList>
+    <CodeBlockTabsTrigger value="full">
+      Full Configuration
+    </CodeBlockTabsTrigger>
+
+    <CodeBlockTabsTrigger value="minimal">
+      Minimal Setup
+    </CodeBlockTabsTrigger>
+
+    <CodeBlockTabsTrigger value="auth">
+      With Authentication
+    </CodeBlockTabsTrigger>
+  </CodeBlockTabsList>
+
+  <CodeBlockTab value="full">
+    ```jsx
+    const apiConfig = {
+      baseUrl: "https://api.example.com",
+      uploadUrl: "/upload",
+      deleteUrl: "/images/remove",
+      formDataName: "profile_picture",
+      responsePath: "data.imageUrl",
+      additionalHeaders: {
+        "X-API-Key": "your-api-key",
+        "Client-Version": "1.0.0"
+      },
+      uploadMethod: "POST",
+      deleteMethod: "DELETE",
+      deleteBody: (imageUrl) => ({
+        imageId: imageUrl.split("/").pop(),
+        timestamp: Date.now()
+      }),
+      onUploadSuccess: (url) => console.log("Uploaded:", url),
+      onUploadError: (error) => console.error("Upload failed:", error),
+      onDeleteStart: () => console.log("Starting deletion..."),
+      onDeleteSuccess: () => console.log("Image deleted successfully")
+    };
+    ```
+  </CodeBlockTab>
+
+  <CodeBlockTab value="minimal">
+    ```jsx
+    const apiConfig = {
+      baseUrl: "https://api.example.com",
+      uploadUrl: "/upload",
+      deleteUrl: "/delete",
+      uploadMethod: "POST",
+      deleteMethod: "POST"
+    };
+    ```
+  </CodeBlockTab>
+
+  <CodeBlockTab value="auth">
+    ```jsx
+    const apiConfig = {
+      baseUrl: "https://api.example.com",
+      uploadUrl: "/v1/images/upload",
+      deleteUrl: "/v1/images/delete",
+      additionalHeaders: {
+        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+        "X-Client-ID": "your-client-id"
+      },
+      deleteBody: {
+        permanent: true,
+        reason: "user_requested"
+      }
+    };
+    ```
+  </CodeBlockTab>
+</CodeBlockTabs>
+
+<Callout type="info" title="API Requirements">
+  Your API should support:
+
+  * **Upload**: Accept `multipart/form-data` with the file attached
+  * **Delete**: Accept requests with customizable method and body
+  * **Response**: Return the image URL in the specified `responsePath`
+</Callout>
+
+***
+
+## Styling & Customization
+
+Color Palette Configuration:
+
+```typescript
+interface ColorPalette {
+  primary: string;      // Edit button background color
+  error: string;        // Delete button background color
+  progress: string;     // Progress ring/percentage color
+  placeholder: string;  // Placeholder SVG color
+  text: string;         // Progress percentage text color
+  textDisabled: string; // Disabled button text/icon color
+}
+```
+
+## Styling Examples
+
+<CodeBlockTabs defaultValue="color">
+  <CodeBlockTabsList>
+    <CodeBlockTabsTrigger value="color">
+      Color Schemes
+    </CodeBlockTabsTrigger>
+
+    <CodeBlockTabsTrigger value="class">
+      Custom Classes
+    </CodeBlockTabsTrigger>
+
+    <CodeBlockTabsTrigger value="complete">
+      Complete Example
+    </CodeBlockTabsTrigger>
+  </CodeBlockTabsList>
+
+  <CodeBlockTab value="color">
+    ```jsx
+    // Modern Blue Theme
+    const colors = {
+      primary: "#3B82F6",
+      error: "#EF4444",
+      progress: "#10B981",
+      placeholder: "#9CA3AF",
+      text: "#FFFFFF",
+      textDisabled: "#D1D5DB"
+    };
+
+    // Dark Theme
+    const darkColors = {
+      primary: "#8B5CF6",
+      error: "#F43F5E",
+      progress: "#06D6A0",
+      placeholder: "#6B7280",
+      text: "#1F2937",
+      textDisabled: "#4B5563"
+    };
+    ```
+  </CodeBlockTab>
+
+  <CodeBlockTab value="class">
+    ```jsx
+    const additionalClassNames = {
+      title: "font-bold text-lg mb-2",
+      titleContainer: "border-b pb-2 mb-4",
+      delete: "hover:scale-110 transition-transform",
+      edit: "shadow-lg hover:shadow-xl",
+      image: "rounded-xl border-2 border-gray-200"
+    };
+
+    // Usage
+    <PictureSelector
+      additionalClassNames={additionalClassNames}
+      // ... other props
+    />
+    ```
+  </CodeBlockTab>
+
+  <CodeBlockTab value="complete">
+    ```jsx
+    const stylingConfig = {
+      colors: {
+        primary: "#1E90FF",
+        error: "#FF0000",
+        progress: "#FF69B4",
+        placeholder: "#A9A9A9",
+        text: "#FFFFFF",
+        textDisabled: "#D3D3D3"
+      },
+      additionalClassNames: {
+        title: "text-purple-900 font-semibold",
+        titleContainer: "bg-gray-50 px-4 py-2 rounded-t-lg",
+        delete: "hover:bg-red-600 transition-colors",
+        edit: "hover:bg-blue-600 transition-colors",
+        image: "shadow-md hover:shadow-lg transition-shadow"
+      }
+    };
+
+    <PictureSelector
+      {...stylingConfig}
+      type="profile"
+      size={200}
+      showProgressRing={true}
+      blurOnProgress={true}
+    />
+    ```
+  </CodeBlockTab>
+</CodeBlockTabs>
+
+***
+
+## Component Types & Sizes
 
 <Cards>
-  <Card title="Learn more about Next.js" href="https://nextjs.org/docs" />
+  <Card title="Profile Type" description="Circular image with ring progress indicator. Ideal for user avatars and profile pictures." />
 
-  <Card title="Learn more about Fumadocs" href="https://fumadocs.dev" />
+  <Card title="Rectangle Type" description="Rectangular image with percentage progress bar. Perfect for general image uploads." />
 </Cards>
+
+```jsx
+// Profile (Circular)
+<PictureSelector type="profile" size={150} />
+
+// Rectangle
+<PictureSelector type="rectangle" size={200} />
+```
+
+<Callout type="success" title="Tailwind CSS Compatible">
+   The component uses Tailwind CSS classes by default, but you can override any style using the color palette and additionalClassNames props. 
+</Callout>
+
+
+# Introduction
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Zephinax/react-picture-selector/refs/heads/dev/public/circle.gif" alt="Profile Picture Upload Animation" width="200" />
+</p>
+
+The `PictureSelector` component is a highly customizable React component designed for seamless image upload, deletion, and preview functionality, ideal for profile pictures or general image management.
+
+<Cards>
+  <Card title="🚀 Feature Rich" description="Drag & drop, progress indicators, preview modals, and API integration" href="#features" />
+
+  <Card title="🎨 Highly Customizable" description="Colors, sizes, shapes, and full CSS class control" href="#styling" />
+
+  <Card title="🧪 Test Mode" description="Simulate uploads and deletions without API dependencies" href="#test-mode" />
+
+  <Card title="⚡ Performance Optimized" description="Smooth animations with requestAnimationFrame and abort controllers" href="#features" />
+</Cards>
+
+***
+
+## Features
+
+* **Smooth Image Upload**: Upload images with a progress ring (for profiles) or percentage display, powered by `requestAnimationFrame` for smooth animations and low CPU usage.
+* **Flexible Image Deletion**: Delete images via API with customizable HTTP methods, headers, and request body, or simulated deletion in test mode.
+* **Progress Indicator**: Displays a progress ring for circular profiles or a percentage-based indicator, with non-linear fallback for servers without `Content-Length`.
+* **Drag and Drop Support**: Allows users to drag and drop images with visual feedback, with prevention of dragging selected photos for better UX.
+* **Image Preview**: Clickable modal preview for uploaded images, supporting circular and rectangular formats.
+* **Full API Response Access**: Provides the full API response body as an optional parameter in `onChangeImage` for advanced use cases.
+* **Configurable Styling**: Customize colors, sizes, shapes, and additional CSS classes for full control over appearance.
+* **Abort Controller**: Cancel ongoing uploads using `AbortController` for better user control.
+* **Event Callbacks**: Support for `onUploadSuccess`, `onUploadError`, `onDeleteStart`, and `onDeleteSuccess` callbacks to handle upload and deletion events.
+* **Test Mode**: Simulate uploads and deletions with configurable delays, ideal for testing without API dependencies.
+* **Responsive Design**: Supports RTL layouts, responsive sizing, and both circular (profile) and rectangular image types.
+* **Robust Error Handling**: Displays clear error messages for failed operations, with proper cleanup to prevent resource leaks.
+* **Performance Optimizations**: Prevents race conditions, ensures clean percentage displays, and optimizes resource usage using `useMemo` and `useCallback`.
+
+***
+
+## Quick Start
+
+<CodeBlockTabs defaultValue="basic">
+  <CodeBlockTabsList>
+    <CodeBlockTabsTrigger value="basic">
+      Basic Usage
+    </CodeBlockTabsTrigger>
+
+    <CodeBlockTabsTrigger value="advanced">
+      Advanced Configuration
+    </CodeBlockTabsTrigger>
+  </CodeBlockTabsList>
+
+  <CodeBlockTab value="basic">
+    ```jsx
+    import PictureSelector from "react-picture-selector";
+
+    const App = () => {
+    const handleImageChange = (imageUrl: string, responseData?: any) => {
+      console.log("New image URL:", imageUrl);
+    };
+
+    return (
+    <PictureSelector
+    imageUrl="https://example.com/avatar.jpg"
+    onChangeImage={handleImageChange}
+    type="profile"
+    title="Profile Picture"
+    size={180}
+    />
+      );
+    };‍‍
+    ```
+  </CodeBlockTab>
+
+  <CodeBlockTab value="advanced">
+    ```jsx
+    import PictureSelector from "react-picture-selector";
+
+    const App = () => {
+      const handleImageChange = (imageUrl: string, responseData?: any) => {
+        console.log("Image changed:", imageUrl, responseData);
+      };
+
+      const apiConfig = {
+        baseUrl: "https://api.example.com",
+        uploadUrl: "/upload",
+        deleteUrl: "/remove/123",
+        formDataName: "image",
+        additionalHeaders: {
+          Authorization: "Bearer your-token",
+        },
+        uploadMethod: "POST",
+        deleteMethod: "DELETE",
+      };
+
+      return (
+        <PictureSelector
+          apiConfig={apiConfig}
+          imageUrl="https://example.com/avatar.jpg"
+          onChangeImage={handleImageChange}
+          type="profile"
+          title="User Avatar"
+          size={200}
+          testMode={false}
+        />
+      );
+    };
+    ```
+  </CodeBlockTab>
+</CodeBlockTabs>
