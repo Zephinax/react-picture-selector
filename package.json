@@ -8,7 +8,7 @@
     "start": "next start",
     "postinstall": "fumadocs-mdx",
     "lint": "eslint",
-    "deploy": "gh-pages -d out -t true"
+    "deploy": "gh-pages -d out"
   },
   "dependencies": {
     "fumadocs-core": "16.0.2",
