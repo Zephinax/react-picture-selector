@@ -8,12 +8,12 @@ const repoName = "react-picture-selector";
 const config = {
   reactStrictMode: true,
   output: "export",
-  trailingSlash: true, // حیاتی: بدون این، routes خراب می‌شن
+  trailingSlash: true,
   images: {
     unoptimized: true
   },
-  basePath: isProd ? `/${repoName}` : "", // پیشوند برای همه لینک‌ها
-  assetPrefix: isProd ? `https://zephinax.github.io/${repoName}/` : "" // کامل URL برای assets (نه فقط /repo/)
+  basePath: isProd ? `/${repoName}` : "",
+  assetPrefix: isProd ? `https://zephinax.github.io/${repoName}/` : ""
 };
 
 export default withMDX(config);
