@@ -35,6 +35,24 @@ The `PictureSelector` component is a highly customizable React component designe
   />
 </Cards>
 
+---
+## Features
+
+- **Smooth Image Upload**: Upload images with a progress ring (for profiles) or percentage display, powered by `requestAnimationFrame` for smooth animations and low CPU usage.
+- **Flexible Image Deletion**: Delete images via API with customizable HTTP methods, headers, and request body, or simulated deletion in test mode.
+- **Progress Indicator**: Displays a progress ring for circular profiles or a percentage-based indicator, with non-linear fallback for servers without `Content-Length`.
+- **Drag and Drop Support**: Allows users to drag and drop images with visual feedback, with prevention of dragging selected photos for better UX.
+- **Image Preview**: Clickable modal preview for uploaded images, supporting circular and rectangular formats.
+- **Full API Response Access**: Provides the full API response body as an optional parameter in `onChangeImage` for advanced use cases.
+- **Configurable Styling**: Customize colors, sizes, shapes, and additional CSS classes for full control over appearance.
+- **Abort Controller**: Cancel ongoing uploads using `AbortController` for better user control.
+- **Event Callbacks**: Support for `onUploadSuccess`, `onUploadError`, `onDeleteStart`, and `onDeleteSuccess` callbacks to handle upload and deletion events.
+- **Test Mode**: Simulate uploads and deletions with configurable delays, ideal for testing without API dependencies.
+- **Responsive Design**: Supports RTL layouts, responsive sizing, and both circular (profile) and rectangular image types.
+- **Robust Error Handling**: Displays clear error messages for failed operations, with proper cleanup to prevent resource leaks.
+- **Performance Optimizations**: Prevents race conditions, ensures clean percentage displays, and optimizes resource usage using `useMemo` and `useCallback`.
+
+---
 ## Quick Start
 
 <CodeBlockTabs defaultValue="basic">
