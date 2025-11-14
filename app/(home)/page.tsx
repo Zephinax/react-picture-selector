@@ -7,7 +7,7 @@ import {
   ShieldCheck,
   Sparkles,
   UploadCloud,
-  Zap
+  Zap,
 } from "lucide-react";
 
 const features = [
@@ -16,36 +16,36 @@ const features = [
     description:
       "Drag & drop, smooth progress rings, fallback percentages, and abortable requests bundled together.",
     icon: UploadCloud,
-    accent: "text-cyan-600 dark:text-cyan-300"
+    accent: "text-cyan-600 dark:text-cyan-300",
   },
   {
     title: "Unlimited customization",
     description:
       "Tune radiuses, colors, sizing, and CSS slots so the selector matches any brand system in minutes.",
     icon: Sparkles,
-    accent: "text-pink-600 dark:text-pink-300"
+    accent: "text-pink-600 dark:text-pink-300",
   },
   {
     title: "API-first mindset",
     description:
       "Pass headers, methods, and endpoints for upload/delete flows or switch into test mode instantly.",
     icon: Layers3,
-    accent: "text-amber-600 dark:text-amber-300"
+    accent: "text-amber-600 dark:text-amber-300",
   },
   {
     title: "Production ready UX",
     description:
       "Accessible previews, error states, and callbacks for every critical moment in the upload lifecycle.",
     icon: ShieldCheck,
-    accent: "text-emerald-600 dark:text-emerald-300"
-  }
+    accent: "text-emerald-600 dark:text-emerald-300",
+  },
 ];
 
 const checklist = [
   "Preview modal with keyboard support",
   "AbortController baked in",
   "Full API response passed back to you",
-  "RTL and responsive layouts covered"
+  "RTL and responsive layouts covered",
 ];
 
 const codeSample = `import PictureSelector from "react-picture-selector";
@@ -85,15 +85,16 @@ export default function HomePage() {
             </span>
             Picture Selector v2 · Uploads, previews, test mode
           </div>
-          <h1 className="text-4xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-5xl lg:text-6xl">
+          <h1 className="text-4xl font-bold tracking-tight text-balance leading-tight text-slate-900 dark:text-white sm:text-5xl lg:text-6xl">
             The polished way to upload pictures
           </h1>
-          <p className="mx-auto mt-6 max-w-3xl text-lg text-slate-600 dark:text-white/80">
-            React Picture Selector bundles drag & drop uploads, accessible previews, live progress,
-            API wiring, and graceful error states into one composable component. Ship delightful
-            avatar or gallery experiences without reinventing the flow.
+          <p className="mx-auto mt-6 max-w-2xl text-pretty text-base leading-relaxed text-slate-600 dark:text-white/80 sm:max-w-3xl sm:text-lg">
+            React Picture Selector bundles drag & drop uploads, accessible
+            previews, live progress, API wiring, and graceful error states into
+            one composable component. Ship delightful avatar or gallery
+            experiences without reinventing the flow.
           </p>
-          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <div className="mt-10 flex flex-col items-center justify-center gap-4 text-base sm:flex-row sm:text-lg">
             <Link
               href="/docs"
               className="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 font-semibold text-slate-900 shadow-lg shadow-cyan-500/30 transition hover:-translate-y-0.5"
@@ -132,7 +133,7 @@ export default function HomePage() {
           </div>*/}
         </section>
 
-        <section className="grid gap-6 md:grid-cols-2">
+        <section className="grid gap-6 text-pretty md:grid-cols-2">
           {features.map((feature) => {
             const Icon = feature.icon;
 
@@ -142,30 +143,32 @@ export default function HomePage() {
                 className="rounded-3xl border border-slate-200 bg-white dark:bg-slate-900/80 p-6 shadow-sm backdrop-blur dark:border-white/10 dark:bg-linear-to-br dark:from-white/10 dark:via-white/5 dark:to-transparent"
               >
                 <Icon className={`h-6 w-6 ${feature.accent}`} />
-                <h3 className="mt-4 text-xl font-semibold text-slate-900 dark:text-white">
+                <h3 className="mt-4 text-xl font-semibold leading-tight text-slate-900 dark:text-white">
                   {feature.title}
                 </h3>
-                <p className="mt-2 text-slate-600 dark:text-white/75">{feature.description}</p>
+                <p className="mt-2 text-base leading-relaxed text-slate-600 dark:text-white/75">
+                  {feature.description}
+                </p>
               </div>
             );
           })}
         </section>
 
-        <section className="grid gap-8 rounded-3xl border border-slate-200 bg-white p-8 text-slate-900 shadow-2xl shadow-cyan-500/10 lg:grid-cols-[1.05fr_0.95fr] dark:border-white/10 dark:bg-slate-900/80 dark:text-white">
-          <div>
+        <section className="grid gap-8 rounded-3xl border border-slate-200 bg-white p-5 text-slate-900 shadow-2xl shadow-cyan-500/10 sm:p-8 lg:grid-cols-[1.05fr_0.95fr] dark:border-white/10 dark:bg-slate-900/80 dark:text-white">
+          <div className="text-left sm:text-left w-full max-w-[28rem] mx-auto sm:mx-0 sm:max-w-none">
             <p className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-1 text-xs uppercase tracking-wide text-slate-600 dark:border-white/20 dark:text-white/70">
               <Code2 className="h-4 w-4 text-cyan-600 dark:text-cyan-300" />
               One-drop integration
             </p>
-            <h2 className="mt-4 text-3xl font-semibold text-slate-900 dark:text-white max-w-[80vw]">
+            <h2 className="mt-4 text-2xl font-semibold text-balance leading-tight text-slate-900 dark:text-white sm:text-3xl lg:text-[40px]">
               Wire up uploads with a handful of props
             </h2>
-            <p className="mt-3 text-slate-600 dark:text-white/75 max-w-[80vw]">
-              Feed the component your endpoints once and keep the rest of your stack focused on core
-              logic. Every callback receives both the generated URL and the original API response so
-              nothing is lost.
+            <p className="mt-3 text-pretty wrap-break-word text-sm leading-relaxed text-slate-600 dark:text-white/75 sm:text-base md:text-lg">
+              Feed the component your endpoints once and keep the rest of your
+              stack focused on core logic. Every callback receives both the
+              generated URL and the original API response so nothing is lost.
             </p>
-            <ul className="mt-6 space-y-3 text-slate-700 dark:text-white/80">
+            <ul className="mt-6 space-y-3 text-sm text-slate-700 dark:text-white/80 sm:text-base">
               {checklist.map((item) => (
                 <li key={item} className="flex items-start gap-3">
                   <span className="mt-0.5 rounded-full bg-emerald-100 p-1 dark:bg-emerald-400/20">
@@ -176,8 +179,8 @@ export default function HomePage() {
               ))}
             </ul>
           </div>
-          <div className="rounded-2xl max-w-[80vw] border border-slate-200 bg-slate-950/90 p-4 shadow-2xl shadow-black/10 dark:border-white/10 dark:bg-slate-950/80">
-            <pre className="overflow-x-auto text-sm leading-relaxed text-cyan-100 max-w-[80vw]">
+          <div className="rounded-2xl border border-slate-200 bg-slate-950/90 p-4 shadow-2xl shadow-black/10 dark:border-white/10 dark:bg-slate-950/80 sm:p-5 w-full max-w-[22rem] mx-auto sm:mx-0 sm:max-w-none">
+            <pre className="w-full min-w-88 overflow-x-auto text-[0.65rem] leading-relaxed text-cyan-100 sm:text-xs md:text-sm">
               <code>{codeSample}</code>
             </pre>
           </div>

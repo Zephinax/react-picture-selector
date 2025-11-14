@@ -10,7 +10,7 @@ description: Customizable React component for seamless image upload, deletion, a
   />
 </p>
 
-The `PictureSelector` component is a highly customizable React component designed for seamless image upload, deletion, and preview functionality, ideal for profile pictures or general image management.
+The `PictureSelector` component is a highly customizable React component designed for seamless image upload, deletion, and preview functionality, ideal for profile pictures or general image management. Use it when you want to ship a polished upload experience without rebuilding drag & drop, preview modals, or API wiring from scratch.
 
 <Cards>
   <Card
@@ -61,25 +61,25 @@ The `PictureSelector` component is a highly customizable React component designe
     <CodeBlockTabsTrigger value="advanced">Advanced Configuration</CodeBlockTabsTrigger>
   </CodeBlockTabsList>
   <CodeBlockTab value="basic">
-        ```jsx
-        import PictureSelector from "react-picture-selector";
+```jsx
+import PictureSelector from "react-picture-selector";
 
-        const App = () => {
-        const handleImageChange = (imageUrl: string, responseData?: any) => {
-          console.log("New image URL:", imageUrl);
-        };
+const App = () => {
+  const handleImageChange = (imageUrl: string, responseData?: unknown) => {
+    console.log("New image URL:", imageUrl, responseData);
+  };
 
-        return (
-        <PictureSelector
-        imageUrl="https://example.com/avatar.jpg"
-        onChangeImage={handleImageChange}
-        type="profile"
-        title="Profile Picture"
-        size={180}
-        />
-          );
-        };‍‍
-        ```
+  return (
+    <PictureSelector
+      imageUrl="https://example.com/avatar.jpg"
+      onChangeImage={handleImageChange}
+      type="profile"
+      title="Profile Picture"
+      size={180}
+    />
+  );
+};
+```
   </CodeBlockTab>
   <CodeBlockTab value="advanced">
 ```jsx
@@ -116,3 +116,59 @@ const App = () => {
 };
 ```
 </CodeBlockTab> </CodeBlockTabs>
+
+---
+
+## Core Concepts
+
+### Upload experience
+
+- **Drop zone and picker**: Users can drag files onto the selector or open the OS picker. When an upload is running, the drop zone is visually disabled to prevent duplicate requests.
+- **Abortable progress**: Uploads use `AbortController`, so canceling, deleting, or navigating away halts the request and resets progress cleanly.
+- **Accessible previews**: The preview modal is keyboard navigable, traps focus, and adapts to both circular (“profile”) and rectangular image modes.
+
+### Test mode vs real mode
+
+- **Test mode** simulates uploads and deletions locally. It is perfect for Storybook, design reviews, or rapid prototyping without a backend.
+- **Real mode** sends HTTP requests described in `apiConfig`. You receive the resulting URL and the raw API response via `onChangeImage` so nothing is lost.
+
+<Callout type="info" title="State management">
+`PictureSelector` is stateless; you control the `imageUrl` prop. Update your local or server state when `onChangeImage` fires to keep the UI in sync.
+</Callout>
+
+---
+
+## Props overview
+
+| Prop | Type | Required | Description |
+| --- | --- | --- | --- |
+| `imageUrl` | `string` | ✅ | Current image shown in the selector or placeholder if empty |
+| `title` | `string` | ✅ | Title rendered above the selector (and announced for accessibility) |
+| `type` | `"profile" \| "rectangle"` | ✅ | Controls layout, aspect ratio, and progress indicator style |
+| `size` | `number` | ✅ | Base dimension in pixels for the component |
+| `onChangeImage` | `(url: string, response?: unknown) => void` | ✅ | Fires after upload/delete so you can persist state |
+| `apiConfig` | `ApiConfig` | ❌ | Enables real upload/delete requests with headers and callbacks |
+| `testMode` | `boolean` | ❌ | Forces simulated uploads with configurable delays |
+| `colors` | `ColorPalette` | ❌ | Overrides primary/error/progress/placeholder/text colors |
+| `additionalClassNames` | `SelectorClassNames` | ❌ | Granular class overrides for title, buttons, or image shell |
+| `showProgressRing` | `boolean` | ❌ | Toggles the radial indicator for profile images |
+| `blurOnProgress` | `boolean` | ❌ | Blurs the current photo while uploads run to hint a change |
+
+---
+
+## Testing scenarios
+
+| Scenario | Recommendation |
+| --- | --- |
+| Designing UI states | Enable `testMode`, adjust delays, and preview empty vs filled selectors |
+| Integrating with a backend | Start in test mode to wire callbacks, then add `apiConfig` and monitor network traffic |
+| Handling errors | Force a rejection in test mode or point to a known failing endpoint to confirm the error UI |
+| RTL layouts | Wrap the component in `<div dir="rtl">` to verify spacing, focus, and animation direction |
+
+---
+
+## Next steps
+
+- Head to [Installation](./02-installation) for environment requirements and peer dependencies.
+- Dive into [API & Styling](./03-api-and-styling) to configure uploads, callbacks, and themes.
+- Ready to contribute? The root `README` documents scripts, linting, and deployment commands.

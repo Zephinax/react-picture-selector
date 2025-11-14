@@ -8,7 +8,7 @@ The `apiConfig` prop allows you to specify endpoints, HTTP methods, headers, and
 ## API Configuration Interface
 
 ```typescript
-interface apiConfig {
+interface ApiConfig {
   // Required URLs
   deleteUrl: string;        // Path for deleting images, combined with baseUrl
   uploadUrl: string;        // Path for uploading images, combined with baseUrl
@@ -33,6 +33,18 @@ interface apiConfig {
   onDeleteSuccess?: () => void;
 }
 ```
+
+### Lifecycle events
+
+1. **User selects a file** – the component builds `FormData` using `formDataName` and fires `onDeleteStart` if a delete needs to happen first.
+2. **Upload request** – a `fetch` powered by Axios is sent to `baseUrl + uploadUrl` with your headers and method.
+3. **Progress + preview** – live progress is emitted while bytes stream in; fallback animations kick in when `Content-Length` is missing.
+4. **Success** – the response body is parsed, the image URL is extracted via `responsePath`, and `onUploadSuccess` plus `onChangeImage` fire.
+5. **Failure** – `onUploadError` runs and the UI resets the component so users can retry immediately.
+
+<Callout type="info" title="Abort handling">
+Deletions follow the same pattern but call `deleteUrl` with `deleteBody`. If a user cancels mid-flight, the Axios request is aborted and cleanup callbacks still trigger.
+</Callout>
 
 ## Complete API Configuration Example
 
@@ -103,6 +115,36 @@ Your API should support:
 - **Response**: Return the image URL in the specified `responsePath`
 </Callout>
 
+## Handling responses
+
+- `responsePath` uses lodash-style dot notation (default: `data.data`). Update it when your backend wraps URLs differently (e.g., `result.payload.url`).
+- `deleteBody` can be a plain object or a callback that receives the previously stored `imageUrl`. This is handy when your API expects an image ID or signed key extracted from the URL itself.
+- Every successful upload triggers `onChangeImage(url, responseBody)` so you can store extra metadata (S3 keys, CDN hashes, etc.) alongside the URL.
+
+```ts
+const apiConfig: ApiConfig = {
+  baseUrl: "https://api.example.com",
+  uploadUrl: "/media",
+  deleteUrl: "/media/delete",
+  responsePath: "result.assets[0].cdnUrl",
+  deleteBody: (imageUrl) => ({ assetId: new URL(imageUrl).searchParams.get("id") })
+};
+```
+
+<Callout type="warning" title="Error visibility">
+Wrap network errors in logging/monitoring on your side via `onUploadError` so you know when a user cannot upload because of auth or quota issues.
+</Callout>
+
+## Test mode behavior
+
+- Set `testMode` to `true` when you want the component to bypass HTTP calls and simulate uploads locally.
+- The component still fires `onChangeImage`, letting the rest of your UI react as though a real upload completed.
+- Deletions resolve instantly in test mode, which is useful for unit tests or live demos where you do not have API credentials available.
+
+<Callout type="info" title="Switching between modes">
+You can leave `apiConfig` defined while toggling `testMode`. When `testMode` is `true`, network calls are skipped; when it is `false`, the same component immediately starts using your backend.
+</Callout>
+
 ---
 
 ## Styling & Customization
@@ -117,6 +159,22 @@ interface ColorPalette {
   textDisabled: string; // Disabled button text/icon color
 }
 ```
+
+Class name slots:
+
+```typescript
+interface SelectorClassNames {
+  title?: string;
+  titleContainer?: string;
+  edit?: string;
+  delete?: string;
+  image?: string;
+  progressText?: string;
+  previewButton?: string;
+}
+```
+
+Use `colors` for token-level changes and `additionalClassNames` when you need to plug in utility classes, design-system tokens, or CSS modules.
 
 ## Styling Examples
   <CodeBlockTabs defaultValue="color">
@@ -196,6 +254,13 @@ interface ColorPalette {
   ```
   </CodeBlockTab>
   </CodeBlockTabs>
+
+### Styling tips
+
+- Pair `size` with CSS clamp/utility classes to adapt to small vs. large breakpoints.
+- Combine `additionalClassNames.image` with aspect-ratio utilities when embedding into card layouts.
+- Keep brand colors accessible: `progress` and `text` should pass WCAG AA against the button background.
+- Enable `blurOnProgress` when replacing an existing avatar so users understand a change is in flight.
 
 ---
 

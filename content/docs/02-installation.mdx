@@ -5,10 +5,20 @@ description: Learn about the main capabilities of React Picture Selector and how
 
 React Picture Selector provides a complete solution for handling image uploads with a modern and responsive interface. It supports both drag-and-drop and traditional selection methods, offering real-time progress indication through a smooth progress ring or percentage display. Animations are optimized with `requestAnimationFrame`, ensuring fluid transitions and minimal CPU consumption even on lower-end devices. Upload operations can be safely canceled using the built-in `AbortController`, providing users with full control over the process.
 
+## Requirements
+
+- **Node.js 18+** (Next.js 15 and React 19 ready)
+- **React 18 or 19** with concurrent rendering enabled
+- Your preferred package manager (npm, pnpm, bun, or yarn)
+- Optional but recommended: TypeScript for strong typings on props and `apiConfig`
+
+<Callout type="info" title="TypeScript support">
+The package ships with TypeScript declarations so you get prop IntelliSense out of the box.
+</Callout>
 
 ---
 
-## Installation Steps
+## Installation steps
 
 <CodeBlockTabs defaultValue="npm">
   <CodeBlockTabsList>
@@ -39,13 +49,35 @@ React Picture Selector provides a complete solution for handling image uploads w
       </CodeBlockTab>
 </CodeBlockTabs>
 
-## Dependencies
+## Peer dependencies
 
+| Package | Version | Why |
+| --- | --- | --- |
+| `react` | `^18 || ^19` | Core rendering primitives |
+| `react-dom` | `^18 || ^19` | DOM renderer used by Next.js/CRA |
+| `axios` | `^1` | HTTP client leveraged for upload/delete requests |
 
-- React (for component rendering and state management)
-- Axios (for making API requests in real mode)
+You can install everything at once:
 
-<Callout type="info" title="Required Dependencies"> The component requires these peer dependencies to be installed in your project: </Callout>
+```bash
+npm install react-picture-selector react react-dom axios
+```
+
+<Callout type="info" title="Required dependencies">
+If your project already depends on React 18+ and Axios, you only need to install `react-picture-selector`.
+</Callout>
+
+## Project setup checklist
+
+1. **Install the package** using the matrix above (and ensure peer deps are in place).
+2. **Import the component** wherever you handle profile or gallery images.
+3. **Pass `imageUrl` and `onChangeImage`** so the component stays controlled.
+4. **Choose an integration mode**:
+   - Provide `apiConfig` for real API calls, or
+   - Enable `testMode` for mocked uploads during development.
+5. **Style it** by adjusting `size`, `type`, `colors`, or `additionalClassNames`.
+
+Once those steps are complete, the selector is production-ready.
 
 ## Basic Setup
 
@@ -73,3 +105,15 @@ function ProfilePage() {
 }
 ```
 <Callout type="success" title="Ready to Use"> Your React Picture Selector is now installed and ready! Continue to the next section to explore advanced configuration options. </Callout>
+
+## Verify your setup
+
+1. Run your dev server (`npm run dev`) and open the page containing `PictureSelector`.
+2. Click or drag an image to trigger the upload flow. In test mode, you should see the progress ring animate to 100%.
+3. Switch `testMode` off and provide an `apiConfig` to confirm real network requests succeed.
+4. Trigger deletions to ensure your backend receives the correct HTTP method and body.
+
+<Callout type="warning" title="Common gotchas">
+- Always return a URL in your upload response at the path specified by `responsePath`.
+- When using Next.js app router, keep the component on the client (e.g., `use client`) because it relies on browser APIs.
+</Callout>
