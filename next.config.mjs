@@ -2,7 +2,7 @@ import { createMDX } from "fumadocs-mdx/next";
 const withMDX = createMDX();
 
 const isProd = process.env.NODE_ENV === "production";
-const repoName = "react-picture-selector";
+const url = "https://react-picture-selector.zephinax.com/";
 
 /** @type {import('next').NextConfig} */
 const config = {
@@ -12,8 +12,8 @@ const config = {
   images: {
     unoptimized: true
   },
-  basePath: isProd ? `/${repoName}` : "",
-  assetPrefix: isProd ? `https://zephinax.github.io/${repoName}/` : ""
+  basePath: "",
+  assetPrefix: isProd ? url : ""
 };
 
 export default withMDX(config);
