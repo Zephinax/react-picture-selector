@@ -8,7 +8,7 @@
     "start": "next start",
     "postinstall": "fumadocs-mdx",
     "lint": "eslint",
-    "deploy": "rm -rf out .next && next build && echo '' > out/.nojekyll && bun x gh-pages -d out --dotfiles"
+    "deploy": "rm -rf out .next && next build && next export && echo react-picture-selector.zephinax.com > out/CNAME && echo '' > out/.nojekyll && bun x gh-pages -d out --dotfiles"
   },
   "dependencies": {
     "fumadocs-core": "16.0.2",
